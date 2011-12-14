@@ -1,6 +1,10 @@
-# OmniAuth CAS Strategy [![Build Status](http://travis-ci.org/dlindahl/omniauth-cas.png?branch=master)](http://travis-ci.org/dlindahl/omniauth-cas)
+# OmniAuth CAS Strategy [![Build Status](https://secure.travis-ci.org/dlindahl/omniauth-cas.png)](http://travis-ci.org/dlindahl/omniauth-cas)
 
 A CAS Strategy for OmniAuth.
+
+I didn't really want to do this, but no one else has, so I might as well give it a stab.
+
+This is highly experimental, use at your own risk!
 
 ## Installation
 
