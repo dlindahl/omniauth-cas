@@ -1,6 +1,6 @@
-# Omniauth CAS Strategy [![Build Status](http://travis-ci.org/dlindahl/omniauth-cas.png?branch=master)](http://travis-ci.org/dlindahl/omniauth-cas)
+# OmniAuth CAS Strategy [![Build Status](http://travis-ci.org/dlindahl/omniauth-cas.png?branch=master)](http://travis-ci.org/dlindahl/omniauth-cas)
 
-TODO: Write a gem description
+A CAS Strategy for OmniAuth.
 
 ## Installation
 
