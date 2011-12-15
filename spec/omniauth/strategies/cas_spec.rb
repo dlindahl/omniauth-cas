@@ -29,15 +29,18 @@ describe OmniAuth::Strategies::CAS, :type => :strategy do
     end
   end
 
-  # describe 'GET /auth/cas/callback without a ticket' do
-  #   before do
-  #     # get '/auth/cas/callback'
-  #   end
-  #   it 'should fail'# do
-  #     # last_response.should be_redirect
-  #     # last_response.headers['Location'].should =~ /no_ticket/
-  #   # end
-  # end
+  describe 'GET /auth/cas/callback without a ticket' do
+    before do
+      get '/auth/cas/callback'
+    end
+
+    subject { last_response }
+
+    it { should be_redirect }
+    it "should have a failure message" do
+      subject.headers['Location'].should =~ /message=no_ticket/
+    end
+  end
 
   # describe 'GET /auth/cas/callback with an invalid ticket' do
   #   before do
