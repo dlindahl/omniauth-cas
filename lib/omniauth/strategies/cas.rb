@@ -1,4 +1,3 @@
-require 'awesome_print'
 require 'omniauth/strategy'
 
 module OmniAuth
@@ -6,22 +5,20 @@ module OmniAuth
     class CAS
       include OmniAuth::Strategy
 
+      autoload :Configuration, 'omniauth/strategies/cas/configuration'
+
       option :name, :cas # TODO: Why do I need to specify this?
 
       option :host, nil
-      option :port, nil # TODO: Default to 443 if ssl, else 80
+      option :port, nil
       option :ssl,  true
       option :serviceValidateUri, '/serviceValidate'
-      option :login_url,           '/login'
-      option :logout_url,          '/logout'
+      option :login_url,          '/login'
+      option :logout_url,         '/logout'
 
-      configure do |c|
-        # ap "CONFIGURE!"
-        # NOTE: This seems like a silly way to have to do this and differs from the inline docs/examples
-        c.tap do |config|
-          # TODO: Set port based on SSL, etc.
-          config.foo = 'bar'
-        end
+      def initialize( app, *args, &block )
+        super
+        @configuration = Configuration.new( @options )
       end
 
       # def callback_phase
@@ -40,17 +37,60 @@ module OmniAuth
       # end
 
       def request_phase
-        # ap "REQUEST PHASE"
-        # ap @options
         [
           302,
           {
-            'Location' => @options.login_url(callback_url),
+            'Location' => login_url(callback_url),
             'Content-Type' => 'text/plain'
           },
           ["You are being redirected to CAS for sign-in."]
         ]
       end
+
+      # Build a CAS host with protocol and port
+      #
+      #
+      def cas_host
+        @host ||= begin
+          host = @options.ssl ? "https" : "http"
+          port = @options.port ? ":#{@options.port}" : ''
+
+          "#{host}://#{@options.host}#{port}"
+        end
+      end
+
+      # Build a CAS login URL from +service+.
+      #
+      # @param [String] service the service (a.k.a. return-to) URL
+      #
+      # @return [String] a URL like `http://cas.mycompany.com/login?service=...`
+      def login_url(service)
+        cas_host + append_service( @options.login_url, service )
+      end
+
+      # Adds +service+ as an URL-escaped parameter to +base+.
+      #
+      # @param [String] base the base URL
+      # @param [String] service the service (a.k.a. return-to) URL.
+      #
+      # @return [String] the new joined URL.
+      def append_service(base, service)
+        result = base.dup
+        result << (result.include?('?') ? '&' : '?')
+        result << 'service='
+        result << Rack::Utils.escape(service)
+      end
+
+
+
+
+      # def cas_url( path )
+      #   "#{cas_protocol}://#{@options.host}#{@options.port}#{path}"
+      # end
+      # 
+      # def cas_protocol
+      #   @options.ssl ? "https" : "http"
+      # end
 
       # uid do
       #   ap "UID"
@@ -72,6 +112,7 @@ module OmniAuth
       # credentials do
       #   ap "CREDENTIALS"
       # end
+
     end
   end
 end

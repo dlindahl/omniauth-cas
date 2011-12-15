@@ -7,7 +7,7 @@ describe OmniAuth::Strategies::CAS, :type => :strategy do
   def app
     Rack::Builder.new {
       use OmniAuth::Test::PhonySession
-      use MyCasProvider, :name => :cas#, :ssl => false
+      use MyCasProvider, :name => :cas, :host => 'cas.example.org'
       run lambda { |env| [404, {'Content-Type' => 'text/plain'}, [env.key?('omniauth.auth').to_s]] }
     }.to_app
   end
@@ -21,10 +21,11 @@ describe OmniAuth::Strategies::CAS, :type => :strategy do
       get '/auth/cas'
     end
 
-    it 'should redirect to the CAS server' do
-      last_response.should be_redirect
-      # return_to = CGI.escape(last_request.url + '/callback')
-      # last_response.headers['Location'].should == @cas_server + '/login?service=' + return_to
+    subject { last_response }
+
+    it { should be_redirect }
+    it "should redirect to the CAS server" do
+      last_response.headers['Location'].should == "https://cas.example.org/login?service=" + CGI.escape("http://example.org/auth/cas/callback")
     end
   end
 
