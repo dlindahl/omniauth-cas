@@ -25,7 +25,7 @@ describe OmniAuth::Strategies::CAS, :type => :strategy do
 
     it { should be_redirect }
     it "should redirect to the CAS server" do
-      last_response.headers['Location'].should == "https://cas.example.org/login?service=" + CGI.escape("http://example.org/auth/cas/callback")
+      subject.headers['Location'].should == "https://cas.example.org/login?service=" + CGI.escape("http://example.org/auth/cas/callback")
     end
   end
 
