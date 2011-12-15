@@ -1,4 +1,5 @@
 require 'omniauth/strategy'
+require 'addressable/uri'
 
 module OmniAuth
   module Strategies
@@ -44,7 +45,7 @@ module OmniAuth
         [
           302,
           {
-            'Location' => login_url(callback_url),
+            'Location' => login_url( append_params(callback_url, :url => request.referer) ),
             'Content-Type' => 'text/plain'
           },
           ["You are being redirected to CAS for sign-in."]
@@ -72,10 +73,11 @@ module OmniAuth
       # @param [String] ticket the ticket to validate
       #
       # @return [String] a URL like `http://cas.mycompany.com/serviceValidate?service=...&ticket=...`
-      def service_validate_url(service, ticket)
-        service = service.sub(/[?&]ticket=[^?&]+/, '')
-        url = cas_host + append_service(@options.service_validate_url, service)
-        url << '&ticket=' << Rack::Utils.escape(ticket)
+      def service_validate_url(service_url, ticket)
+        service_url = Addressable::URI.parse( service_url )
+        service_url.query_values = service_url.query_values.tap { |qs| qs.delete('ticket') }
+
+        cas_host + append_params(@options.service_validate_url, { :service => service_url.to_s, :ticket => ticket })
       end
 
       # Build a CAS login URL from +service+.
@@ -84,7 +86,13 @@ module OmniAuth
       #
       # @return [String] a URL like `http://cas.mycompany.com/login?service=...`
       def login_url(service)
-        cas_host + append_service( @options.login_url, service )
+        cas_host + append_params( @options.login_url, { :service => Rack::Utils.unescape(service) })
+      end
+
+      def append_params(base, params)
+        Addressable::URI.parse(base).tap do |base_uri|
+          base_uri.query_values = (base_uri.query_values || {}).merge( params )
+        end.to_s
       end
 
       # Adds +service+ as an URL-escaped parameter to +base+.
@@ -93,14 +101,10 @@ module OmniAuth
       # @param [String] service the service (a.k.a. return-to) URL.
       #
       # @return [String] the new joined URL.
-      def append_service(base, service)
-        result = base.dup
-        result << (result.include?('?') ? '&' : '?')
-        result << 'service='
-        result << Rack::Utils.escape(service)
+      # TODO: Deprecate this
+      def append_service( base, service )
+        append_params( base, :service => service )
       end
-
-
 
 
       # def cas_url( path )
