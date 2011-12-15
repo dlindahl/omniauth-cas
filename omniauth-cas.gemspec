@@ -17,6 +17,10 @@ Gem::Specification.new do |gem|
 
   gem.add_dependency 'omniauth', '~> 1.0'
 
-  gem.add_development_dependency 'rspec', '~> 2'
   gem.add_development_dependency 'simplecov', '~> 0.5.4'
+  gem.add_development_dependency 'rspec', '~> 2.7'
+  gem.add_development_dependency 'rack-test', '~> 0.6'
+
+  gem.add_development_dependency 'awesome_print'
+
 end
