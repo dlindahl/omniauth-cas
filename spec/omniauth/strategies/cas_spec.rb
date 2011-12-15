@@ -69,16 +69,19 @@ describe OmniAuth::Strategies::CAS, :type => :strategy do
       @request_uri.scan('ticket=').length.should == 1
     end
 
-    # sets_an_auth_hash
-    # sets_provider_to 'cas'
-    # sets_uid_to 'psegel'
-
-    context "additional user information" do
-      subject { (last_request.env['omniauth.auth'] || {})['extra'] }
+    context "request.env['omniauth.auth']" do
+      subject { last_request.env['omniauth.auth'] }
       it { should be_kind_of Hash }
-      its('first-name') { should == 'Peter' }
-      its('last-name') { should == 'Segel' }
-      its('hire-date') { should == '2004-07-13' }
+      its(:provider) { should == :cas }
+      its(:uid) { should == 'psegel'}
+
+      context "['extra']" do
+        subject { last_request.env['omniauth.auth']['extra'] }
+        it { should be_kind_of Hash }
+        its('first-name') { should == 'Peter' }
+        its('last-name') { should == 'Segel' }
+        its('hire-date') { should == '2004-07-13' }
+      end
     end
 
     it 'should call through to the master app' do

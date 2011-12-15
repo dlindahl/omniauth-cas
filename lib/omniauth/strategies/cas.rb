@@ -38,6 +38,7 @@ module OmniAuth
       # TODO: Refactor this like omniauth-identity
       # TODO: What's the intention of these? Diff between info and extra?
       extra { @user_info }
+      uid { @user_info['user'] }
 
       def request_phase
         [
