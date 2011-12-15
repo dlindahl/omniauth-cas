@@ -42,17 +42,20 @@ describe OmniAuth::Strategies::CAS, :type => :strategy do
     end
   end
 
-  # describe 'GET /auth/cas/callback with an invalid ticket' do
-  #   before do
-  #     # stub_request(:get, /^https:\/\/cas.example.org(:443)?\/serviceValidate\?([^&]+&)?ticket=9391d/).
-  #     #    to_return(:body => File.read(File.join(File.dirname(__FILE__), '..', '..', 'fixtures', 'cas_failure.xml')))
-  #     # get '/auth/cas/callback?ticket=9391d'
-  #   end
-  #   it 'should fail'# do
-  #     # last_response.should be_redirect
-  #     # last_response.headers['Location'].should =~ /invalid_ticket/
-  #   # end
-  # end
+  describe 'GET /auth/cas/callback with an invalid ticket' do
+    before do
+      # stub_request(:get, /^https:\/\/cas.example.org(:443)?\/serviceValidate\?([^&]+&)?ticket=9391d/).
+      #    to_return(:body => File.read(File.join(File.dirname(__FILE__), '..', '..', 'fixtures', 'cas_failure.xml')))
+      get '/auth/cas/callback?ticket=9391d'
+    end
+
+    subject { last_response }
+
+    it { should be_redirect }
+    it 'should have a failure message' do
+      subject.headers['Location'].should =~ /message=invalid_ticket/
+    end
+  end
 
   # describe 'GET /auth/cas/callback with a valid ticket' do
   #   before do

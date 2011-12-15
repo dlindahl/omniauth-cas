@@ -26,7 +26,7 @@ module OmniAuth
         return fail!(:no_ticket, 'No CAS Ticket') unless ticket
         # validator = ServiceTicketValidator.new(@configuration, callback_url, ticket)
         # @user_info = validator.user_info
-        return fail!(:invalid_ticket, 'Invalid CAS Ticket') if @user_info.empty?
+        return fail!(:invalid_ticket, 'Invalid CAS Ticket') if @user_info.nil? or @user_info.empty?
         super
       end
 
