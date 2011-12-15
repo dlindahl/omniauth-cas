@@ -44,8 +44,8 @@ describe OmniAuth::Strategies::CAS, :type => :strategy do
 
   describe 'GET /auth/cas/callback with an invalid ticket' do
     before do
-      # stub_request(:get, /^https:\/\/cas.example.org(:443)?\/serviceValidate\?([^&]+&)?ticket=9391d/).
-      #    to_return(:body => File.read(File.join(File.dirname(__FILE__), '..', '..', 'fixtures', 'cas_failure.xml')))
+      stub_request(:get, /^https:\/\/cas.example.org(:443)?\/serviceValidate\?([^&]+&)?ticket=9391d/).
+         to_return( :body => File.read('spec/fixtures/cas_failure.xml') )
       get '/auth/cas/callback?ticket=9391d'
     end
 
@@ -57,34 +57,34 @@ describe OmniAuth::Strategies::CAS, :type => :strategy do
     end
   end
 
-  # describe 'GET /auth/cas/callback with a valid ticket' do
-  #   before do
-  #     # stub_request(:get, /^https:\/\/cas.example.org(:443)?\/serviceValidate\?([^&]+&)?ticket=593af/).
-  #     #    with { |request| @request_uri = request.uri.to_s }.
-  #     #    to_return(:body => File.read(File.join(File.dirname(__FILE__), '..', '..', 'fixtures', 'cas_success.xml')))
-  #     # get '/auth/cas/callback?ticket=593af'
-  #   end
-  # 
-  #   it 'should strip the ticket parameter from the callback URL before sending it to the CAS server'# do
-  #     # @request_uri.scan('ticket=').length.should == 1
-  #   # end
-  # 
-  #   # sets_an_auth_hash
-  #   # sets_provider_to 'cas'
-  #   # sets_uid_to 'psegel'
-  # 
-  #   it 'should set additional user information'# do
-  #     # extra = (last_request.env['omniauth.auth'] || {})['extra']
-  #     # extra.should be_kind_of(Hash)
-  #     # extra['first-name'].should == 'Peter'
-  #     # extra['last-name'].should == 'Segel'
-  #     # extra['hire-date'].should == '2004-07-13'
-  #   # end
-  # 
-  #   it 'should call through to the master app'# do
-  #     # last_response.body.should == 'true'
-  #   # end
-  # end
+  describe 'GET /auth/cas/callback with a valid ticket' do
+    before do
+      stub_request(:get, /^https:\/\/cas.example.org(:443)?\/serviceValidate\?([^&]+&)?ticket=593af/).
+         with { |request| @request_uri = request.uri.to_s }.
+         to_return( :body => File.read('spec/fixtures/cas_success.xml') )
+      get '/auth/cas/callback?ticket=593af'
+    end
+
+    it 'should strip the ticket parameter from the callback URL' do
+      @request_uri.scan('ticket=').length.should == 1
+    end
+
+    # sets_an_auth_hash
+    # sets_provider_to 'cas'
+    # sets_uid_to 'psegel'
+
+    context "additional user information" do
+      subject { (last_request.env['omniauth.auth'] || {})['extra'] }
+      it { should be_kind_of Hash }
+      its('first-name') { should == 'Peter' }
+      its('last-name') { should == 'Segel' }
+      its('hire-date') { should == '2004-07-13' }
+    end
+
+    it 'should call through to the master app' do
+      last_response.body.should == 'true'
+    end
+  end
 
   # unless RUBY_VERSION =~ /^1\.8\.\d$/
   #   describe 'GET /auth/cas/callback with a valid ticket and gzipped response from the server on ruby >1.8' do

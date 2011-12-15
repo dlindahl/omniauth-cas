@@ -6,15 +6,16 @@ module OmniAuth
       include OmniAuth::Strategy
 
       autoload :Configuration, 'omniauth/strategies/cas/configuration'
+      autoload :ServiceTicketValidator, 'omniauth/strategies/cas/service_ticket_validator'
 
       option :name, :cas # TODO: Why do I need to specify this?
 
       option :host, nil
       option :port, nil
       option :ssl,  true
-      option :serviceValidateUri, '/serviceValidate'
-      option :login_url,          '/login'
-      option :logout_url,         '/logout'
+      option :service_validate_url, '/serviceValidate'
+      option :login_url,            '/login'
+      option :logout_url,           '/logout'
 
       def initialize( app, *args, &block )
         super
@@ -23,22 +24,20 @@ module OmniAuth
 
       def callback_phase
         ticket = request.params['ticket']
+
         return fail!(:no_ticket, 'No CAS Ticket') unless ticket
-        # validator = ServiceTicketValidator.new(@configuration, callback_url, ticket)
-        # @user_info = validator.user_info
+
+        validator = ServiceTicketValidator.new(self, @options, callback_url, ticket)
+        @user_info = validator.user_info
+
         return fail!(:invalid_ticket, 'Invalid CAS Ticket') if @user_info.nil? or @user_info.empty?
+
         super
       end
 
-      # def request_call
-      #   ap "REQUEST CALL"
-      #   super
-      # end
-
-      # def setup_phase
-      #   ap "SETUP PHASE"
-      #   super
-      # end
+      # TODO: Refactor this like omniauth-identity
+      # TODO: What's the intention of these? Diff between info and extra?
+      extra { @user_info }
 
       def request_phase
         [
@@ -61,6 +60,21 @@ module OmniAuth
 
           "#{host}://#{@options.host}#{port}"
         end
+      end
+
+      # Build a service-validation URL from +service+ and +ticket+.
+      # If +service+ has a ticket param, first remove it. URL-encode
+      # +service+ and add it and the +ticket+ as paraemters to the
+      # CAS serviceValidate URL.
+      #
+      # @param [String] service the service (a.k.a. return-to) URL
+      # @param [String] ticket the ticket to validate
+      #
+      # @return [String] a URL like `http://cas.mycompany.com/serviceValidate?service=...&ticket=...`
+      def service_validate_url(service, ticket)
+        service = service.sub(/[?&]ticket=[^?&]+/, '')
+        url = cas_host + append_service(@options.service_validate_url, service)
+        url << '&ticket=' << Rack::Utils.escape(ticket)
       end
 
       # Build a CAS login URL from +service+.
