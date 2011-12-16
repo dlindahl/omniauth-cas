@@ -7,7 +7,7 @@ describe OmniAuth::Strategies::CAS, :type => :strategy do
   def app
     Rack::Builder.new {
       use OmniAuth::Test::PhonySession
-      use MyCasProvider, :name => :cas, :host => 'cas.example.org'
+      use MyCasProvider, :name => :cas, :host => 'cas.example.org', :uid_key => :employeeid
       run lambda { |env| [404, {'Content-Type' => 'text/plain'}, [env.key?('omniauth.auth').to_s]] }
     }.to_app
   end
@@ -70,14 +70,30 @@ describe OmniAuth::Strategies::CAS, :type => :strategy do
       subject { last_request.env['omniauth.auth'] }
       it { should be_kind_of Hash }
       its(:provider) { should == :cas }
-      its(:uid) { should == 'psegel'}
+      its(:uid) { should == '54'}
 
-      context "['extra']" do
+      context "the info hash" do
+        subject { last_request.env['omniauth.auth']['info'] }
+        it { should have(6).items }
+        its('name') { should == 'Peter Segel' }
+        its('first_name') { should == 'Peter' }
+        its('last_name') { should == 'Segel' }
+        its('email') { should == 'psegel@intridea.com' }
+        its('location') { should == 'Washington, D.C.' }
+        its('image') { should == '/images/user.jpg' }
+        its('phone') { should == '555-555-5555' }
+      end
+      context "the extra hash" do
         subject { last_request.env['omniauth.auth']['extra'] }
-        it { should be_kind_of Hash }
-        its('first-name') { should == 'Peter' }
-        its('last-name') { should == 'Segel' }
-        its('hire-date') { should == '2004-07-13' }
+        it { should have(3).items }
+        its('user') { should == 'psegel' }
+        its('employeeid') { should == '54' }
+        its('hire_date') { should == '2004-07-13' }
+      end
+      context "the credentials hash" do
+        subject { last_request.env['omniauth.auth']['credentials'] }
+        it { should have(1).items }
+        its('ticket') { should == '593af' }
       end
     end
 
