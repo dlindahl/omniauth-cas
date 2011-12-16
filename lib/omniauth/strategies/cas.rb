@@ -89,21 +89,16 @@ module OmniAuth
         cas_host + append_params( @options.login_url, { :service => Rack::Utils.unescape(service) })
       end
 
-      def append_params(base, params)
-        Addressable::URI.parse(base).tap do |base_uri|
-          base_uri.query_values = (base_uri.query_values || {}).merge( params )
-        end.to_s
-      end
-
-      # Adds +service+ as an URL-escaped parameter to +base+.
+      # Adds URL-escaped +parameters+ to +base+.
       #
       # @param [String] base the base URL
       # @param [String] service the service (a.k.a. return-to) URL.
       #
       # @return [String] the new joined URL.
-      # TODO: Deprecate this
-      def append_service( base, service )
-        append_params( base, :service => service )
+      def append_params(base, params)
+        Addressable::URI.parse(base).tap do |base_uri|
+          base_uri.query_values = (base_uri.query_values || {}).merge( params )
+        end.to_s
       end
 
 
