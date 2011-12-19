@@ -22,7 +22,25 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Use like any other OmniAuth strategy:
+
+    Rails.application.config.middleware.use OmniAuth::Builder do
+        provider :cas, :host => 'cas.yourdomain.com'
+    end
+
+OmniAuth CAS requires at least one of the following two configuration options:
+
+  * `host` - Defines the host of your CAS server. A default login URL of `/login` will be assumed.
+  * `login_url` - Defines the URL used to prompt users for their login information.
+    If no `host` is configured, the host application's domain will be used.
+
+Other configuration options:
+
+  * `port` - The port to use for your configured CAS `host`
+  * `ssl` - TRUE to connect to your CAS server over SSL.
+  * `service_validate_url` - The URL to use to validate a user. Defaults to `/serviceValidate`
+  * `logout_url` - The URL to use to logout a user. Defaults to '/logout'
+  * `uid_key` - The user data attribute to use as your user's unique identifier. Defaults to `user` (usually their login name)
 
 ## Contributing
 
