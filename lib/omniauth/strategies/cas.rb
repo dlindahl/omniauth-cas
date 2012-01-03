@@ -68,10 +68,12 @@ module OmniAuth
       end
 
       def request_phase
+        service_url = append_params( callback_url, return_url )
+
         [
           302,
           {
-            'Location' => login_url( append_params(callback_url, :url => request.referer) ),
+            'Location' => login_url( service_url ),
             'Content-Type' => 'text/plain'
           },
           ["You are being redirected to CAS for sign-in."]
@@ -166,6 +168,15 @@ module OmniAuth
       # credentials do
       #   ap "CREDENTIALS"
       # end
+
+      def return_url
+        # If the request already has a `url` parameter, then it will already be appended to the callback URL.
+        if request.params and request.params['url']
+          {}
+        else
+          { :url => request.referer }
+        end
+      end
 
     end
   end

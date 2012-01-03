@@ -12,17 +12,31 @@ describe OmniAuth::Strategies::CAS, :type => :strategy do
     }.to_app
   end
 
-  describe 'GET /auth/cas' do
+  shared_examples_for "a CAS redirect response" do
+    let(:redirect_params) { "service=" + CGI.escape("http://example.org/auth/cas/callback?url=#{return_url}") }
     before do
-      get '/auth/cas', nil, { 'HTTP_REFERER' => 'http://myapp.com/admin/foo'}
-    end
-
-    let(:redirect_params) { "service=" + CGI.escape("http://example.org/auth/cas/callback?url=http://myapp.com/admin/foo") }
+      get url, nil, request_env
+    end    
     subject { last_response }
-
     it { should be_redirect }
     it "should redirect to the CAS server" do
       subject.headers['Location'].should == "https://cas.example.org/login?" + redirect_params
+    end
+  end
+
+  describe 'GET /auth/cas' do
+    let(:return_url) { 'http://myapp.com/admin/foo' }
+
+    context "with a referer" do
+      let(:url) { '/auth/cas' }
+      let(:request_env) { { 'HTTP_REFERER' => return_url } }
+      it_behaves_like "a CAS redirect response"
+    end
+    context "with an explicit return URL", :focus => true do
+      let(:url) { "/auth/cas?url=#{return_url}" }
+      let(:request_env) { {} }
+    
+      it_behaves_like "a CAS redirect response"
     end
   end
 
