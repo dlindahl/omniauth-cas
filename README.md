@@ -6,6 +6,12 @@ I didn't really want to do this, but no one else has, so I might as well give it
 
 This is highly experimental, use at your own risk!
 
+Having said that, please let me know if you discover any problems or
+have any feature requests by opening an Issue on the GitHub page. I will try to address
+them as fast as I can.
+
+Thanks in advance for trying this out!
+
 ## Installation
 
 Add this line to your application's Gemfile:
