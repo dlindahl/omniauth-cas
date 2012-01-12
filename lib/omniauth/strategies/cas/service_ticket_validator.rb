@@ -1,7 +1,6 @@
 require 'net/http'
 require 'net/https'
 require 'nokogiri'
-require 'awesome_print'
 
 module OmniAuth
   module Strategies

@@ -1,5 +1,3 @@
-require 'awesome_print'
-
 module OmniAuth
   module Strategies
     class CAS

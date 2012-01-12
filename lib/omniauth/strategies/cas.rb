@@ -140,35 +140,6 @@ module OmniAuth
         end
       end
 
-      # def cas_url( path )
-      #   "#{cas_protocol}://#{@options.host}#{@options.port}#{path}"
-      # end
-      # 
-      # def cas_protocol
-      #   @options.ssl ? "https" : "http"
-      # end
-
-      # uid do
-      #   ap "UID"
-      #   # request.params[options.uid_field.to_s]
-      # end
-
-      # info do
-      #   ap "INFO"
-      #   # options.fields.inject({}) do |hash, field|
-      #   #   hash[field] = request.params[field.to_s]
-      #   #   hash
-      #   # end
-      # end
-
-      # extra do
-      #   ap "EXTRA"
-      # end
-
-      # credentials do
-      #   ap "CREDENTIALS"
-      # end
-
       def return_url
         # If the request already has a `url` parameter, then it will already be appended to the callback URL.
         if request.params and request.params['url']
