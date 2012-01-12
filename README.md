@@ -44,9 +44,9 @@ Other configuration options:
 
   * `port` - The port to use for your configured CAS `host`
   * `ssl` - TRUE to connect to your CAS server over SSL.
-  * `service_validate_url` - The URL to use to validate a user. Defaults to `/serviceValidate`
-  * `logout_url` - The URL to use to logout a user. Defaults to '/logout'
-  * `uid_key` - The user data attribute to use as your user's unique identifier. Defaults to `user` (usually their login name)
+  * `service_validate_url` - The URL to use to validate a user. Defaults to `'/serviceValidate'`
+  * `logout_url` - The URL to use to logout a user. Defaults to `'/logout'`
+  * `uid_key` - The user data attribute to use as your user's unique identifier. Defaults to `'user'` (which usually contains the user's login name)
 
 ## Contributing
 
