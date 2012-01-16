@@ -32,7 +32,7 @@ describe OmniAuth::Strategies::CAS, :type => :strategy do
       let(:request_env) { { 'HTTP_REFERER' => return_url } }
       it_behaves_like "a CAS redirect response"
     end
-    context "with an explicit return URL", :focus => true do
+    context "with an explicit return URL" do
       let(:url) { "/auth/cas?url=#{return_url}" }
       let(:request_env) { {} }
 
