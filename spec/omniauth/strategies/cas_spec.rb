@@ -16,7 +16,7 @@ describe OmniAuth::Strategies::CAS, :type => :strategy do
     let(:redirect_params) { "service=" + CGI.escape("http://example.org/auth/cas/callback?url=#{return_url}") }
     before do
       get url, nil, request_env
-    end    
+    end
     subject { last_response }
     it { should be_redirect }
     it "should redirect to the CAS server" do
@@ -35,7 +35,7 @@ describe OmniAuth::Strategies::CAS, :type => :strategy do
     context "with an explicit return URL", :focus => true do
       let(:url) { "/auth/cas?url=#{return_url}" }
       let(:request_env) { {} }
-    
+
       it_behaves_like "a CAS redirect response"
     end
   end
