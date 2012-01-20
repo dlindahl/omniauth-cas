@@ -12,8 +12,9 @@ describe OmniAuth::Strategies::CAS, :type => :strategy do
     }.to_app
   end
 
+  # TODO: Verify that these are even useful tests
   shared_examples_for "a CAS redirect response" do
-    let(:redirect_params) { "service=" + CGI.escape("http://example.org/auth/cas/callback?url=#{return_url}") }
+    let(:redirect_params) { "service=" + Rack::Utils.escape("http://example.org/auth/cas/callback?url=#{Rack::Utils.escape(return_url)}") }
     before do
       get url, nil, request_env
     end
@@ -69,15 +70,25 @@ describe OmniAuth::Strategies::CAS, :type => :strategy do
   end
 
   describe 'GET /auth/cas/callback with a valid ticket' do
+    let(:return_url) { "http://127.0.0.10/?some=parameter" }
     before do
       stub_request(:get, /^https:\/\/cas.example.org(:443)?\/serviceValidate\?([^&]+&)?ticket=593af/).
          with { |request| @request_uri = request.uri.to_s }.
          to_return( :body => File.read('spec/fixtures/cas_success.xml') )
-      get '/auth/cas/callback?ticket=593af'
+
+      get "/auth/cas/callback?ticket=593af&url=#{return_url}"
     end
 
     it 'should strip the ticket parameter from the callback URL' do
       @request_uri.scan('ticket=').length.should == 1
+    end
+
+    it "should properly encode the service URL" do
+      WebMock.should have_requested(:get, "https://cas.example.org/serviceValidate")
+        .with(:query => {
+          :ticket => "593af",
+          :service => "http://example.org/auth/cas/callback?url=" + Rack::Utils.escape("http://127.0.0.10/?some=parameter")
+        })
     end
 
     context "request.env['omniauth.auth']" do

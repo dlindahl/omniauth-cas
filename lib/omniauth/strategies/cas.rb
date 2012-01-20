@@ -105,6 +105,7 @@ module OmniAuth
         service_url = Addressable::URI.parse( service_url )
         service_url.query_values = service_url.query_values.tap { |qs| qs.delete('ticket') }
 
+        # cas_host + append_params(@options.service_validate_url, { :service => service_url.to_s, :ticket => ticket })
         cas_host + append_params(@options.service_validate_url, { :service => service_url.to_s, :ticket => ticket })
       end
 
@@ -114,16 +115,18 @@ module OmniAuth
       #
       # @return [String] a URL like `http://cas.mycompany.com/login?service=...`
       def login_url(service)
-        cas_host + append_params( @options.login_url, { :service => Rack::Utils.unescape(service) })
+        cas_host + append_params( @options.login_url, { :service => service })
       end
 
       # Adds URL-escaped +parameters+ to +base+.
       #
       # @param [String] base the base URL
-      # @param [String] service the service (a.k.a. return-to) URL.
+      # @param [String] params the parameters to append to the URL
       #
       # @return [String] the new joined URL.
       def append_params(base, params)
+        params = params.each { |k,v| v = Rack::Utils.escape(v) }
+
         Addressable::URI.parse(base).tap do |base_uri|
           base_uri.query_values = (base_uri.query_values || {}).merge( params )
         end.to_s
