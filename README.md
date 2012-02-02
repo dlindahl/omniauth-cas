@@ -3,17 +3,10 @@
 [travis]: http://travis-ci.org/dlindahl/omniauth-cas
 [gemnasium]: https://gemnasium.com/dlindahl/omniauth-cas
 
-A CAS Strategy for OmniAuth.
+This is a OmniAuth 1.0 compatible port of the previously available
+[OmniAuth CAS strategy][old_omniauth_cas] that was bundled with OmniAuth 0.3.
 
-I didn't really want to do this, but no one else has, so I might as well give it a stab.
-
-This is highly experimental, use at your own risk!
-
-Having said that, please let me know if you discover any problems or
-have any feature requests by opening an Issue on the GitHub page. I will try to address
-them as fast as I can.
-
-Thanks in advance for trying this out!
+[View the documentation][document_up]
 
 ## Installation
 
@@ -34,7 +27,7 @@ Or install it yourself as:
 Use like any other OmniAuth strategy:
 
     Rails.application.config.middleware.use OmniAuth::Builder do
-        provider :cas, :host => 'cas.yourdomain.com'
+      provider :cas, :host => 'cas.yourdomain.com'
     end
 
 OmniAuth CAS requires at least one of the following two configuration options:
@@ -65,3 +58,5 @@ Special thanks go out to the following people
 
   * Phillip Aldridge (@iterateNZ) and JB Barth (@jbbarth) for helping out with Issue #3
 
+[old_omniauth_cas]: https://github.com/intridea/omniauth/blob/0-3-stable/oa-enterprise/lib/omniauth/strategies/cas.rb
+[document_up]: http://dlindahl.github.com/omniauth-cas/
