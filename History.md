@@ -1,4 +1,14 @@
 
+0.0.5 / 2012-02-10 
+==================
+
+  * Version bump to 0.0.5
+  * Refactored Pull Request #4 to make the CA Path configurable and added a test.
+  * Merge pull request #4 from dynaum/master
+  * Configuring ssl certs path for ubuntu
+  * Added chnage log
+  * Updated README
+
 0.0.4 / 2012-01-24 
 ==================
 
