@@ -80,7 +80,7 @@ module OmniAuth
           http.use_ssl = @uri.port == 443 || @uri.instance_of?(URI::HTTPS)
           if http.use_ssl?
             http.verify_mode = OpenSSL::SSL::VERIFY_NONE if @options.disable_ssl_verification?
-            http.ca_path = '/etc/ssl/certs' if File.exists? '/etc/ssl/certs' # ruby19 ubuntu
+            http.ca_path = @options.ca_path
           end
           http.start do |c|
             response = c.get "#{@uri.path}?#{@uri.query}", VALIDATION_REQUEST_HEADERS.dup

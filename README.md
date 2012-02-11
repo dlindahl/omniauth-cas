@@ -43,6 +43,7 @@ Other configuration options:
   * `service_validate_url` - The URL to use to validate a user. Defaults to `'/serviceValidate'`
   * `logout_url` - The URL to use to logout a user. Defaults to `'/logout'`
   * `uid_key` - The user data attribute to use as your user's unique identifier. Defaults to `'user'` (which usually contains the user's login name)
+  * `ca_path` - Optional when `ssl` is `true`. Sets path of a CA certification directory. See [Net::HTTP][net_http] for more details
 
 ## Contributing
 
@@ -60,3 +61,4 @@ Special thanks go out to the following people
 
 [old_omniauth_cas]: https://github.com/intridea/omniauth/blob/0-3-stable/oa-enterprise/lib/omniauth/strategies/cas.rb
 [document_up]: http://dlindahl.github.com/omniauth-cas/
+[net_http]: http://ruby-doc.org/stdlib-1.9.3/libdoc/net/http/rdoc/Net/HTTP.html
