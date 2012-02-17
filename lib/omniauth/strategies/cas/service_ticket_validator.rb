@@ -9,6 +9,15 @@ module OmniAuth
 
         VALIDATION_REQUEST_HEADERS = { 'Accept' => '*/*' }
 
+        UbuntuCAPath  = '/etc/ssl/certs'
+        OSXCAPath     = '/opt/local/share/curl/curl-ca-bundle.crt'
+
+        DefaultCAPath = begin
+          return UbuntuCAPath if File.exists?(UbuntuCAPath)
+          return OSXCAPath    if File.exists?(OSXCAPath)
+          nil
+        end
+
         # Build a validator from a +configuration+, a
         # +return_to+ URL, and a +ticket+.
         #
@@ -80,7 +89,7 @@ module OmniAuth
           http.use_ssl = @uri.port == 443 || @uri.instance_of?(URI::HTTPS)
           if http.use_ssl?
             http.verify_mode = OpenSSL::SSL::VERIFY_NONE if @options.disable_ssl_verification?
-            http.ca_path = @options.ca_path
+            http.ca_path = @options.ca_path || DefaultCAPath
           end
           http.start do |c|
             response = c.get "#{@uri.path}?#{@uri.query}", VALIDATION_REQUEST_HEADERS.dup
