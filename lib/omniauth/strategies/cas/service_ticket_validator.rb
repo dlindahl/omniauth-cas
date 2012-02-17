@@ -13,9 +13,13 @@ module OmniAuth
         OSXCAPath     = '/opt/local/share/curl/curl-ca-bundle.crt'
 
         DefaultCAPath = begin
-          return UbuntuCAPath if File.exists?(UbuntuCAPath)
-          return OSXCAPath    if File.exists?(OSXCAPath)
-          nil
+          if File.exists?(UbuntuCAPath)
+            UbuntuCAPath
+          elsif File.exists?(OSXCAPath)
+            OSXCAPath
+          else
+            nil
+          end
         end
 
         # Build a validator from a +configuration+, a
