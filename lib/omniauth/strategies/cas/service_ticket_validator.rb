@@ -30,7 +30,7 @@ module OmniAuth
         # @param [String] ticket the service ticket to validate
         def initialize(strategy, options, return_to_url, ticket)
           @options = options
-          @uri = URI.parse(strategy.service_validate_url(return_to_url, ticket))
+          @uri = Addressable::URI.parse(strategy.service_validate_url(return_to_url, ticket))
         end
 
         # Request validation of the ticket from the CAS server's
@@ -89,16 +89,22 @@ module OmniAuth
         # retrieves the `<cas:serviceResponse>` XML from the CAS server
         def get_service_response_body
           result = ''
+
           http = Net::HTTP.new(@uri.host, @uri.port)
-          http.use_ssl = @uri.port == 443 || @uri.instance_of?(URI::HTTPS)
+          http.use_ssl = (@uri.port == 443 or @uri.scheme == "https")
+
           if http.use_ssl?
             http.verify_mode = OpenSSL::SSL::VERIFY_NONE if @options.disable_ssl_verification?
-            http.ca_path = @options.ca_path || DefaultCAPath
+
+            ca_path = @options.ca_path or DefaultCAPath
+            http.ca_path = ca_path if ca_path
           end
+
           http.start do |c|
-            response = c.get "#{@uri.path}?#{@uri.query}", VALIDATION_REQUEST_HEADERS.dup
+            response = c.get( @uri.omit(:scheme, :authority).to_s, VALIDATION_REQUEST_HEADERS.dup )
             result = response.body
           end
+
           result
         end
 
