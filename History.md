@@ -1,4 +1,11 @@
 
+0.0.6 / 2012-03-07 
+==================
+
+  * Updated 'webmock' gem dependency
+  * Update 'bourne' gem dependency
+  * Updated 'simplecov' gem dependency.
+
 0.0.5 / 2012-02-10 
 ==================
 
