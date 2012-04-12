@@ -28,9 +28,11 @@ Or install it yourself as:
 
 Use like any other OmniAuth strategy:
 
-    Rails.application.config.middleware.use OmniAuth::Builder do
-      provider :cas, :host => 'cas.yourdomain.com'
-    end
+```ruby
+Rails.application.config.middleware.use OmniAuth::Builder do
+  provider :cas, :host => 'cas.yourdomain.com'
+end
+```
 
 OmniAuth CAS requires at least one of the following two configuration options:
 
