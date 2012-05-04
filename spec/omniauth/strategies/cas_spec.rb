@@ -50,7 +50,7 @@ describe OmniAuth::Strategies::CAS, :type => :strategy do
 
     it { should be_redirect }
     it "should have a failure message" do
-      subject.headers['Location'].should == "/auth/failure?message=no_ticket"
+      subject.headers['Location'].should == "/auth/failure?message=no_ticket&strategy=cas"
     end
   end
 
@@ -65,7 +65,7 @@ describe OmniAuth::Strategies::CAS, :type => :strategy do
 
     it { should be_redirect }
     it 'should have a failure message' do
-      subject.headers['Location'].should == "/auth/failure?message=invalid_ticket"
+      subject.headers['Location'].should == "/auth/failure?message=invalid_ticket&strategy=cas"
     end
   end
 

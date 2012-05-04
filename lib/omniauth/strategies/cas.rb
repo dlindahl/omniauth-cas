@@ -6,6 +6,10 @@ module OmniAuth
     class CAS
       include OmniAuth::Strategy
 
+      # Custom Exceptions
+      class MissingCASTicket < StandardError; end
+      class InvalidCASTicket < StandardError; end
+
       autoload :Configuration, 'omniauth/strategies/cas/configuration'
       autoload :ServiceTicketValidator, 'omniauth/strategies/cas/service_ticket_validator'
 
@@ -58,11 +62,11 @@ module OmniAuth
       def callback_phase
         @ticket = request.params['ticket']
 
-        return fail!(:no_ticket, 'No CAS Ticket') unless @ticket
+        return fail!(:no_ticket, MissingCASTicket.new('No CAS Ticket')) unless @ticket
 
         self.raw_info = ServiceTicketValidator.new(self, @options, callback_url, @ticket).user_info
 
-        return fail!(:invalid_ticket, 'Invalid CAS Ticket') if raw_info.empty?
+        return fail!(:invalid_ticket, InvalidCASTicket.new('Invalid CAS Ticket')) if raw_info.empty?
 
         super
       end
