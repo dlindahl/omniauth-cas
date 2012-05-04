@@ -1,4 +1,18 @@
 
+0.0.7 / 2012-05-04 
+==================
+
+  * Version bump to 0.0.7
+  * Updated RSpec
+  * Updated SimpleCov
+  * Updated WebMock
+  * Updated Bourne
+  * Updated OmniAuth to 1.1.0
+  * Added language hint for code example.
+  * Updated the Travis/Gemnasium status graphics to work better with DocumentUp.
+  * Wow... commit fail.
+  * Added History/Changelog
+
 0.0.6 / 2012-03-07 
 ==================
 
