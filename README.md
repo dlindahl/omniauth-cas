@@ -49,6 +49,24 @@ Other configuration options:
   * `uid_key` - The user data attribute to use as your user's unique identifier. Defaults to `'user'` (which usually contains the user's login name)
   * `ca_path` - Optional when `ssl` is `true`. Sets path of a CA certification directory. See [Net::HTTP][net_http] for more details
 
+## Migrating from OmniAuth 0.3
+
+Given the following OA 0.3 configuration:
+
+```
+provider :CAS, :cas_server => 'https://cas.example.com/cas/'
+```
+
+... your new settings should look similar to this:
+
+```
+provider :cas, :host => 'cas.example.com',
+         :login_url => '/cas/login',
+  	     :service_validate_url => '/cas/serviceValidate'
+```
+
+If you encounter problems wih SSL certificates you may want to set the `ca_path` parameter or activate `disable_ssl_verification` (not recommended).  
+
 ## Contributing
 
 1. Fork it
