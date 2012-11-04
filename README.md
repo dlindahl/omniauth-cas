@@ -82,6 +82,8 @@ If you encounter problems wih SSL certificates you may want to set the `ca_path`
 Special thanks go out to the following people
 
   * Phillip Aldridge (@iterateNZ) and JB Barth (@jbbarth) for helping out with Issue #3
+  * Elber Ribeiro (@dynaum) for Ubuntu SSL configuration support
+  * @rbq for README updates and OmniAuth 0.3 migration guide
 
 [old_omniauth_cas]: https://github.com/intridea/omniauth/blob/0-3-stable/oa-enterprise/lib/omniauth/strategies/cas.rb
 [document_up]: http://dlindahl.github.com/omniauth-cas/
