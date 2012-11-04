@@ -12,10 +12,6 @@ require 'simplecov'
 SimpleCov.start
 
 require 'rack/test'
-# TODO: Remove this.
-# https://github.com/bblimke/webmock/issues/64
-# https://github.com/bblimke/webmock/commit/9d255f118a6a39d297856fa83302aca1577b2c03#commitcomment-192888
-require 'rspec/expectations'
 require 'webmock/rspec'
 require 'omniauth-cas'
 
