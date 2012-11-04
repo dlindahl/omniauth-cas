@@ -5,14 +5,14 @@ require File.expand_path( 'spec/spec_helper' )
 describe OmniAuth::Strategies::CAS::ServiceTicketValidator do
   let(:strategy_stub) do
     stub('strategy stub',
-      :service_validate_url => "https://example.org/serviceValidate"
+      service_validate_url: "https://example.org/serviceValidate"
     )
   end
 
   let(:provider_options) do
     stub('provider options',
-      :disable_ssl_verification? => false,
-      :ca_path => '/etc/ssl/certsZOMG'
+      disable_ssl_verification?: false,
+      ca_path: '/etc/ssl/certsZOMG'
     )
   end
 
@@ -22,7 +22,7 @@ describe OmniAuth::Strategies::CAS::ServiceTicketValidator do
 
   describe "#user_info" do
     subject do
-      stub_request(:get, "https://example.org/serviceValidate?").to_return(:status => 200, :body => '')
+      stub_request(:get, "https://example.org/serviceValidate?").to_return(status: 200, body: '')
       validator.user_info
     end
 

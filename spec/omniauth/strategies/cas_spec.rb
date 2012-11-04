@@ -1,13 +1,13 @@
 require File.expand_path( 'spec/spec_helper' )
 
-describe OmniAuth::Strategies::CAS, :type => :strategy do
+describe OmniAuth::Strategies::CAS, type: :strategy do
   include Rack::Test::Methods
 
   class MyCasProvider < OmniAuth::Strategies::CAS; end # TODO: Not really needed. just an alias but it requires the :name option which might confuse users...
   def app
     Rack::Builder.new {
       use OmniAuth::Test::PhonySession
-      use MyCasProvider, :name => :cas, :host => 'cas.example.org', :uid_key => :employeeid
+      use MyCasProvider, name: :cas, host: 'cas.example.org', uid_key: :employeeid
       run lambda { |env| [404, {'Content-Type' => 'text/plain'}, [env.key?('omniauth.auth').to_s]] }
     }.to_app
   end
@@ -57,7 +57,7 @@ describe OmniAuth::Strategies::CAS, :type => :strategy do
   describe 'GET /auth/cas/callback with an invalid ticket' do
     before do
       stub_request(:get, /^https:\/\/cas.example.org(:443)?\/serviceValidate\?([^&]+&)?ticket=9391d/).
-         to_return( :body => File.read('spec/fixtures/cas_failure.xml') )
+         to_return( body: File.read('spec/fixtures/cas_failure.xml') )
       get '/auth/cas/callback?ticket=9391d'
     end
 
@@ -74,7 +74,7 @@ describe OmniAuth::Strategies::CAS, :type => :strategy do
     before do
       stub_request(:get, /^https:\/\/cas.example.org(:443)?\/serviceValidate\?([^&]+&)?ticket=593af/).
          with { |request| @request_uri = request.uri.to_s }.
-         to_return( :body => File.read('spec/fixtures/cas_success.xml') )
+         to_return( body: File.read('spec/fixtures/cas_success.xml') )
 
       get "/auth/cas/callback?ticket=593af&url=#{return_url}"
     end
@@ -85,9 +85,9 @@ describe OmniAuth::Strategies::CAS, :type => :strategy do
 
     it "should properly encode the service URL" do
       WebMock.should have_requested(:get, "https://cas.example.org/serviceValidate")
-        .with(:query => {
-          :ticket => "593af",
-          :service => "http://example.org/auth/cas/callback?url=" + Rack::Utils.escape("http://127.0.0.10/?some=parameter")
+        .with(query: {
+          ticket: "593af",
+          service: "http://example.org/auth/cas/callback?url=" + Rack::Utils.escape("http://127.0.0.10/?some=parameter")
         })
     end
 
