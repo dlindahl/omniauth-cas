@@ -30,7 +30,7 @@ Use like any other OmniAuth strategy:
 
 ```ruby
 Rails.application.config.middleware.use OmniAuth::Builder do
-  provider :cas, :host => 'cas.yourdomain.com'
+  provider :cas, host: 'cas.yourdomain.com'
 end
 ```
 
@@ -55,15 +55,15 @@ Other configuration options:
 Given the following OA 0.3 configuration:
 
 ```ruby
-provider :CAS, :cas_server => 'https://cas.example.com/cas/'
+provider :CAS, cas_server: 'https://cas.example.com/cas/'
 ```
 
 ... your new settings should look similar to this:
 
 ```ruby
-provider :cas, :host => 'cas.example.com',
-         :login_url => '/cas/login',
-  	     :service_validate_url => '/cas/serviceValidate'
+provider :cas, host: 'cas.example.com',
+         login_url: '/cas/login',
+  	     service_validate_url: '/cas/serviceValidate'
 ```
 
 If you encounter problems wih SSL certificates you may want to set the `ca_path` parameter or activate `disable_ssl_verification` (not recommended).  
