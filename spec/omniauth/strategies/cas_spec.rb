@@ -11,8 +11,8 @@ describe OmniAuth::Strategies::CAS, type: :strategy do
   end
 
   # TODO: Verify that these are even useful tests
-  shared_examples_for "a CAS redirect response" do
-    let(:redirect_params) { "service=" + Rack::Utils.escape("http://example.org/auth/cas/callback?url=#{Rack::Utils.escape(return_url)}") }
+  shared_examples_for 'a CAS redirect response' do
+    let(:redirect_params) { 'service=' + Rack::Utils.escape("http://example.org/auth/cas/callback?url=#{Rack::Utils.escape(return_url)}") }
 
     before { get url, nil, request_env }
 
@@ -20,28 +20,28 @@ describe OmniAuth::Strategies::CAS, type: :strategy do
 
     it { should be_redirect }
 
-    it "should redirect to the CAS server" do
-      subject.headers['Location'].should == "https://cas.example.org/login?" + redirect_params
+    it 'should redirect to the CAS server' do
+      subject.headers['Location'].should == 'https://cas.example.org/login?' + redirect_params
     end
   end
 
   describe 'GET /auth/cas' do
     let(:return_url) { 'http://myapp.com/admin/foo' }
 
-    context "with a referer" do
+    context 'with a referer' do
       let(:url) { '/auth/cas' }
 
       let(:request_env) { { 'HTTP_REFERER' => return_url } }
 
-      it_behaves_like "a CAS redirect response"
+      it_behaves_like 'a CAS redirect response'
     end
 
-    context "with an explicit return URL" do
+    context 'with an explicit return URL' do
       let(:url) { "/auth/cas?url=#{return_url}" }
 
       let(:request_env) { {} }
 
-      it_behaves_like "a CAS redirect response"
+      it_behaves_like 'a CAS redirect response'
     end
   end
 
@@ -52,8 +52,8 @@ describe OmniAuth::Strategies::CAS, type: :strategy do
 
     it { should be_redirect }
 
-    it "should have a failure message" do
-      subject.headers['Location'].should == "/auth/failure?message=no_ticket&strategy=cas"
+    it 'should have a failure message' do
+      subject.headers['Location'].should == '/auth/failure?message=no_ticket&strategy=cas'
     end
   end
 
@@ -69,12 +69,12 @@ describe OmniAuth::Strategies::CAS, type: :strategy do
     it { should be_redirect }
 
     it 'should have a failure message' do
-      subject.headers['Location'].should == "/auth/failure?message=invalid_ticket&strategy=cas"
+      subject.headers['Location'].should == '/auth/failure?message=invalid_ticket&strategy=cas'
     end
   end
 
   describe 'GET /auth/cas/callback with a valid ticket' do
-    let(:return_url) { "http://127.0.0.10/?some=parameter" }
+    let(:return_url) { 'http://127.0.0.10/?some=parameter' }
 
     before do
       stub_request(:get, /^https:\/\/cas.example.org(:443)?\/serviceValidate\?([^&]+&)?ticket=593af/)
@@ -88,11 +88,11 @@ describe OmniAuth::Strategies::CAS, type: :strategy do
       @request_uri.scan('ticket=').length.should == 1
     end
 
-    it "should properly encode the service URL" do
-      WebMock.should have_requested(:get, "https://cas.example.org/serviceValidate")
+    it 'should properly encode the service URL' do
+      WebMock.should have_requested(:get, 'https://cas.example.org/serviceValidate')
         .with(query: {
-          ticket: "593af",
-          service: "http://example.org/auth/cas/callback?url=" + Rack::Utils.escape("http://127.0.0.10/?some=parameter")
+          ticket:  '593af',
+          service: 'http://example.org/auth/cas/callback?url=' + Rack::Utils.escape('http://127.0.0.10/?some=parameter')
         })
     end
 
@@ -105,7 +105,7 @@ describe OmniAuth::Strategies::CAS, type: :strategy do
 
       its(:uid) { should == '54'}
 
-      context "the info hash" do
+      context 'the info hash' do
         subject { last_request.env['omniauth.auth']['info'] }
 
         it { should have(6).items }
@@ -119,7 +119,7 @@ describe OmniAuth::Strategies::CAS, type: :strategy do
         its(:phone)      { should == '555-555-5555' }
       end
 
-      context "the extra hash" do
+      context 'the extra hash' do
         subject { last_request.env['omniauth.auth']['extra'] }
 
         it { should have(3).items }
@@ -129,7 +129,7 @@ describe OmniAuth::Strategies::CAS, type: :strategy do
         its(:hire_date)  { should == '2004-07-13' }
       end
 
-      context "the credentials hash" do
+      context 'the credentials hash' do
         subject { last_request.env['omniauth.auth']['credentials'] }
 
         it { should have(1).items }
