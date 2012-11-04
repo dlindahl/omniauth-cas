@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <title>Omniauth-cas by dlindahl</title>
-    
+
     <link rel="stylesheet" href="stylesheets/styles.css">
     <link rel="stylesheet" href="stylesheets/pygment_trac.css">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
@@ -17,15 +17,18 @@
       <header>
         <h1>Omniauth-cas</h1>
         <p>A CAS OmniAuth Strategy</p>
+
         <p class="view"><a href="https://github.com/dlindahl/omniauth-cas">View the Project on GitHub <small>dlindahl/omniauth-cas</small></a></p>
+
+
         <ul>
           <li><a href="https://github.com/dlindahl/omniauth-cas/zipball/master">Download <strong>ZIP File</strong></a></li>
           <li><a href="https://github.com/dlindahl/omniauth-cas/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/dlindahl/omniauth-cas">Fork On <strong>GitHub</strong></a></li>
+          <li><a href="https://github.com/dlindahl/omniauth-cas">View On <strong>GitHub</strong></a></li>
         </ul>
       </header>
       <section>
-        <h1>OmniAuth CAS Strategy <a href="http://travis-ci.org/dlindahl/omniauth-cas"><img src="https://secure.travis-ci.org/dlindahl/omniauth-cas.png" alt="Build Status"></a> <a href="https://gemnasium.com/dlindahl/omniauth-cas"><img src="https://gemnasium.com/dlindahl/omniauth-cas.png?travis" alt="Dependency Status"></a>
+        <h1>OmniAuth CAS Strategy <a href="http://travis-ci.org/dlindahl/omniauth-cas"><img src="https://secure.travis-ci.org/dlindahl/omniauth-cas.png" alt="Build Status"></a>
 </h1>
 
 <p>This is a OmniAuth 1.0 compatible port of the previously available
@@ -54,13 +57,10 @@
 
 <p>Use like any other OmniAuth strategy:</p>
 
-<div class="highlight">
-<pre><span class="no">Rails</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">middleware</span><span class="o">.</span><span class="n">use</span> <span class="no">OmniAuth</span><span class="o">::</span><span class="no">Builder</span> <span class="k">do</span>
-  <span class="n">provider</span> <span class="ss">:cas</span><span class="p">,</span> <span class="ss">:host</span> <span class="o">=&gt;</span> <span class="s1">'cas.yourdomain.com'</span>
+<div class="highlight"><pre><span class="no">Rails</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">middleware</span><span class="o">.</span><span class="n">use</span> <span class="no">OmniAuth</span><span class="o">::</span><span class="no">Builder</span> <span class="k">do</span>
+  <span class="n">provider</span> <span class="ss">:cas</span><span class="p">,</span> <span class="n">host</span><span class="p">:</span> <span class="s1">'cas.yourdomain.com'</span>
 <span class="k">end</span>
-</pre>
-</div>
-
+</pre></div>
 
 <p>OmniAuth CAS requires at least one of the following two configuration options:</p>
 
@@ -88,7 +88,26 @@ If no <code>host</code> is configured, the host application's domain will be use
 <code>uid_key</code> - The user data attribute to use as your user's unique identifier. Defaults to <code>'user'</code> (which usually contains the user's login name)</li>
 <li>
 <code>ca_path</code> - Optional when <code>ssl</code> is <code>true</code>. Sets path of a CA certification directory. See <a href="http://ruby-doc.org/stdlib-1.9.3/libdoc/net/http/rdoc/Net/HTTP.html">Net::HTTP</a> for more details</li>
-</ul><h2>Contributing</h2>
+<li>
+<code>disable_ssl_verification</code><code>- Optional when</code>ssl` is true. Disables verification.</li>
+</ul><h2>Migrating from OmniAuth 0.3</h2>
+
+<p>Given the following OmniAuth 0.3 configuration:</p>
+
+<div class="highlight"><pre><span class="n">provider</span> <span class="ss">:CAS</span><span class="p">,</span> <span class="n">cas_server</span><span class="p">:</span> <span class="s1">'https://cas.example.com/cas/'</span>
+</pre></div>
+
+<p>Your new settings should look similar to this:</p>
+
+<div class="highlight"><pre><span class="n">provider</span> <span class="ss">:cas</span><span class="p">,</span>
+         <span class="n">host</span><span class="p">:</span>      <span class="s1">'cas.example.com'</span><span class="p">,</span>
+         <span class="n">login_url</span><span class="p">:</span> <span class="s1">'/cas/login'</span><span class="p">,</span>
+         <span class="n">service_validate_url</span><span class="p">:</span> <span class="s1">'/cas/serviceValidate'</span>
+</pre></div>
+
+<p>If you encounter problems wih SSL certificates you may want to set the <code>ca_path</code> parameter or activate <code>disable_ssl_verification</code> (not recommended).  </p>
+
+<h2>Contributing</h2>
 
 <ol>
 <li>Fork it</li>
@@ -102,6 +121,9 @@ If no <code>host</code> is configured, the host application's domain will be use
 
 <ul>
 <li>Phillip Aldridge (<a href="https://github.com/iterateNZ" class="user-mention">@iterateNZ</a>) and JB Barth (<a href="https://github.com/jbbarth" class="user-mention">@jbbarth</a>) for helping out with Issue #3</li>
+<li>Elber Ribeiro (<a href="https://github.com/dynaum" class="user-mention">@dynaum</a>) for Ubuntu SSL configuration support</li>
+<li>
+<a href="https://github.com/rbq" class="user-mention">@rbq</a> for README updates and OmniAuth 0.3 migration guide</li>
 </ul>
       </section>
       <footer>
