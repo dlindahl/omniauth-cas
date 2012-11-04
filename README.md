@@ -1,4 +1,4 @@
-# OmniAuth CAS Strategy [![Build Status][travis_status]][travis] [![Dependency Status][gemnasium_status]][gemnasium]
+# OmniAuth CAS Strategy [![Build Status][travis_status]][travis]
 
 [travis]: http://travis-ci.org/dlindahl/omniauth-cas
 [travis_status]: https://secure.travis-ci.org/dlindahl/omniauth-cas.png
