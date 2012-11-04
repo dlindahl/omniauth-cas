@@ -21,12 +21,15 @@ describe OmniAuth::Strategies::CAS::ServiceTicketValidator do
   end
 
   describe "#user_info" do
-    before do
+    subject do
       stub_request(:get, "https://example.org/serviceValidate?").to_return(:status => 200, :body => '')
       validator.user_info
     end
+
     it "should use the configured CA path" do
-      provider_options.should have_received(:ca_path)
+      provider_options.should_receive :ca_path
+
+      subject
     end
   end
 end

@@ -24,7 +24,6 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'simplecov',   '~> 0.7.1'
   gem.add_development_dependency 'rspec',       '~> 2.11'
   gem.add_development_dependency 'rack-test',   '~> 0.6'
-  gem.add_development_dependency 'bourne',      '~> 1.1.2'
 
   gem.add_development_dependency 'awesome_print'
 
