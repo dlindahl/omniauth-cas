@@ -1,7 +1,3 @@
-require 'ostruct'
-require 'awesome_print'
-require File.expand_path( 'spec/spec_helper' )
-
 describe OmniAuth::Strategies::CAS::ServiceTicketValidator do
   let(:strategy_stub) do
     stub('strategy stub',

@@ -1,4 +1,5 @@
 require 'bundler/setup'
+require 'awesome_print'
 
 RSpec.configure do |c|
   c.filter_run focus: true

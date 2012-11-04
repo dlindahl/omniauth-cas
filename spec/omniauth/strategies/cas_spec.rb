@@ -1,5 +1,3 @@
-require File.expand_path( 'spec/spec_helper' )
-
 describe OmniAuth::Strategies::CAS, type: :strategy do
   include Rack::Test::Methods
 
