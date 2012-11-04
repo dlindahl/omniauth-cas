@@ -52,16 +52,17 @@ Other configuration options:
 
 ## Migrating from OmniAuth 0.3
 
-Given the following OA 0.3 configuration:
+Given the following OmniAuth 0.3 configuration:
 
 ```ruby
 provider :CAS, cas_server: 'https://cas.example.com/cas/'
 ```
 
-... your new settings should look similar to this:
+Your new settings should look similar to this:
 
 ```ruby
-provider :cas, host: 'cas.example.com',
+provider :cas,
+         host:      'cas.example.com',
          login_url: '/cas/login',
   	     service_validate_url: '/cas/serviceValidate'
 ```
