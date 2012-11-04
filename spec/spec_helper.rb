@@ -18,3 +18,5 @@ require 'rack/test'
 require 'rspec/expectations'
 require 'webmock/rspec'
 require 'omniauth-cas'
+
+OmniAuth.config.logger = Logger.new( '/dev/null' )
