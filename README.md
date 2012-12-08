@@ -48,7 +48,7 @@ Other configuration options:
   * `logout_url` - The URL to use to logout a user. Defaults to `'/logout'`
   * `uid_key` - The user data attribute to use as your user's unique identifier. Defaults to `'user'` (which usually contains the user's login name)
   * `ca_path` - Optional when `ssl` is `true`. Sets path of a CA certification directory. See [Net::HTTP][net_http] for more details
-  * `disable_ssl_verification``- Optional when `ssl` is true. Disables verification.
+  * `disable_ssl_verification` - Optional when `ssl` is true. Disables verification.
 
 ## Migrating from OmniAuth 0.3
 
