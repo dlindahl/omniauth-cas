@@ -16,7 +16,7 @@ module OmniAuth
       attr_accessor :raw_info
       alias_method :user_info, :raw_info
 
-      option :name, :cas # TODO: Why do I need to specify this?
+      option :name, :cas # Required property by OmniAuth::Strategy
 
       option :host, nil
       option :port, nil
