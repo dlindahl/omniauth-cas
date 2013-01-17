@@ -1,9 +1,9 @@
-# OmniAuth CAS Strategy [![Build Status][travis_status]][travis]
+# OmniAuth CAS Strategy [![Gem Version][version_badge]][version] [![Build Status][travis_status]][travis]
 
+[version_badge]: https://badge.fury.io/rb/omniauth-cas.png
+[version]: http://badge.fury.io/rb/omniauth-cas
 [travis]: http://travis-ci.org/dlindahl/omniauth-cas
 [travis_status]: https://secure.travis-ci.org/dlindahl/omniauth-cas.png
-[gemnasium]: https://gemnasium.com/dlindahl/omniauth-cas
-[gemnasium_status]: https://gemnasium.com/dlindahl/omniauth-cas.png?travis
 
 This is a OmniAuth 1.0 compatible port of the previously available
 [OmniAuth CAS strategy][old_omniauth_cas] that was bundled with OmniAuth 0.3.
