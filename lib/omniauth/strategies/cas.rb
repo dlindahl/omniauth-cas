@@ -20,6 +20,7 @@ module OmniAuth
 
       option :host, nil
       option :port, nil
+      option :path, nil
       option :ssl,  true
       option :service_validate_url, '/serviceValidate'
       option :login_url,            '/login'
@@ -87,12 +88,15 @@ module OmniAuth
       # Build a CAS host with protocol and port
       #
       #
-      def cas_host
-        @host ||= begin
-          host = @options.ssl ? "https" : "http"
-          port = @options.port ? ":#{@options.port}" : ''
+      def cas_url
+        @cas_url ||= begin
+          uri = Addressable::URI.new
+          uri.host   = @options.host
+          uri.scheme = @options.ssl ? 'https' : 'http'
+          uri.port   = @options.post
+          uri.path   = @options.path
 
-          "#{host}://#{@options.host}#{port}"
+          uri.to_s
         end
       end
 
@@ -109,8 +113,7 @@ module OmniAuth
         service_url = Addressable::URI.parse( service_url )
         service_url.query_values = service_url.query_values.tap { |qs| qs.delete('ticket') }
 
-        # cas_host + append_params(@options.service_validate_url, { :service => service_url.to_s, :ticket => ticket })
-        cas_host + append_params(@options.service_validate_url, { :service => service_url.to_s, :ticket => ticket })
+        cas_url + append_params(@options.service_validate_url, { :service => service_url.to_s, :ticket => ticket })
       end
 
       # Build a CAS login URL from +service+.
@@ -119,7 +122,7 @@ module OmniAuth
       #
       # @return [String] a URL like `http://cas.mycompany.com/login?service=...`
       def login_url(service)
-        cas_host + append_params( @options.login_url, { :service => service })
+        cas_url + append_params( @options.login_url, { :service => service })
       end
 
       # Adds URL-escaped +parameters+ to +base+.

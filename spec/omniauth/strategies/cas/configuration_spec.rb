@@ -13,7 +13,7 @@ describe OmniAuth::Strategies::CAS::Configuration do
   describe '#initialize' do
     let(:params) do
       {
-        'url'       => 'http://example.org:8080',
+        'url'       => 'http://example.org:8080/my_cas',
         'login_url' => '/'
       }
     end
@@ -31,6 +31,7 @@ describe OmniAuth::Strategies::CAS::Configuration do
       it 'should parse the URL' do
         subject.host.should eq 'example.org'
         subject.port.should eq 8080
+        subject.path.should eq '/my_cas'
         subject.ssl.should  be_false
       end
     end

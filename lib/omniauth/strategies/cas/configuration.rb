@@ -17,6 +17,7 @@ module OmniAuth
           @options.merge!(
             'host' => url.host,
             'port' => url.port,
+            'path' => url.path,
             'ssl'  => url.scheme == 'https'
           )
         end
