@@ -93,7 +93,7 @@ module OmniAuth
           uri = Addressable::URI.new
           uri.host   = @options.host
           uri.scheme = @options.ssl ? 'https' : 'http'
-          uri.port   = @options.post
+          uri.port   = @options.port
           uri.path   = @options.path
 
           uri.to_s
