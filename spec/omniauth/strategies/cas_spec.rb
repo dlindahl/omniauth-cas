@@ -5,7 +5,7 @@ describe OmniAuth::Strategies::CAS, type: :strategy do
   def app
     Rack::Builder.new {
       use OmniAuth::Test::PhonySession
-      use MyCasProvider, name: :cas, host: 'cas.example.org', uid_key: :employeeid
+      use MyCasProvider, name: :cas, host: 'cas.example.org', ssl: false, port: 8080, uid_key: :employeeid
       run lambda { |env| [404, {'Content-Type' => 'text/plain'}, [env.key?('omniauth.auth').to_s]] }
     }.to_app
   end
@@ -21,8 +21,13 @@ describe OmniAuth::Strategies::CAS, type: :strategy do
     it { should be_redirect }
 
     it 'should redirect to the CAS server' do
-      subject.headers['Location'].should == 'https://cas.example.org/login?' + redirect_params
+      subject.headers['Location'].should == 'http://cas.example.org:8080/login?' + redirect_params
     end
+  end
+
+  describe 'defaults' do
+    subject { MyCasProvider.default_options.to_hash }
+    it { should include('ssl' => true) }
   end
 
   describe 'GET /auth/cas' do
@@ -59,7 +64,7 @@ describe OmniAuth::Strategies::CAS, type: :strategy do
 
   describe 'GET /auth/cas/callback with an invalid ticket' do
     before do
-      stub_request(:get, /^https:\/\/cas.example.org(:443)?\/serviceValidate\?([^&]+&)?ticket=9391d/).
+      stub_request(:get, /^http:\/\/cas.example.org:8080?\/serviceValidate\?([^&]+&)?ticket=9391d/).
          to_return( body: File.read('spec/fixtures/cas_failure.xml') )
       get '/auth/cas/callback?ticket=9391d'
     end
@@ -77,7 +82,7 @@ describe OmniAuth::Strategies::CAS, type: :strategy do
     let(:return_url) { 'http://127.0.0.10/?some=parameter' }
 
     before do
-      stub_request(:get, /^https:\/\/cas.example.org(:443)?\/serviceValidate\?([^&]+&)?ticket=593af/)
+      stub_request(:get, /^http:\/\/cas.example.org:8080?\/serviceValidate\?([^&]+&)?ticket=593af/)
         .with { |request| @request_uri = request.uri.to_s }
         .to_return( body: File.read('spec/fixtures/cas_success.xml') )
 
@@ -89,7 +94,7 @@ describe OmniAuth::Strategies::CAS, type: :strategy do
     end
 
     it 'should properly encode the service URL' do
-      WebMock.should have_requested(:get, 'https://cas.example.org/serviceValidate')
+      WebMock.should have_requested(:get, 'http://cas.example.org:8080/serviceValidate')
         .with(query: {
           ticket:  '593af',
           service: 'http://example.org/auth/cas/callback?url=' + Rack::Utils.escape('http://127.0.0.10/?some=parameter')
