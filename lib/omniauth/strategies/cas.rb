@@ -144,7 +144,7 @@ module OmniAuth
       # Deletes Hash pairs with `nil` values.
       # From https://github.com/mkdynamic/omniauth-facebook/blob/972ed5e3456bcaed7df1f55efd7c05c216c8f48e/lib/omniauth/strategies/facebook.rb#L122-127
       def prune!(hash)
-        hash.delete_if do |_, value| 
+        hash.delete_if do |_, value|
           prune!(value) if value.is_a?(Hash)
           value.nil? || (value.respond_to?(:empty?) && value.empty?)
         end
