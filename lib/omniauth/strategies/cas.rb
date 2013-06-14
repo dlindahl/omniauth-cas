@@ -139,6 +139,12 @@ module OmniAuth
         end.to_s
       end
 
+      # Adds support for custom callback_paths
+      # See: https://github.com/intridea/omniauth/issues/630
+      def callback_path
+        options[:callback_path].is_a?(String) ? options[:callback_path] : (custom_path(:callback_path) || custom_path(:request_path) || "#{path_prefix}/#{name}/callback")
+      end
+
     private
 
       # Deletes Hash pairs with `nil` values.
