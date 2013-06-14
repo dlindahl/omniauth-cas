@@ -34,12 +34,18 @@ Rails.application.config.middleware.use OmniAuth::Builder do
 end
 ```
 
+### Configuration Options
+
+#### Required
+
 OmniAuth CAS requires at least one of the following two configuration options:
 
   * `url` - Defines the URL of your CAS server (i.e. `http://example.org:8080`)
   * `host` - Defines the host of your CAS server. Optional if using `url`
   * `login_url` - Defines the URL used to prompt users for their login information. Defaults to `/login`
     If no `host` is configured, the host application's domain will be used.
+
+#### Optional
 
 Other configuration options:
 
