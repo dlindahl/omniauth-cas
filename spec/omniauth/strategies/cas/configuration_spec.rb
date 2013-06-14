@@ -1,3 +1,5 @@
+require 'spec_helper'
+
 describe OmniAuth::Strategies::CAS::Configuration do
   subject { described_class.new }
 
