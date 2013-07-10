@@ -41,15 +41,20 @@ module OmniAuth
 
           {}.tap do |hash|
             node.children.each do |e|
+              node_name = e.name.sub(/^cas:/, '')
               unless e.kind_of?(Nokogiri::XML::Text) ||
-                     e.name == 'cas:proxies' ||
-                     e.name == 'proxies'
+                     node_name == 'proxies'
                 # There are no child elements
                 if e.element_children.count == 0
-                  hash[e.name.sub(/^cas:/, '')] = e.content
+                  hash[node_name] = e.content
                 elsif e.element_children.count
-                  hash[e.name.sub(/^cas:/, '')] = [] if hash[e.name.sub(/^cas:/, '')].nil?
-                  hash[e.name.sub(/^cas:/, '')].push parse_user_info e
+                  # JASIG style extra attributes
+                  if node_name == 'attributes'
+                    hash.merge! parse_user_info e
+                  else
+                    hash[node_name] = [] if hash[node_name].nil?
+                    hash[node_name].push parse_user_info e
+                  end
                 end
               end
             end
