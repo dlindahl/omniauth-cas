@@ -16,7 +16,7 @@ Gem::Specification.new do |gem|
   gem.version       = Omniauth::Cas::VERSION
 
   gem.add_dependency 'omniauth',                '~> 1.1.0'
-  gem.add_dependency 'nokogiri',                '~> 1.6'
+  gem.add_dependency 'nokogiri',                '>= 1.5'
   gem.add_dependency 'addressable',             '~> 2.3'
 
   gem.add_development_dependency 'rake',        '~> 0.9'
