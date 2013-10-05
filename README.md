@@ -49,7 +49,7 @@ OmniAuth CAS requires at least one of the following two configuration options:
 
 Other configuration options:
 
-  * `port` - The port to use for your configured CAS `host`. Optional if using `url`,
+  * `port` - The port to use for your configured CAS `host`. Optional if using `url`.
   * `ssl` - TRUE to connect to your CAS server over SSL. Optional if using `url`.
   * `service_validate_url` - The URL to use to validate a user. Defaults to `'/serviceValidate'`.
   * `logout_url` - The URL to use to logout a user. Defaults to `'/logout'`.
@@ -58,7 +58,7 @@ Other configuration options:
 
 Configurable options for values returned by CAS:
 
-  * `uid_key` - The user ID data attribute to use as your user's unique identifier. Defaults to `'user'` (which usually contains the user's login name)
+  * `uid_key` - The user ID data attribute to use as your user's unique identifier. Defaults to `'user'` (which usually contains the user's login name).
   * `name_key` - The data attribute containing user first and last name.  Defaults to `'name'`.
   * `email_key` - The data attribute containing user email address.  Defaults to `'email'`.
   * `first_name_key` - The data attribute containing user first name.  Defaults to `'first_name'`.
