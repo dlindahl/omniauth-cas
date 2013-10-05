@@ -25,19 +25,27 @@ module OmniAuth
       option :service_validate_url, '/serviceValidate'
       option :login_url,            '/login'
       option :logout_url,           '/logout'
+      #make all the keys configurable with some defaults set here
       option :uid_key,              'user'
+      option :name_key,             'name'
+      option :email_key,            'email'
+      option :first_name_key,       'first_name'
+      option :last_name_key,        'last_name'
+      option :location_key,         'location'
+      option :image_key,            'image'
+      option :phone_key,            'phone'
 
       # As required by https://github.com/intridea/omniauth/wiki/Auth-Hash-Schema
       AuthHashSchemaKeys = %w{name email first_name last_name location image phone}
       info do
         prune!({
-          :name       => raw_info['name'],
-          :email      => raw_info['email'],
-          :first_name => raw_info['first_name'],
-          :last_name  => raw_info['last_name'],
-          :location   => raw_info['location'],
-          :image      => raw_info['image'],
-          :phone      => raw_info['phone']
+          :name       => raw_info[ @options[:uid_key].to_s ],
+          :email      => raw_info[ @options[:email_key].to_s ],
+          :first_name => raw_info[ @options[:first_name_key].to_s ],
+          :last_name  => raw_info[ @options[:last_name_key].to_s ],
+          :location   => raw_info[ @options[:location_key].to_s ],
+          :image      => raw_info[ @options[:image_key].to_s ],
+          :phone      => raw_info[ @options[:phone_key].to_s ]
         })
       end
 
