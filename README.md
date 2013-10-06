@@ -49,13 +49,23 @@ OmniAuth CAS requires at least one of the following two configuration options:
 
 Other configuration options:
 
-  * `port` - The port to use for your configured CAS `host`. Optional if using `url`
-  * `ssl` - TRUE to connect to your CAS server over SSL. Optional if using `url`
-  * `service_validate_url` - The URL to use to validate a user. Defaults to `'/serviceValidate'`
-  * `logout_url` - The URL to use to logout a user. Defaults to `'/logout'`
-  * `uid_key` - The user data attribute to use as your user's unique identifier. Defaults to `'user'` (which usually contains the user's login name)
-  * `ca_path` - Optional when `ssl` is `true`. Sets path of a CA certification directory. See [Net::HTTP][net_http] for more details
+  * `port` - The port to use for your configured CAS `host`. Optional if using `url`.
+  * `ssl` - TRUE to connect to your CAS server over SSL. Optional if using `url`.
+  * `service_validate_url` - The URL to use to validate a user. Defaults to `'/serviceValidate'`.
+  * `logout_url` - The URL to use to logout a user. Defaults to `'/logout'`.
+  * `ca_path` - Optional when `ssl` is `true`. Sets path of a CA certification directory. See [Net::HTTP][net_http] for more details.
   * `disable_ssl_verification` - Optional when `ssl` is true. Disables verification.
+
+Configurable options for values returned by CAS:
+
+  * `uid_key` - The user ID data attribute to use as your user's unique identifier. Defaults to `'user'` (which usually contains the user's login name).
+  * `name_key` - The data attribute containing user first and last name.  Defaults to `'name'`.
+  * `email_key` - The data attribute containing user email address.  Defaults to `'email'`.
+  * `first_name_key` - The data attribute containing user first name.  Defaults to `'first_name'`.
+  * `last_name_key` - The data attribute containing user last name.  Defaults to `'last_name'`.
+  * `location_key` - The data attribute containing user location/address.  Defaults to `'location'`.
+  * `image_key` - The data attribute containing user image/picture.  Defaults to `'image'`.
+  * `phone_key` - The data attribute containing user contact phone number.  Defaults to `'phone'`.
 
 ## Migrating from OmniAuth 0.3
 

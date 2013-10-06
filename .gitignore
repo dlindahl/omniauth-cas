@@ -19,3 +19,5 @@ vendor
 
 # RSpec
 .rspec
+#vi/vim temporary file
+*.swp
