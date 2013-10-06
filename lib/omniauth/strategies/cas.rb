@@ -39,7 +39,7 @@ module OmniAuth
       AuthHashSchemaKeys = %w{name email first_name last_name location image phone}
       info do
         prune!({
-          :name       => raw_info[ @options[:uid_key].to_s ],
+          :name       => raw_info[ @options[:name_key].to_s ],
           :email      => raw_info[ @options[:email_key].to_s ],
           :first_name => raw_info[ @options[:first_name_key].to_s ],
           :last_name  => raw_info[ @options[:last_name_key].to_s ],
