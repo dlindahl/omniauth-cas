@@ -52,6 +52,7 @@ Other configuration options:
   * `port` - The port to use for your configured CAS `host`. Optional if using `url`.
   * `ssl` - TRUE to connect to your CAS server over SSL. Optional if using `url`.
   * `service_validate_url` - The URL to use to validate a user. Defaults to `'/serviceValidate'`.
+  * `callback_url` - The URL custom URL path which CAS uses to call back to the service.  Defaults to `/users/auth/cas/callback`.
   * `logout_url` - The URL to use to logout a user. Defaults to `'/logout'`.
   * `ca_path` - Optional when `ssl` is `true`. Sets path of a CA certification directory. See [Net::HTTP][net_http] for more details.
   * `disable_ssl_verification` - Optional when `ssl` is true. Disables verification.
