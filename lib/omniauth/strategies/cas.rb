@@ -1,5 +1,5 @@
 require 'omniauth/strategy'
-require 'addressable/uri'
+#require 'addressable/uri'
 
 module OmniAuth
   module Strategies
@@ -16,7 +16,7 @@ module OmniAuth
       attr_accessor :raw_info
       alias_method :user_info, :raw_info
 
-      option :name, :cas # Required property by OmniAuth::Strategy
+      #option :name, :cas # Required property by OmniAuth::Strategy
 
       option :host, nil
       option :port, nil
@@ -55,10 +55,7 @@ module OmniAuth
                })
       end
 
-      def initialize( app, *args, &block )
-        super
-        @configuration = Configuration.new( @options )
-      end
+
 
       def callback_phase
         @ticket = request.params['ticket']
