@@ -40,8 +40,7 @@ end
 
 OmniAuth CAS requires at least one of the following two configuration options:
 
-  * `url` - Defines the URL of your CAS server (i.e. `http://example.org:8080`)
-  * `host` - Defines the host of your CAS server. Optional if using `url`
+  * `host` - Defines the host of your CAS server.
   * `login_url` - Defines the URL used to prompt users for their login information. Defaults to `/login`
     If no `host` is configured, the host application's domain will be used.
 
@@ -49,8 +48,9 @@ OmniAuth CAS requires at least one of the following two configuration options:
 
 Other configuration options:
 
-  * `port` - The port to use for your configured CAS `host`. Optional if using `url`
-  * `ssl` - TRUE to connect to your CAS server over SSL. Optional if using `url`
+  * `port` - The port to use for your configured CAS `host`.
+  * `path` - The path to a suburi installed CAS server `path`. For instance `https://login.server.edu/cas`.
+  * `ssl` - TRUE to connect to your CAS server over SSL.
   * `service_validate_url` - The URL to use to validate a user. Defaults to `'/serviceValidate'`
   * `logout_url` - The URL to use to logout a user. Defaults to `'/logout'`
   * `uid_key` - The user data attribute to use as your user's unique identifier. Defaults to `'user'` (which usually contains the user's login name)
@@ -70,8 +70,9 @@ Your new settings should look similar to this:
 ```ruby
 provider :cas,
          host:      'cas.example.com',
-         login_url: '/cas/login',
-  	     service_validate_url: '/cas/serviceValidate'
+         path: '/cas',
+         login_url: '/login',
+  	     service_validate_url: '/serviceValidate'
 ```
 
 If you encounter problems wih SSL certificates you may want to set the `ca_path` parameter or activate `disable_ssl_verification` (not recommended).
