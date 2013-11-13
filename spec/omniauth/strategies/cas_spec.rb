@@ -52,114 +52,115 @@ describe OmniAuth::Strategies::CAS, type: :strategy do
     end
   end
 
-  describe 'GET /auth/cas/callback without a ticket' do
-    before { get '/auth/cas/callback' }
+  describe 'GET /auth/cas/callback' do
+    context 'without a ticket' do
+      before { get '/auth/cas/callback' }
 
-    subject { last_response }
+      subject { last_response }
 
-    it { should be_redirect }
+      it { should be_redirect }
 
-    it 'should have a failure message' do
-      subject.headers['Location'].should == '/auth/failure?message=no_ticket&strategy=cas'
-    end
-  end
-
-  describe 'GET /auth/cas/callback with an invalid ticket' do
-    before do
-      stub_request(:get, /^http:\/\/cas.example.org:8080?\/serviceValidate\?([^&]+&)?ticket=9391d/).
-         to_return( body: File.read('spec/fixtures/cas_failure.xml') )
-      get '/auth/cas/callback?ticket=9391d'
+      it 'should have a failure message' do
+        subject.headers['Location'].should == '/auth/failure?message=no_ticket&strategy=cas'
+      end
     end
 
-    subject { last_response }
-
-    it { should be_redirect }
-
-    it 'should have a failure message' do
-      subject.headers['Location'].should == '/auth/failure?message=invalid_ticket&strategy=cas'
-    end
-  end
-
-  describe 'GET /auth/cas/callback with a valid ticket' do
-    shared_examples :successful_validation do
+    context 'with an invalid ticket' do
       before do
-        stub_request(:get, /^http:\/\/cas.example.org:8080?\/serviceValidate\?([^&]+&)?ticket=593af/)
-          .with { |request| @request_uri = request.uri.to_s }
-          .to_return( body: File.read("spec/fixtures/#{xml_file_name}") )
-
-        get "/auth/cas/callback?ticket=593af&url=#{return_url}"
+        stub_request(:get, /^http:\/\/cas.example.org:8080?\/serviceValidate\?([^&]+&)?ticket=9391d/).
+           to_return( body: File.read('spec/fixtures/cas_failure.xml') )
+        get '/auth/cas/callback?ticket=9391d'
       end
 
-      it 'should strip the ticket parameter from the callback URL' do
-        @request_uri.scan('ticket=').length.should == 1
-      end
+      subject { last_response }
 
-      it 'should properly encode the service URL' do
-        WebMock.should have_requested(:get, 'http://cas.example.org:8080/serviceValidate')
-          .with(query: {
-            ticket:  '593af',
-            service: 'http://example.org/auth/cas/callback?url=' + Rack::Utils.escape('http://127.0.0.10/?some=parameter')
-          })
-      end
+      it { should be_redirect }
 
-      context "request.env['omniauth.auth']" do
-        subject { last_request.env['omniauth.auth'] }
-
-        it { should be_kind_of Hash }
-
-        its(:provider) { should == :cas }
-
-        its(:uid) { should == '54'}
-
-        context 'the info hash' do
-          subject { last_request.env['omniauth.auth']['info'] }
-
-          it { should have(6).items }
-
-          its(:name)       { should == 'Peter Segel' }
-          its(:first_name) { should == 'Peter' }
-          its(:last_name)  { should == 'Segel' }
-          its(:email)      { should == 'psegel@intridea.com' }
-          its(:location)   { should == 'Washington, D.C.' }
-          its(:image)      { should == '/images/user.jpg' }
-          its(:phone)      { should == '555-555-5555' }
-        end
-
-        context 'the extra hash' do
-          subject { last_request.env['omniauth.auth']['extra'] }
-
-          it { should have(3).items }
-
-          its(:user)       { should == 'psegel' }
-          its(:employeeid) { should == '54' }
-          its(:hire_date)  { should == '2004-07-13' }
-        end
-
-        context 'the credentials hash' do
-          subject { last_request.env['omniauth.auth']['credentials'] }
-
-          it { should have(1).items }
-
-          its(:ticket) { should == '593af' }
-        end
-      end
-
-      it 'should call through to the master app' do
-        last_response.body.should == 'true'
+      it 'should have a failure message' do
+        subject.headers['Location'].should == '/auth/failure?message=invalid_ticket&strategy=cas'
       end
     end
 
-    let(:return_url) { 'http://127.0.0.10/?some=parameter' }
+    describe 'with a valid ticket' do
+      shared_examples :successful_validation do
+        before do
+          stub_request(:get, /^http:\/\/cas.example.org:8080?\/serviceValidate\?([^&]+&)?ticket=593af/)
+            .with { |request| @request_uri = request.uri.to_s }
+            .to_return( body: File.read("spec/fixtures/#{xml_file_name}") )
 
-    context 'with JASIG flavored XML' do
-      let(:xml_file_name) { 'cas_success_jasig.xml' }
-      it_behaves_like :successful_validation
-    end
+          get "/auth/cas/callback?ticket=593af&url=#{return_url}"
+        end
 
-    context 'with classic XML' do
-      let(:xml_file_name) { 'cas_success.xml' }
-      it_behaves_like :successful_validation
+        it 'should strip the ticket parameter from the callback URL' do
+          @request_uri.scan('ticket=').length.should == 1
+        end
+
+        it 'should properly encode the service URL' do
+          WebMock.should have_requested(:get, 'http://cas.example.org:8080/serviceValidate')
+            .with(query: {
+              ticket:  '593af',
+              service: 'http://example.org/auth/cas/callback?url=' + Rack::Utils.escape('http://127.0.0.10/?some=parameter')
+            })
+        end
+
+        context "request.env['omniauth.auth']" do
+          subject { last_request.env['omniauth.auth'] }
+
+          it { should be_kind_of Hash }
+
+          its(:provider) { should == :cas }
+
+          its(:uid) { should == '54'}
+
+          context 'the info hash' do
+            subject { last_request.env['omniauth.auth']['info'] }
+
+            it { should have(6).items }
+
+            its(:name)       { should == 'Peter Segel' }
+            its(:first_name) { should == 'Peter' }
+            its(:last_name)  { should == 'Segel' }
+            its(:email)      { should == 'psegel@intridea.com' }
+            its(:location)   { should == 'Washington, D.C.' }
+            its(:image)      { should == '/images/user.jpg' }
+            its(:phone)      { should == '555-555-5555' }
+          end
+
+          context 'the extra hash' do
+            subject { last_request.env['omniauth.auth']['extra'] }
+
+            it { should have(3).items }
+
+            its(:user)       { should == 'psegel' }
+            its(:employeeid) { should == '54' }
+            its(:hire_date)  { should == '2004-07-13' }
+          end
+
+          context 'the credentials hash' do
+            subject { last_request.env['omniauth.auth']['credentials'] }
+
+            it { should have(1).items }
+
+            its(:ticket) { should == '593af' }
+          end
+        end
+
+        it 'should call through to the master app' do
+          last_response.body.should == 'true'
+        end
+      end
+
+      let(:return_url) { 'http://127.0.0.10/?some=parameter' }
+
+      context 'with JASIG flavored XML' do
+        let(:xml_file_name) { 'cas_success_jasig.xml' }
+        it_behaves_like :successful_validation
+      end
+
+      context 'with classic XML' do
+        let(:xml_file_name) { 'cas_success.xml' }
+        it_behaves_like :successful_validation
+      end
     end
   end
-
 end
