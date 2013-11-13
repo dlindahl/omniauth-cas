@@ -31,14 +31,14 @@ module OmniAuth
       AuthHashSchemaKeys = %w{name email first_name last_name location image phone}
       info do
         prune!({
-          :name       => raw_info['name'],
-          :email      => raw_info['email'],
-          :first_name => raw_info['first_name'],
-          :last_name  => raw_info['last_name'],
-          :location   => raw_info['location'],
-          :image      => raw_info['image'],
-          :phone      => raw_info['phone']
-        })
+                   :name       => raw_info['name'],
+                   :email      => raw_info['email'],
+                   :first_name => raw_info['first_name'],
+                   :last_name  => raw_info['last_name'],
+                   :location   => raw_info['location'],
+                   :image      => raw_info['image'],
+                   :phone      => raw_info['phone']
+               })
       end
 
       extra do
@@ -51,8 +51,8 @@ module OmniAuth
 
       credentials do
         prune!({
-          :ticket => @ticket
-        })
+                   :ticket => @ticket
+               })
       end
 
       def initialize( app, *args, &block )
@@ -76,12 +76,12 @@ module OmniAuth
         service_url = append_params( callback_url, return_url )
 
         [
-          302,
-          {
-            'Location' => login_url( service_url ),
-            'Content-Type' => 'text/plain'
-          },
-          ["You are being redirected to CAS for sign-in."]
+            302,
+            {
+                'Location' => login_url( service_url ),
+                'Content-Type' => 'text/plain'
+            },
+            ["You are being redirected to CAS for sign-in."]
         ]
       end
 
@@ -139,7 +139,7 @@ module OmniAuth
         end.to_s
       end
 
-    private
+      private
 
       # Deletes Hash pairs with `nil` values.
       # From https://github.com/mkdynamic/omniauth-facebook/blob/972ed5e3456bcaed7df1f55efd7c05c216c8f48e/lib/omniauth/strategies/facebook.rb#L122-127
