@@ -6,11 +6,11 @@ module OmniAuth
     class CAS
       include OmniAuth::Strategy
 
+      args [:name,:host,:port,:path,:ssl,:service_validate_url,:login_url,:logout_url,:uid_key]
       # Custom Exceptions
       class MissingCASTicket < StandardError; end
       class InvalidCASTicket < StandardError; end
 
-      autoload :Configuration, 'omniauth/strategies/cas/configuration'
       autoload :ServiceTicketValidator, 'omniauth/strategies/cas/service_ticket_validator'
 
       attr_accessor :raw_info
