@@ -163,4 +163,34 @@ describe OmniAuth::Strategies::CAS, type: :strategy do
       end
     end
   end
+
+  describe 'POST /auth/cas/callback' do
+    describe 'with a Single Sign-Out logoutRequest' do
+      let(:logoutRequest) do
+        %Q[
+          <samlp:LogoutRequest xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion\" ID="123abc-1234-ab12-cd34-1234abcd" Version="2.0" IssueInstant="#{Time.now.to_s}">
+            <saml:NameID>@NOT_USED@</saml:NameID>
+            <samlp:SessionIndex>ST-123456-123abc456def</samlp:SessionIndex>
+          </samlp:LogoutRequest>
+        ]
+      end
+
+      let(:logout_request) { double('logout_request', call:[200,{},'OK']) }
+
+      subject do
+        post 'auth/cas/callback', logoutRequest:logoutRequest
+      end
+
+      before do
+        MyCasProvider.any_instance.stub(:logout_request_service)
+          .and_return double('LogoutRequest', new:logout_request)
+
+        subject
+      end
+
+      it 'initializes a LogoutRequest' do
+        expect(logout_request).to have_received :call
+      end
+    end
+  end
 end

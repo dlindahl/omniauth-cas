@@ -12,6 +12,7 @@ module OmniAuth
 
       autoload :Configuration, 'omniauth/strategies/cas/configuration'
       autoload :ServiceTicketValidator, 'omniauth/strategies/cas/service_ticket_validator'
+      autoload :LogoutRequest, 'omniauth/strategies/cas/logout_request'
 
       attr_accessor :raw_info
       alias_method :user_info, :raw_info
@@ -61,15 +62,18 @@ module OmniAuth
       end
 
       def callback_phase
-        @ticket = request.params['ticket']
+        if on_sso_path?
+          single_sign_out_phase
+        else
+          @ticket = request.params['ticket']
+          return fail!(:no_ticket, MissingCASTicket.new('No CAS Ticket')) unless @ticket
 
-        return fail!(:no_ticket, MissingCASTicket.new('No CAS Ticket')) unless @ticket
+          self.raw_info = ServiceTicketValidator.new(self, @options, callback_url, @ticket).user_info
 
-        self.raw_info = ServiceTicketValidator.new(self, @options, callback_url, @ticket).user_info
+          return fail!(:invalid_ticket, InvalidCASTicket.new('Invalid CAS Ticket')) if raw_info.empty?
 
-        return fail!(:invalid_ticket, InvalidCASTicket.new('Invalid CAS Ticket')) if raw_info.empty?
-
-        super
+          super
+        end
       end
 
       def request_phase
@@ -83,6 +87,14 @@ module OmniAuth
           },
           ["You are being redirected to CAS for sign-in."]
         ]
+      end
+
+      def on_sso_path?
+        request.post? && request.params.has_key?( 'logoutRequest' )
+      end
+
+      def single_sign_out_phase
+        logout_request_service.new(self, request).call @options
       end
 
       # Build a CAS host with protocol and port
@@ -157,6 +169,10 @@ module OmniAuth
         else
           { :url => request.referer }
         end
+      end
+
+      def logout_request_service
+        LogoutRequest
       end
 
     end
