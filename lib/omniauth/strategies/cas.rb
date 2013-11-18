@@ -6,7 +6,7 @@ module OmniAuth
     class CAS
       include OmniAuth::Strategy
 
-      args [:name, :host, :port, :path, :ssl, :service_validate_url, :login_url, :logout_url, :uid_key]
+      args [:name, :host, :port, :path, :ssl, :service_validate_url, :login_url, :logout_url, :uid_field]
       # Custom Exceptions
       class MissingCASTicket < StandardError;
       end
@@ -27,7 +27,7 @@ module OmniAuth
       option :service_validate_url, '/serviceValidate'
       option :login_url, '/login'
       option :logout_url, '/logout'
-      option :uid_key, 'user'
+      option :uid_field, 'user'
 
       # As required by https://github.com/intridea/omniauth/wiki/Auth-Hash-Schema
       AuthHashSchemaKeys = %w{name email first_name last_name location image phone}
@@ -48,7 +48,7 @@ module OmniAuth
       end
 
       uid do
-        raw_info[@options[:uid_key].to_s]
+        raw_info[@options[:uid_field].to_s]
       end
 
       credentials do

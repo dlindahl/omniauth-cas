@@ -7,7 +7,7 @@ describe OmniAuth::Strategies::CAS, type: :strategy do
   def app
     Rack::Builder.new {
       use OmniAuth::Test::PhonySession
-      use MyCasProvider, name: :cas, host: 'cas.example.org', ssl: false, port: 8080, uid_key: :employeeid
+      use MyCasProvider, name: :cas, host: 'cas.example.org', ssl: false, port: 8080, uid_field: :employeeid
       run lambda { |env| [404, {'Content-Type' => 'text/plain'}, [env.key?('omniauth.auth').to_s]] }
     }.to_app
   end
