@@ -56,10 +56,6 @@ module OmniAuth
         })
       end
 
-      def initialize( app, *args, &block )
-        super
-        @configuration = Configuration.new( @options )
-      end
 
       def callback_phase
         if on_sso_path?
@@ -101,6 +97,10 @@ module OmniAuth
       #
       #
       def cas_url
+        extract_url if @options['url']
+
+        validate_cas_setup
+
         @cas_url ||= begin
           uri = Addressable::URI.new
           uri.host   = @options.host
@@ -109,6 +109,23 @@ module OmniAuth
           uri.path   = @options.path
 
           uri.to_s
+        end
+      end
+
+      def extract_url
+        url = Addressable::URI.parse( @options.delete('url') )
+
+        @options.merge!(
+            'host' => url.host,
+            'port' => url.port,
+            'path' => url.path,
+            'ssl'  => url.scheme == 'https'
+        )
+      end
+
+      def validate_cas_setup
+        if @options.host.nil? || @options.login_url.nil?
+          raise ArgumentError.new(":host and :login_url MUST be provided")
         end
       end
 
