@@ -27,6 +27,50 @@ describe OmniAuth::Strategies::CAS, type: :strategy do
     end
   end
 
+  describe '#cas_url' do
+    let(:params) { Hash.new }
+
+    let(:provider) { MyCasProvider.new(nil, params) }
+
+    subject { provider.cas_url }
+
+    it 'raises an ArgumentError' do
+      expect{subject}.to raise_error ArgumentError, %r{:host and :login_url MUST be provided}
+    end
+
+    context 'with an explicit :url option' do
+      let(:url) { 'https://example.org:8080/my_cas' }
+
+      let(:params) { super().merge url:url }
+
+      before { subject }
+
+      it { should eq url }
+
+      it 'parses the URL into it the appropriate strategy options' do
+        expect(provider.options).to include ssl:true
+        expect(provider.options).to include host:'example.org'
+        expect(provider.options).to include port:8080
+        expect(provider.options).to include path:'/my_cas'
+      end
+    end
+
+    context 'with explicit URL component' do
+      let(:params) { super().merge host:'example.org', port:1234, ssl:true, path:'/a/path' }
+
+      before { subject }
+
+      it { should eq 'https://example.org:1234/a/path' }
+
+      it 'parses the URL into it the appropriate strategy options' do
+        expect(provider.options).to include ssl:true
+        expect(provider.options).to include host:'example.org'
+        expect(provider.options).to include port:1234
+        expect(provider.options).to include path:'/a/path'
+      end
+    end
+  end
+
   describe 'defaults' do
     subject { MyCasProvider.default_options.to_hash }
     it { should include('ssl' => true) }

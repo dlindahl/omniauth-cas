@@ -10,7 +10,6 @@ module OmniAuth
       class MissingCASTicket < StandardError; end
       class InvalidCASTicket < StandardError; end
 
-      autoload :Configuration, 'omniauth/strategies/cas/configuration'
       autoload :ServiceTicketValidator, 'omniauth/strategies/cas/service_ticket_validator'
       autoload :LogoutRequest, 'omniauth/strategies/cas/logout_request'
 
