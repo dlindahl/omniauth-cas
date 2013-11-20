@@ -8,7 +8,9 @@ RSpec.configure do |c|
 end
 
 require 'simplecov'
-SimpleCov.start
+SimpleCov.start do
+  add_filter '.bundle'
+end
 
 require 'rack/test'
 require 'webmock/rspec'
