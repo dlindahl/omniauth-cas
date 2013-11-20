@@ -4,11 +4,13 @@
 [version]: http://badge.fury.io/rb/omniauth-cas
 [travis]: http://travis-ci.org/dlindahl/omniauth-cas
 [travis_status]: https://secure.travis-ci.org/dlindahl/omniauth-cas.png
+[releases]: https://github.com/dlindahl/omniauth-cas/releases
 
 This is a OmniAuth 1.0 compatible port of the previously available
 [OmniAuth CAS strategy][old_omniauth_cas] that was bundled with OmniAuth 0.3.
 
-[View the documentation][document_up]
+* [View the documentation][document_up]
+* [Changelog][releases]
 
 ## Installation
 
