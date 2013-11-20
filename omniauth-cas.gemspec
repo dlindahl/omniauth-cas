@@ -4,8 +4,8 @@ require File.expand_path('../lib/omniauth/cas/version', __FILE__)
 Gem::Specification.new do |gem|
   gem.authors       = ["Derek Lindahl"]
   gem.email         = ["dlindahl@customink.com"]
-  # gem.description   = %q{TODO: Write a gem description}
   gem.summary       = %q{CAS Strategy for OmniAuth}
+  gem.description   = gem.summary
   gem.homepage      = "https://github.com/dlindahl/omniauth-cas"
 
   gem.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
@@ -26,5 +26,4 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'rack-test',   '~> 0.6'
 
   gem.add_development_dependency 'awesome_print'
-
 end
