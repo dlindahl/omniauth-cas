@@ -2,9 +2,11 @@ require 'spec_helper'
 
 describe OmniAuth::Strategies::CAS::LogoutRequest do
   let(:strategy) { double('strategy') }
+
   let(:env) do
     { 'rack.input' => StringIO.new('','r') }
   end
+
   let(:request) { double('request', params:params, env:env) }
 
   let(:params) { { 'url' => url, 'logoutRequest' => logoutRequest } }
@@ -43,7 +45,10 @@ describe OmniAuth::Strategies::CAS::LogoutRequest do
     before do
       @rack_input = nil
 
-      callback.stub(:call).with { |req| @rack_input = req.env['rack.input'].read }
+      callback.stub(:call) do |req|
+        @rack_input = req.env['rack.input'].read
+        true
+      end
 
       subject
     end

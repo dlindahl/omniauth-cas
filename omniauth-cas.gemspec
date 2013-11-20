@@ -22,7 +22,7 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'rake',        '~> 0.9'
   gem.add_development_dependency 'webmock',     '~> 1.8.11'
   gem.add_development_dependency 'simplecov',   '~> 0.7.1'
-  gem.add_development_dependency 'rspec',       '~> 2.14.1'
+  gem.add_development_dependency 'rspec',       '~> 2.99.0.beta1'
   gem.add_development_dependency 'rack-test',   '~> 0.6'
 
   gem.add_development_dependency 'awesome_print'

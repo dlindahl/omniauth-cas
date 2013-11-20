@@ -3,8 +3,11 @@ require 'spec_helper'
 describe OmniAuth::Strategies::CAS, type: :strategy do
   include Rack::Test::Methods
 
-  class MyCasProvider < OmniAuth::Strategies::CAS; end # TODO: Not really needed. just an alias but it requires the :name option which might confuse users...
-  def app
+  let(:my_cas_provider) { Class.new(OmniAuth::Strategies::CAS) }
+  before do
+    stub_const 'MyCasProvider', my_cas_provider
+  end
+  let(:app) do
     Rack::Builder.new {
       use OmniAuth::Test::PhonySession
       use MyCasProvider, name: :cas, host: 'cas.example.org', ssl: false, port: 8080, uid_field: :employeeid
@@ -22,8 +25,8 @@ describe OmniAuth::Strategies::CAS, type: :strategy do
 
     it { should be_redirect }
 
-    it 'should redirect to the CAS server' do
-      subject.headers['Location'].should == 'http://cas.example.org:8080/login?' + redirect_params
+    it 'redirects to the CAS server' do
+      expect(subject.headers).to include 'Location' => "http://cas.example.org:8080/login?#{redirect_params}"
     end
   end
 
@@ -73,6 +76,7 @@ describe OmniAuth::Strategies::CAS, type: :strategy do
 
   describe 'defaults' do
     subject { MyCasProvider.default_options.to_hash }
+
     it { should include('ssl' => true) }
   end
 
@@ -104,8 +108,8 @@ describe OmniAuth::Strategies::CAS, type: :strategy do
 
       it { should be_redirect }
 
-      it 'should have a failure message' do
-        subject.headers['Location'].should == '/auth/failure?message=no_ticket&strategy=cas'
+      it 'redirects with a failure message' do
+        expect(subject.headers).to include 'Location' => '/auth/failure?message=no_ticket&strategy=cas'
       end
     end
 
@@ -120,8 +124,8 @@ describe OmniAuth::Strategies::CAS, type: :strategy do
 
       it { should be_redirect }
 
-      it 'should have a failure message' do
-        subject.headers['Location'].should == '/auth/failure?message=invalid_ticket&strategy=cas'
+      it 'redirects with a failure message' do
+        expect(subject.headers).to include 'Location' => '/auth/failure?message=invalid_ticket&strategy=cas'
       end
     end
 
@@ -135,11 +139,11 @@ describe OmniAuth::Strategies::CAS, type: :strategy do
           get "/auth/cas/callback?ticket=593af&url=#{return_url}"
         end
 
-        it 'should strip the ticket parameter from the callback URL' do
-          @request_uri.scan('ticket=').length.should == 1
+        it 'strips the ticket parameter from the callback URL' do
+          expect(@request_uri.scan('ticket=').size).to eq 1
         end
 
-        it 'should properly encode the service URL' do
+        it 'properly encodes the service URL' do
           WebMock.should have_requested(:get, 'http://cas.example.org:8080/serviceValidate')
             .with(query: {
               ticket:  '593af',
@@ -152,45 +156,49 @@ describe OmniAuth::Strategies::CAS, type: :strategy do
 
           it { should be_kind_of Hash }
 
-          its(:provider) { should == :cas }
+          it 'identifes the provider' do
+            expect(subject.provider).to eq :cas
+          end
 
-          its(:uid) { should == '54'}
+          it 'returns the UID of the user' do
+            expect(subject.uid).to eq '54'
+          end
 
           context 'the info hash' do
             subject { last_request.env['omniauth.auth']['info'] }
 
-            it { should have(6).items }
-
-            its(:name)       { should == 'Peter Segel' }
-            its(:first_name) { should == 'Peter' }
-            its(:last_name)  { should == 'Segel' }
-            its(:email)      { should == 'psegel@intridea.com' }
-            its(:location)   { should == 'Washington, D.C.' }
-            its(:image)      { should == '/images/user.jpg' }
-            its(:phone)      { should == '555-555-5555' }
+            it 'includes user info attributes' do
+              expect(subject.name).to eq 'Peter Segel'
+              expect(subject.first_name).to eq 'Peter'
+              expect(subject.last_name).to eq 'Segel'
+              expect(subject.email).to eq 'psegel@intridea.com'
+              expect(subject.location).to eq 'Washington, D.C.'
+              expect(subject.image).to eq '/images/user.jpg'
+              expect(subject.phone).to eq '555-555-5555'
+            end
           end
 
           context 'the extra hash' do
             subject { last_request.env['omniauth.auth']['extra'] }
 
-            it { should have(3).items }
-
-            its(:user)       { should == 'psegel' }
-            its(:employeeid) { should == '54' }
-            its(:hire_date)  { should == '2004-07-13' }
+            it 'includes additional user attributes' do
+              expect(subject.user).to eq 'psegel'
+              expect(subject.employeeid).to eq '54'
+              expect(subject.hire_date).to eq '2004-07-13'
+            end
           end
 
           context 'the credentials hash' do
             subject { last_request.env['omniauth.auth']['credentials'] }
 
-            it { should have(1).items }
-
-            its(:ticket) { should == '593af' }
+            it 'has a ticket value' do
+              expect(subject.ticket).to eq '593af'
+            end
           end
         end
 
-        it 'should call through to the master app' do
-          last_response.body.should == 'true'
+        it 'calls through to the master app' do
+          expect(last_response.body).to eq 'true'
         end
       end
 
@@ -198,11 +206,13 @@ describe OmniAuth::Strategies::CAS, type: :strategy do
 
       context 'with JASIG flavored XML' do
         let(:xml_file_name) { 'cas_success_jasig.xml' }
+
         it_behaves_like :successful_validation
       end
 
       context 'with classic XML' do
         let(:xml_file_name) { 'cas_success.xml' }
+
         it_behaves_like :successful_validation
       end
     end
