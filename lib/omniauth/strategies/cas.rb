@@ -116,10 +116,10 @@ module OmniAuth
         url = Addressable::URI.parse( @options.delete('url') )
 
         @options.merge!(
-            'host' => url.host,
-            'port' => url.port,
-            'path' => url.path,
-            'ssl'  => url.scheme == 'https'
+          'host' => url.host,
+          'port' => url.port,
+          'path' => url.path,
+          'ssl'  => url.scheme == 'https'
         )
       end
 
