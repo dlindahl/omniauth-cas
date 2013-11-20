@@ -28,15 +28,18 @@
         </ul>
       </header>
       <section>
-        <h1>OmniAuth CAS Strategy <a href="http://travis-ci.org/dlindahl/omniauth-cas"><img src="https://secure.travis-ci.org/dlindahl/omniauth-cas.png" alt="Build Status"></a>
+        <h1>
+<a name="omniauth-cas-strategy--" class="anchor" href="#omniauth-cas-strategy--"><span class="octicon octicon-link"></span></a>OmniAuth CAS Strategy <a href="http://badge.fury.io/rb/omniauth-cas"><img src="https://badge.fury.io/rb/omniauth-cas.png" alt="Gem Version"></a> <a href="http://travis-ci.org/dlindahl/omniauth-cas"><img src="https://secure.travis-ci.org/dlindahl/omniauth-cas.png" alt="Build Status"></a>
 </h1>
 
 <p>This is a OmniAuth 1.0 compatible port of the previously available
 <a href="https://github.com/intridea/omniauth/blob/0-3-stable/oa-enterprise/lib/omniauth/strategies/cas.rb">OmniAuth CAS strategy</a> that was bundled with OmniAuth 0.3.</p>
 
-<p><a href="http://dlindahl.github.com/omniauth-cas/">View the documentation</a></p>
-
-<h2>Installation</h2>
+<ul>
+<li><a href="http://dlindahl.github.com/omniauth-cas/">View the documentation</a></li>
+<li><a href="https://github.com/dlindahl/omniauth-cas/releases">Changelog</a></li>
+</ul><h2>
+<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h2>
 
 <p>Add this line to your application's Gemfile:</p>
 
@@ -53,61 +56,93 @@
 <pre><code>$ gem install omniauth-cas
 </code></pre>
 
-<h2>Usage</h2>
+<h2>
+<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h2>
 
 <p>Use like any other OmniAuth strategy:</p>
 
-<div class="highlight"><pre><span class="no">Rails</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">middleware</span><span class="o">.</span><span class="n">use</span> <span class="no">OmniAuth</span><span class="o">::</span><span class="no">Builder</span> <span class="k">do</span>
-  <span class="n">provider</span> <span class="ss">:cas</span><span class="p">,</span> <span class="n">host</span><span class="p">:</span> <span class="s1">'cas.yourdomain.com'</span>
+<div class="highlight highlight-ruby"><pre><span class="no">Rails</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">middleware</span><span class="o">.</span><span class="n">use</span> <span class="ss">OmniAuth</span><span class="p">:</span><span class="ss">:Builder</span> <span class="k">do</span>
+  <span class="n">provider</span> <span class="ss">:cas</span><span class="p">,</span> <span class="ss">host</span><span class="p">:</span> <span class="s1">'cas.yourdomain.com'</span>
 <span class="k">end</span>
 </pre></div>
+
+<h3>
+<a name="configuration-options" class="anchor" href="#configuration-options"><span class="octicon octicon-link"></span></a>Configuration Options</h3>
+
+<h4>
+<a name="required" class="anchor" href="#required"><span class="octicon octicon-link"></span></a>Required</h4>
 
 <p>OmniAuth CAS requires at least one of the following two configuration options:</p>
 
 <ul>
 <li>
-<code>host</code> - Defines the host of your CAS server. A default login URL of <code>/login</code> will be assumed.</li>
+<code>url</code> - Defines the URL of your CAS server (i.e. <code>http://example.org:8080</code>)</li>
 <li>
-<code>login_url</code> - Defines the URL used to prompt users for their login information.
-If no <code>host</code> is configured, the host application's domain will be used.</li>
-</ul><p>Other configuration options:</p>
+<code>host</code> - Defines the host of your CAS server (i.e. <code>example.org</code>).</li>
+</ul><h4>
+<a name="optional" class="anchor" href="#optional"><span class="octicon octicon-link"></span></a>Optional</h4>
+
+<p>Other configuration options:</p>
 
 <ul>
 <li>
-<code>port</code> - The port to use for your configured CAS <code>host</code>
-</li>
+<code>port</code> - The port to use for your configured CAS <code>host</code>. Optional if using <code>url</code>.</li>
 <li>
-<code>ssl</code> - TRUE to connect to your CAS server over SSL.</li>
+<code>ssl</code> - TRUE to connect to your CAS server over SSL. Optional if using <code>url</code>.</li>
 <li>
-<code>service_validate_url</code> - The URL to use to validate a user. Defaults to <code>'/serviceValidate'</code>
-</li>
+<code>service_validate_url</code> - The URL to use to validate a user. Defaults to <code>'/serviceValidate'</code>.</li>
 <li>
-<code>logout_url</code> - The URL to use to logout a user. Defaults to <code>'/logout'</code>
-</li>
+<code>logout_url</code> - The URL to use to logout a user. Defaults to <code>'/logout'</code>.</li>
 <li>
-<code>uid_key</code> - The user data attribute to use as your user's unique identifier. Defaults to <code>'user'</code> (which usually contains the user's login name)</li>
+<code>login_url</code> - Defines the URL used to prompt users for their login information. Defaults to <code>/login</code> If no <code>host</code> is configured, the host application's domain will be used.</li>
 <li>
-<code>ca_path</code> - Optional when <code>ssl</code> is <code>true</code>. Sets path of a CA certification directory. See <a href="http://ruby-doc.org/stdlib-1.9.3/libdoc/net/http/rdoc/Net/HTTP.html">Net::HTTP</a> for more details</li>
+<code>uid_field</code> - The user data attribute to use as your user's unique identifier. Defaults to <code>'user'</code> (which usually contains the user's login name).</li>
 <li>
-<code>disable_ssl_verification</code><code>- Optional when</code>ssl` is true. Disables verification.</li>
-</ul><h2>Migrating from OmniAuth 0.3</h2>
+<code>ca_path</code> - Optional when <code>ssl</code> is <code>true</code>. Sets path of a CA certification directory. See <a href="http://ruby-doc.org/stdlib-1.9.3/libdoc/net/http/rdoc/Net/HTTP.html">Net::HTTP</a> for more details.</li>
+<li>
+<code>disable_ssl_verification</code> - Optional when <code>ssl</code> is true. Disables verification.</li>
+<li>
+<code>on_single_sign_out</code> - Callback used when a <a href="https://wiki.jasig.org/display/CASUM/Single+Sign+Out">CAS 3.1 Single Sign Out</a>
+request is received.</li>
+</ul><p>Configurable options for values returned by CAS:</p>
+
+<ul>
+<li>
+<code>uid_key</code> - The user ID data attribute to use as your user's unique identifier. Defaults to <code>'user'</code> (which usually contains the user's login name).</li>
+<li>
+<code>name_key</code> - The data attribute containing user first and last name.  Defaults to <code>'name'</code>.</li>
+<li>
+<code>email_key</code> - The data attribute containing user email address.  Defaults to <code>'email'</code>.</li>
+<li>
+<code>first_name_key</code> - The data attribute containing user first name.  Defaults to <code>'first_name'</code>.</li>
+<li>
+<code>last_name_key</code> - The data attribute containing user last name.  Defaults to <code>'last_name'</code>.</li>
+<li>
+<code>location_key</code> - The data attribute containing user location/address.  Defaults to <code>'location'</code>.</li>
+<li>
+<code>image_key</code> - The data attribute containing user image/picture.  Defaults to <code>'image'</code>.</li>
+<li>
+<code>phone_key</code> - The data attribute containing user contact phone number.  Defaults to <code>'phone'</code>.</li>
+</ul><h2>
+<a name="migrating-from-omniauth-03" class="anchor" href="#migrating-from-omniauth-03"><span class="octicon octicon-link"></span></a>Migrating from OmniAuth 0.3</h2>
 
 <p>Given the following OmniAuth 0.3 configuration:</p>
 
-<div class="highlight"><pre><span class="n">provider</span> <span class="ss">:CAS</span><span class="p">,</span> <span class="n">cas_server</span><span class="p">:</span> <span class="s1">'https://cas.example.com/cas/'</span>
+<div class="highlight highlight-ruby"><pre><span class="n">provider</span> <span class="ss">:CAS</span><span class="p">,</span> <span class="n">cas_server</span><span class="p">:</span> <span class="s1">'https://cas.example.com/cas/'</span>
 </pre></div>
 
 <p>Your new settings should look similar to this:</p>
 
-<div class="highlight"><pre><span class="n">provider</span> <span class="ss">:cas</span><span class="p">,</span>
-         <span class="n">host</span><span class="p">:</span>      <span class="s1">'cas.example.com'</span><span class="p">,</span>
+<div class="highlight highlight-ruby"><pre><span class="n">provider</span> <span class="ss">:cas</span><span class="p">,</span>
+         <span class="ss">host</span><span class="p">:</span>      <span class="s1">'cas.example.com'</span><span class="p">,</span>
          <span class="n">login_url</span><span class="p">:</span> <span class="s1">'/cas/login'</span><span class="p">,</span>
          <span class="n">service_validate_url</span><span class="p">:</span> <span class="s1">'/cas/serviceValidate'</span>
 </pre></div>
 
-<p>If you encounter problems wih SSL certificates you may want to set the <code>ca_path</code> parameter or activate <code>disable_ssl_verification</code> (not recommended).  </p>
+<p>If you encounter problems wih SSL certificates you may want to set the <code>ca_path</code> parameter or activate <code>disable_ssl_verification</code> (not recommended).</p>
 
-<h2>Contributing</h2>
+<h2>
+<a name="contributing" class="anchor" href="#contributing"><span class="octicon octicon-link"></span></a>Contributing</h2>
 
 <ol>
 <li>Fork it</li>
@@ -115,7 +150,8 @@ If no <code>host</code> is configured, the host application's domain will be use
 <li>Commit your changes (<code>git commit -am 'Added some feature'</code>)</li>
 <li>Push to the branch (<code>git push origin my-new-feature</code>)</li>
 <li>Create new Pull Request</li>
-</ol><h2>Thanks</h2>
+</ol><h2>
+<a name="thanks" class="anchor" href="#thanks"><span class="octicon octicon-link"></span></a>Thanks</h2>
 
 <p>Special thanks go out to the following people</p>
 
