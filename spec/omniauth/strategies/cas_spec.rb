@@ -32,7 +32,6 @@ describe OmniAuth::Strategies::CAS, type: :strategy do
 
   describe '#cas_url' do
     let(:params) { Hash.new }
-
     let(:provider) { MyCasProvider.new(nil, params) }
 
     subject { provider.cas_url }
@@ -43,7 +42,6 @@ describe OmniAuth::Strategies::CAS, type: :strategy do
 
     context 'with an explicit :url option' do
       let(:url) { 'https://example.org:8080/my_cas' }
-
       let(:params) { super().merge url:url }
 
       before { subject }

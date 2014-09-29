@@ -1,1 +1,1 @@
-require "omniauth/cas"
+require 'omniauth/cas'

@@ -3,8 +3,7 @@ module OmniAuth
     class CAS
       class LogoutRequest
         def initialize(strategy, request)
-          @strategy = strategy
-          @request  = request
+          @strategy, @request = strategy, request
         end
 
         def call(options = {})
@@ -31,12 +30,10 @@ module OmniAuth
 
         def logout_request
           @logout_request ||= begin
-            saml     = Nokogiri.parse @request.params['logoutRequest']
-            name_id  = saml.xpath('//saml:NameID').text
+            saml = Nokogiri.parse(@request.params['logoutRequest'])
+            name_id = saml.xpath('//saml:NameID').text
             sess_idx = saml.xpath('//samlp:SessionIndex').text
-
-            inject_params name_id:name_id, session_index:sess_idx
-
+            inject_params(name_id:name_id, session_index:sess_idx)
             @request
           end
         end

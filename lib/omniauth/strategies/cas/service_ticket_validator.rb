@@ -6,7 +6,6 @@ module OmniAuth
   module Strategies
     class CAS
       class ServiceTicketValidator
-
         VALIDATION_REQUEST_HEADERS = { 'Accept' => '*/*' }
 
         # Build a validator from a +configuration+, a
@@ -45,22 +44,20 @@ module OmniAuth
         # returns nil if given nil
         def parse_user_info(node)
           return nil if node.nil?
-
           {}.tap do |hash|
             node.children.each do |e|
               node_name = e.name.sub(/^cas:/, '')
-              unless e.kind_of?(Nokogiri::XML::Text) ||
-                     node_name == 'proxies'
+              unless e.kind_of?(Nokogiri::XML::Text) || node_name == 'proxies'
                 # There are no child elements
                 if e.element_children.count == 0
                   hash[node_name] = e.content
                 elsif e.element_children.count
                   # JASIG style extra attributes
                   if node_name == 'attributes'
-                    hash.merge! parse_user_info e
+                    hash.merge!(parse_user_info(e))
                   else
                     hash[node_name] = [] if hash[node_name].nil?
-                    hash[node_name].push parse_user_info e
+                    hash[node_name].push(parse_user_info(e))
                   end
                 end
               end
@@ -100,7 +97,6 @@ module OmniAuth
           end
           result
         end
-
       end
     end
   end

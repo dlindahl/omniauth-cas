@@ -6,14 +6,12 @@ describe OmniAuth::Strategies::CAS::ServiceTicketValidator do
       service_validate_url: 'https://example.org/serviceValidate'
     )
   end
-
   let(:provider_options) do
     double('provider_options',
       disable_ssl_verification?: false,
       ca_path: '/etc/ssl/certsZOMG'
     )
   end
-
   let(:validator) do
     OmniAuth::Strategies::CAS::ServiceTicketValidator.new( strategy, provider_options, '/foo', nil )
   end
