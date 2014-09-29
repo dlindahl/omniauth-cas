@@ -52,6 +52,7 @@ Other configuration options:
   * `port` - The port to use for your configured CAS `host`. Optional if using `url`.
   * `ssl` - TRUE to connect to your CAS server over SSL. Optional if using `url`.
   * `service_validate_url` - The URL to use to validate a user. Defaults to `'/serviceValidate'`.
+  * `callback_url` - The URL custom URL path which CAS uses to call back to the service.  Defaults to `/users/auth/cas/callback`.
   * `logout_url` - The URL to use to logout a user. Defaults to `'/logout'`.
   * `login_url` - Defines the URL used to prompt users for their login information. Defaults to `/login` If no `host` is configured, the host application's domain will be used.
   * `uid_field` - The user data attribute to use as your user's unique identifier. Defaults to `'user'` (which usually contains the user's login name).
@@ -74,6 +75,7 @@ Configurable options for values returned by CAS:
   * `uid_key` - The user ID data attribute to use as your user's unique identifier. Defaults to `'user'` (which usually contains the user's login name).
   * `name_key` - The data attribute containing user first and last name.  Defaults to `'name'`.
   * `email_key` - The data attribute containing user email address.  Defaults to `'email'`.
+  * `nickname_key` - The data attribute containing user's nickname.  Defaults to `'user'`.
   * `first_name_key` - The data attribute containing user first name.  Defaults to `'first_name'`.
   * `last_name_key` - The data attribute containing user last name.  Defaults to `'last_name'`.
   * `location_key` - The data attribute containing user location/address.  Defaults to `'location'`.
