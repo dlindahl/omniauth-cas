@@ -53,11 +53,7 @@ module OmniAuth
         end
 
         def single_sign_out_callback
-          @options.fetch :on_single_sign_out, _fallback_callback_
-        end
-
-        def _fallback_callback_
-          Proc.new {}
+          @options[:on_single_sign_out]
         end
       end
     end

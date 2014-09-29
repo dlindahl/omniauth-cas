@@ -24,15 +24,6 @@ describe OmniAuth::Strategies::CAS::LogoutRequest do
 
   subject { described_class.new(strategy, request).call(options) }
 
-  describe 'with no configured SSO callback' do
-    let(:options) { {} }
-
-    it 'responds with OK' do
-      expect(subject[0]).to eq 200
-      expect(subject[2].body).to eq ['OK']
-    end
-  end
-
   describe 'SAML attributes' do
     let(:callback) { Proc.new{} }
 

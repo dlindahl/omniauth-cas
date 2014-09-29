@@ -25,6 +25,7 @@ module OmniAuth
       option :service_validate_url, '/serviceValidate'
       option :login_url,            '/login'
       option :logout_url,           '/logout'
+      option :on_single_sign_out,   Proc.new {}
       # Make all the keys configurable with some defaults set here
       option :uid_field,            'user'
       option :name_key,             'name'
