@@ -69,11 +69,8 @@ module OmniAuth
         else
           @ticket = request.params['ticket']
           return fail!(:no_ticket, MissingCASTicket.new('No CAS Ticket')) unless @ticket
-
-          self.raw_info = ServiceTicketValidator.new(self, @options, callback_url, @ticket).user_info
-
+          self.raw_info = validate_service_ticket(@ticket).user_info
           return fail!(:invalid_ticket, InvalidCASTicket.new('Invalid CAS Ticket')) if raw_info.empty?
-
           super
         end
       end
@@ -172,6 +169,12 @@ module OmniAuth
         Addressable::URI.parse(base).tap do |base_uri|
           base_uri.query_values = (base_uri.query_values || {}).merge( params )
         end.to_s
+      end
+
+      # Validate the Service Ticket
+      # @return [Object] the validated Service Ticket
+      def validate_service_ticket(ticket)
+        ServiceTicketValidator.new(self, options, callback_url, ticket).call
       end
 
     private

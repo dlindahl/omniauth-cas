@@ -20,6 +20,13 @@ module OmniAuth
           @uri = URI.parse(strategy.service_validate_url(return_to_url, ticket))
         end
 
+        # Executes a network request to process the CAS Service Response
+        def call
+          @response_body = get_service_response_body
+          @success_body = find_authentication_success(@response_body)
+          self
+        end
+
         # Request validation of the ticket from the CAS server's
         # serviceValidate (CAS 2.0) function.
         #
@@ -29,7 +36,7 @@ module OmniAuth
         #
         # @raise any connection errors encountered.
         def user_info
-          parse_user_info( find_authentication_success( get_service_response_body ) )
+          parse_user_info(@success_body)
         end
 
       private
