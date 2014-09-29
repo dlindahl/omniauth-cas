@@ -39,6 +39,7 @@ module OmniAuth
       option :uid_field, 'user'
       option :name_key, 'name'
       option :email_key, 'email'
+      option :nickname_key, 'user'
       option :first_name_key, 'first_name'
       option :last_name_key, 'last_name'
       option :location_key, 'location'
@@ -46,11 +47,12 @@ module OmniAuth
       option :phone_key, 'phone'
 
       # As required by https://github.com/intridea/omniauth/wiki/Auth-Hash-Schema
-      AuthHashSchemaKeys = %w{name email first_name last_name location image phone}
+      AuthHashSchemaKeys = %w{name email nickname first_name last_name location image phone}
       info do
         prune!({
           name: raw_info[options[:name_key].to_s],
           email: raw_info[options[:email_key].to_s],
+          nickname: raw_info[options[:nickname_key].to_s],
           first_name: raw_info[options[:first_name_key].to_s],
           last_name: raw_info[options[:last_name_key].to_s],
           location: raw_info[options[:location_key].to_s],
