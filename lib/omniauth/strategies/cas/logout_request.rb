@@ -11,7 +11,7 @@ module OmniAuth
           @options = options
 
           begin
-            result = single_sign_out_callback.call *logout_request
+            result = single_sign_out_callback.call(*logout_request)
           rescue StandardError => err
             return @strategy.fail! :logout_request, err
           else

@@ -63,7 +63,6 @@ module OmniAuth
         })
       end
 
-
       def callback_phase
         if on_sso_path?
           single_sign_out_phase
