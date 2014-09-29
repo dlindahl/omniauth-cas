@@ -59,6 +59,15 @@ Other configuration options:
   * `disable_ssl_verification` - Optional when `ssl` is true. Disables verification.
   * `on_single_sign_out` - Optional. Callback used when a [CAS 3.1 Single Sign Out][sso]
     request is received.
+  * `fetch_raw_info` - Optional. Callback used to return additional "raw" user
+    info from other sources.
+
+    ```ruby
+    provider :cas,
+             fetch_raw_info: lambda { |strategy, options, ticket, user_info|
+               ExternalService.get(user_info[:user]).attributes
+            }
+    ```
 
 Configurable options for values returned by CAS:
 

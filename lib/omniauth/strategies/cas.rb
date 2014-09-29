@@ -26,6 +26,15 @@ module OmniAuth
       option :login_url,            '/login'
       option :logout_url,           '/logout'
       option :on_single_sign_out,   Proc.new {}
+      # A Proc or lambda that returns a Hash of additional user info to be
+      # merged with the info returned by the CAS server.
+      #
+      # @param [Object] An instance of OmniAuth::Strategies::CAS for the current request
+      # @param [String] The user's Service Ticket value
+      # @param [Hash] The user info for the Service Ticket returned by the CAS server
+      #
+      # @return [Hash] Extra user info
+      option :fetch_raw_info,       Proc.new { Hash.new }
       # Make all the keys configurable with some defaults set here
       option :uid_field,            'user'
       option :name_key,             'name'
@@ -70,7 +79,7 @@ module OmniAuth
         else
           @ticket = request.params['ticket']
           return fail!(:no_ticket, MissingCASTicket.new('No CAS Ticket')) unless @ticket
-          self.raw_info = validate_service_ticket(@ticket).user_info
+          fetch_raw_info(@ticket)
           return fail!(:invalid_ticket, InvalidCASTicket.new('Invalid CAS Ticket')) if raw_info.empty?
           super
         end
@@ -179,6 +188,12 @@ module OmniAuth
       end
 
     private
+
+      def fetch_raw_info(ticket)
+        ticket_user_info = validate_service_ticket(ticket).user_info
+        custom_user_info = options.fetch_raw_info.call(self, options, ticket, ticket_user_info)
+        self.raw_info = ticket_user_info.merge(custom_user_info)
+      end
 
       # Deletes Hash pairs with `nil` values.
       # From https://github.com/mkdynamic/omniauth-facebook/blob/972ed5e3456bcaed7df1f55efd7c05c216c8f48e/lib/omniauth/strategies/facebook.rb#L122-127
