@@ -1,4 +1,4 @@
-require 'omniauth/strategy'
+require 'omniauth'
 require 'addressable/uri'
 
 module OmniAuth
