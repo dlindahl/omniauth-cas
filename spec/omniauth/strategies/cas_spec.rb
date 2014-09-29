@@ -169,6 +169,7 @@ describe OmniAuth::Strategies::CAS, type: :strategy do
               expect(subject.name).to eq 'Peter Segel'
               expect(subject.first_name).to eq 'Peter'
               expect(subject.last_name).to eq 'Segel'
+              expect(subject.nickname).to eq 'psegel'
               expect(subject.email).to eq 'psegel@intridea.com'
               expect(subject.location).to eq 'Washington, D.C.'
               expect(subject.image).to eq '/images/user.jpg'
