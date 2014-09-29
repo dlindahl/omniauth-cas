@@ -27,7 +27,7 @@ describe OmniAuth::Strategies::CAS::LogoutRequest do
 
     before do
       @rack_input = nil
-      callback.stub(:call) do |req|
+      allow(callback).to receive(:call) do |req|
         @rack_input = req.env['rack.input'].read
         true
       end
@@ -42,8 +42,9 @@ describe OmniAuth::Strategies::CAS::LogoutRequest do
       let(:env) { { 'rack.input' => nil } }
 
       before do
-        strategy.stub :fail!
+        allow(strategy).to receive(:fail!)
         subject
+        expect(strategy).to have_received(:fail!)
       end
 
       it 'responds with an error' do
@@ -89,7 +90,7 @@ describe OmniAuth::Strategies::CAS::LogoutRequest do
       let(:callback) { Proc.new{raise exception} }
 
       before do
-        strategy.stub :fail!
+        allow(strategy).to receive(:fail!)
         subject
       end
 

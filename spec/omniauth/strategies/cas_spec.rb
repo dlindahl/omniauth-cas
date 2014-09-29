@@ -142,7 +142,7 @@ describe OmniAuth::Strategies::CAS, type: :strategy do
         end
 
         it 'properly encodes the service URL' do
-          WebMock.should have_requested(:get, 'http://cas.example.org:8080/serviceValidate')
+          expect(WebMock).to have_requested(:get, 'http://cas.example.org:8080/serviceValidate')
             .with(query: {
               ticket:  '593af',
               service: 'http://example.org/auth/cas/callback?url=' + Rack::Utils.escape('http://127.0.0.10/?some=parameter')
@@ -234,7 +234,8 @@ describe OmniAuth::Strategies::CAS, type: :strategy do
       end
 
       before do
-        MyCasProvider.any_instance.stub(:logout_request_service)
+        allow_any_instance_of(MyCasProvider)
+          .to receive(:logout_request_service)
           .and_return double('LogoutRequest', new:logout_request)
 
         subject
