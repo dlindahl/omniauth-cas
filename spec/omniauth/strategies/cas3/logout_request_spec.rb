@@ -31,11 +31,35 @@ describe OmniAuth::Strategies::CAS3::LogoutRequest do
         @rack_input = req.env['rack.input'].read
         true
       end
-      subject
     end
 
     it 'are parsed and injected into the Rack Request parameters' do
+      subject
       expect(@rack_input).to eq 'name_id=%40NOT_USED%40&session_index=ST-123456-123abc456def'
+    end
+
+    it 'are parsed and injected even if saml defined inside NameID' do
+      request.params['logoutRequest'] =
+        %Q[
+          <samlp:LogoutRequest xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" ID="foobarbaz" Version="2.0" IssueInstant="2014-10-19T17:13:50Z">
+            <saml:NameID xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion">@NOT_USED@</saml:NameID>
+            <samlp:SessionIndex>ST-foo-bar</samlp:SessionIndex>
+          </samlp:LogoutRequest>
+      ]
+      subject
+      expect(@rack_input).to eq 'name_id=%40NOT_USED%40&session_index=ST-foo-bar'
+    end
+
+    it 'are parsed and injected even if saml and samlp namespaces not defined' do
+      request.params['logoutRequest'] =
+        %Q[
+          <samlp:LogoutRequest ID="123abc-1234-ab12-cd34-1234abcd" Version="2.0" IssueInstant="#{Time.now.to_s}">
+            <saml:NameID>@NOT_USED@</saml:NameID>
+            <samlp:SessionIndex>ST-789000-456def789ghi</samlp:SessionIndex>
+          </samlp:LogoutRequest>
+        ]
+      subject
+      expect(@rack_input).to eq 'name_id=%40NOT_USED%40&session_index=ST-789000-456def789ghi'
     end
 
     context 'that raise when parsed' do
