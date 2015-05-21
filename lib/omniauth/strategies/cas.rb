@@ -46,6 +46,9 @@ module OmniAuth
       option :image_key, 'image'
       option :phone_key, 'phone'
 
+      # Support for a lambda to set the options.
+      option :get_cas_path
+
       # As required by https://github.com/intridea/omniauth/wiki/Auth-Hash-Schema
       AuthHashSchemaKeys = %w{name email nickname first_name last_name location image phone}
       info do
@@ -113,14 +116,22 @@ module OmniAuth
       #
       def cas_url
         extract_url if options['url']
-        validate_cas_setup
-        @cas_url ||= begin
-          uri = Addressable::URI.new
-          uri.host = options.host
-          uri.scheme = options.ssl ? 'https' : 'http'
-          uri.port = options.port
-          uri.path = options.path
-          uri.to_s
+
+        # temporarily bypass this for testing.
+        # validate_cas_setup
+
+        # Make the callback if we have one.
+        if options.get_cas_path != nil
+          @cas_url = options.get_cas_path.call
+        else
+          @cas_url ||= begin
+            uri = Addressable::URI.new
+            uri.host = options.host
+            uri.scheme = options.ssl ? 'https' : 'http'
+            uri.port = options.port
+            uri.path = options.path
+            uri.to_s
+          end
         end
       end
 
