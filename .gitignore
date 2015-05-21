@@ -19,3 +19,6 @@ vendor
 
 # RSpec
 .rspec
+
+#RubyMine
+.idea
