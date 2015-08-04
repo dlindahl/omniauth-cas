@@ -48,6 +48,7 @@ module OmniAuth
 
       # Support for a lambda to set the options.
       option :get_cas_path
+      option :get_cas_service_validate_url
 
       # As required by https://github.com/intridea/omniauth/wiki/Auth-Hash-Schema
       AuthHashSchemaKeys = %w{name email nickname first_name last_name location image phone}
@@ -163,7 +164,14 @@ module OmniAuth
       def service_validate_url(service_url, ticket)
         service_url = Addressable::URI.parse(service_url)
         service_url.query_values = service_url.query_values.tap { |qs| qs.delete('ticket') }
-        cas_url + append_params(options.service_validate_url, {
+
+        # optional dynamic method to get url.
+        url = options.service_validate_url
+        if options.get_cas_service_validate_url != nil
+          url = options.get_cas_service_validate_url.call
+        end
+
+        cas_url + append_params(url, {
           service: service_url.to_s,
           ticket: ticket
         })
