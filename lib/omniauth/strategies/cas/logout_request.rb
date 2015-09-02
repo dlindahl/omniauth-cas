@@ -40,16 +40,9 @@ module OmniAuth
         end
 
         def inject_params(new_params)
-          #params is only read once from env['rack.input'] so updating this environment variable has no use
-          #cf. https://github.com/rack/rack/blob/master/lib/rack/request.rb
           new_params.each do |k,v|
             @request.update_param(k,v)
           end
-        rescue
-          # A no-op intended to ensure that the ensure block is run
-          raise
-        ensure
-          @request.env['rack.input'].rewind
         end
 
         def single_sign_out_callback
