@@ -40,14 +40,9 @@ module OmniAuth
         end
 
         def inject_params(new_params)
-          rack_input = @request.env['rack.input'].read
-          params = Rack::Utils.parse_query(rack_input, '&').merge new_params
-          @request.env['rack.input'] = StringIO.new(Rack::Utils.build_query(params))
-        rescue
-          # A no-op intended to ensure that the ensure block is run
-          raise
-        ensure
-          @request.env['rack.input'].rewind
+          new_params.each do |k,v|
+            @request.update_param(k,v)
+          end
         end
 
         def single_sign_out_callback
