@@ -30,7 +30,7 @@ module OmniAuth
 
         def logout_request
           @logout_request ||= begin
-            saml = Nokogiri.parse(@request.params['logoutRequest'])
+            saml = parse_and_ensure_namespaces(@request.params['logoutRequest'])
             ns = saml.collect_namespaces
             name_id = saml.xpath('//saml:NameID', ns).text
             sess_idx = saml.xpath('//samlp:SessionIndex', ns).text
@@ -39,10 +39,31 @@ module OmniAuth
           end
         end
 
-        def inject_params(new_params)
-          new_params.each do |k,v|
-            @request.update_param(k,v)
+        def parse_and_ensure_namespaces(logout_request_xml)
+          doc = Nokogiri.parse(logout_request_xml)
+          ns = doc.collect_namespaces
+          if ns.include?('xmlns:samlp') && ns.include?('xmlns:saml')
+            doc
+          else
+            add_namespaces(doc)
           end
+        end
+
+        def add_namespaces(logout_request_doc)
+          root = logout_request_doc.root
+          root.add_namespace('samlp', 'urn:oasis:names:tc:SAML:2.0:protocol')
+          root.add_namespace('saml', 'urn:oasis:names:tc:SAML:2.0:assertion\\')
+
+          # In order to add namespaces properly we need to re-parse the document
+          Nokogiri.parse(logout_request_doc.to_s)
+        end
+
+        def inject_params(new_params)
+          rack_input = @request.env['rack.input'].read
+          params = Rack::Utils.parse_query(rack_input).merge new_params
+          @request.env['rack.input'] = StringIO.new(Rack::Utils.build_query(params))
+        ensure
+          @request.env['rack.input'].rewind
         end
 
         def single_sign_out_callback
