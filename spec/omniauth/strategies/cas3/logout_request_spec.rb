@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe OmniAuth::Strategies::CAS::LogoutRequest do
+describe OmniAuth::Strategies::CAS3::LogoutRequest do
   let(:strategy) { double('strategy') }
   let(:env) do
     { 'rack.input' => StringIO.new('','r') }

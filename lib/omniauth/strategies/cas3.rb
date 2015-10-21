@@ -3,26 +3,26 @@ require 'addressable/uri'
 
 module OmniAuth
   module Strategies
-    class CAS
+    class CAS3
       include OmniAuth::Strategy
 
       # Custom Exceptions
       class MissingCASTicket < StandardError; end
       class InvalidCASTicket < StandardError; end
 
-      autoload :ServiceTicketValidator, 'omniauth/strategies/cas/service_ticket_validator'
-      autoload :LogoutRequest, 'omniauth/strategies/cas/logout_request'
+      autoload :ServiceTicketValidator, 'omniauth/strategies/cas3/service_ticket_validator'
+      autoload :LogoutRequest, 'omniauth/strategies/cas3/logout_request'
 
       attr_accessor :raw_info
       alias_method :user_info, :raw_info
 
-      option :name, :cas # Required property by OmniAuth::Strategy
+      option :name, :cas3 # Required property by OmniAuth::Strategy
 
       option :host, nil
       option :port, nil
       option :path, nil
       option :ssl,  true
-      option :service_validate_url, '/serviceValidate'
+      option :service_validate_url, '/p3/serviceValidate'
       option :login_url,            '/login'
       option :logout_url,           '/logout'
       option :on_single_sign_out,   Proc.new {}
@@ -219,4 +219,4 @@ module OmniAuth
   end
 end
 
-OmniAuth.config.add_camelization 'cas', 'CAS'
+OmniAuth.config.add_camelization 'cas3', 'CAS3'

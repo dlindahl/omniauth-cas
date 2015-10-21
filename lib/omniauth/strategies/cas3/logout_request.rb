@@ -1,6 +1,6 @@
 module OmniAuth
   module Strategies
-    class CAS
+    class CAS3
       class LogoutRequest
         def initialize(strategy, request)
           @strategy, @request = strategy, request

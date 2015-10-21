@@ -1,23 +1,23 @@
 require 'spec_helper'
 
-describe OmniAuth::Strategies::CAS, type: :strategy do
+describe OmniAuth::Strategies::CAS3, type: :strategy do
   include Rack::Test::Methods
 
-  let(:my_cas_provider) { Class.new(OmniAuth::Strategies::CAS) }
+  let(:my_cas_provider) { Class.new(OmniAuth::Strategies::CAS3) }
   before do
     stub_const 'MyCasProvider', my_cas_provider
   end
   let(:app) do
     Rack::Builder.new {
       use OmniAuth::Test::PhonySession
-      use MyCasProvider, name: :cas, host: 'cas.example.org', ssl: false, port: 8080, uid_field: :employeeid
+      use MyCasProvider, name: :cas3, host: 'cas.example.org', ssl: false, port: 8080, uid_field: :employeeid
       run lambda { |env| [404, {'Content-Type' => 'text/plain'}, [env.key?('omniauth.auth').to_s]] }
     }.to_app
   end
 
   # TODO: Verify that these are even useful tests
   shared_examples_for 'a CAS redirect response' do
-    let(:redirect_params) { 'service=' + Rack::Utils.escape("http://example.org/auth/cas/callback?url=#{Rack::Utils.escape(return_url)}") }
+    let(:redirect_params) { 'service=' + Rack::Utils.escape("http://example.org/auth/cas3/callback?url=#{Rack::Utils.escape(return_url)}") }
 
     before { get url, nil, request_env }
 
@@ -78,11 +78,11 @@ describe OmniAuth::Strategies::CAS, type: :strategy do
     it { should include('ssl' => true) }
   end
 
-  describe 'GET /auth/cas' do
+  describe 'GET /auth/cas3' do
     let(:return_url) { 'http://myapp.com/admin/foo' }
 
     context 'with a referer' do
-      let(:url) { '/auth/cas' }
+      let(:url) { '/auth/cas3' }
 
       let(:request_env) { { 'HTTP_REFERER' => return_url } }
 
@@ -90,7 +90,7 @@ describe OmniAuth::Strategies::CAS, type: :strategy do
     end
 
     context 'with an explicit return URL' do
-      let(:url) { "/auth/cas?url=#{return_url}" }
+      let(:url) { "/auth/cas3?url=#{return_url}" }
 
       let(:request_env) { {} }
 
@@ -98,24 +98,24 @@ describe OmniAuth::Strategies::CAS, type: :strategy do
     end
   end
 
-  describe 'GET /auth/cas/callback' do
+  describe 'GET /auth/cas3/callback' do
     context 'without a ticket' do
-      before { get '/auth/cas/callback' }
+      before { get '/auth/cas3/callback' }
 
       subject { last_response }
 
       it { should be_redirect }
 
       it 'redirects with a failure message' do
-        expect(subject.headers).to include 'Location' => '/auth/failure?message=no_ticket&strategy=cas'
+        expect(subject.headers).to include 'Location' => '/auth/failure?message=no_ticket&strategy=cas3'
       end
     end
 
     context 'with an invalid ticket' do
       before do
-        stub_request(:get, /^http:\/\/cas.example.org:8080?\/serviceValidate\?([^&]+&)?ticket=9391d/).
+        stub_request(:get, /^http:\/\/cas.example.org:8080?\/p3\/serviceValidate\?([^&]+&)?ticket=9391d/).
            to_return( body: File.read('spec/fixtures/cas_failure.xml') )
-        get '/auth/cas/callback?ticket=9391d'
+        get '/auth/cas3/callback?ticket=9391d'
       end
 
       subject { last_response }
@@ -123,18 +123,18 @@ describe OmniAuth::Strategies::CAS, type: :strategy do
       it { should be_redirect }
 
       it 'redirects with a failure message' do
-        expect(subject.headers).to include 'Location' => '/auth/failure?message=invalid_ticket&strategy=cas'
+        expect(subject.headers).to include 'Location' => '/auth/failure?message=invalid_ticket&strategy=cas3'
       end
     end
 
     describe 'with a valid ticket' do
       shared_examples :successful_validation do
         before do
-          stub_request(:get, /^http:\/\/cas.example.org:8080?\/serviceValidate\?([^&]+&)?ticket=593af/)
+          stub_request(:get, /^http:\/\/cas.example.org:8080?\/p3\/serviceValidate\?([^&]+&)?ticket=593af/)
             .with { |request| @request_uri = request.uri.to_s }
             .to_return( body: File.read("spec/fixtures/#{xml_file_name}") )
 
-          get "/auth/cas/callback?ticket=593af&url=#{return_url}"
+          get "/auth/cas3/callback?ticket=593af&url=#{return_url}"
         end
 
         it 'strips the ticket parameter from the callback URL' do
@@ -142,10 +142,10 @@ describe OmniAuth::Strategies::CAS, type: :strategy do
         end
 
         it 'properly encodes the service URL' do
-          expect(WebMock).to have_requested(:get, 'http://cas.example.org:8080/serviceValidate')
+          expect(WebMock).to have_requested(:get, 'http://cas.example.org:8080/p3/serviceValidate')
             .with(query: {
               ticket:  '593af',
-              service: 'http://example.org/auth/cas/callback?url=' + Rack::Utils.escape('http://127.0.0.10/?some=parameter')
+              service: 'http://example.org/auth/cas3/callback?url=' + Rack::Utils.escape('http://127.0.0.10/?some=parameter')
             })
         end
 
@@ -155,7 +155,7 @@ describe OmniAuth::Strategies::CAS, type: :strategy do
           it { should be_kind_of Hash }
 
           it 'identifes the provider' do
-            expect(subject.provider).to eq :cas
+            expect(subject.provider).to eq :cas3
           end
 
           it 'returns the UID of the user' do
@@ -217,7 +217,7 @@ describe OmniAuth::Strategies::CAS, type: :strategy do
     end
   end
 
-  describe 'POST /auth/cas/callback' do
+  describe 'POST /auth/cas3/callback' do
     describe 'with a Single Sign-Out logoutRequest' do
       let(:logoutRequest) do
         %Q[
@@ -231,7 +231,7 @@ describe OmniAuth::Strategies::CAS, type: :strategy do
       let(:logout_request) { double('logout_request', call:[200,{},'OK']) }
 
       subject do
-        post 'auth/cas/callback', logoutRequest:logoutRequest
+        post 'auth/cas3/callback', logoutRequest:logoutRequest
       end
 
       before do

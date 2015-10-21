@@ -4,7 +4,7 @@ require 'nokogiri'
 
 module OmniAuth
   module Strategies
-    class CAS
+    class CAS3
       class ServiceTicketValidator
         VALIDATION_REQUEST_HEADERS = { 'Accept' => '*/*' }
 

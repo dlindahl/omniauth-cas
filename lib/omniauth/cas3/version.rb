@@ -1,5 +1,5 @@
 module Omniauth
-  module Cas
+  module Cas3
     VERSION = '1.1.0'
   end
 end

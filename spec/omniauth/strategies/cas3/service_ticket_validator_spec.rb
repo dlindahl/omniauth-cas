@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe OmniAuth::Strategies::CAS::ServiceTicketValidator do
+describe OmniAuth::Strategies::CAS3::ServiceTicketValidator do
   let(:strategy) do
     double('strategy',
       service_validate_url: 'https://example.org/serviceValidate'
@@ -13,7 +13,7 @@ describe OmniAuth::Strategies::CAS::ServiceTicketValidator do
     )
   end
   let(:validator) do
-    OmniAuth::Strategies::CAS::ServiceTicketValidator.new( strategy, provider_options, '/foo', nil )
+    OmniAuth::Strategies::CAS3::ServiceTicketValidator.new( strategy, provider_options, '/foo', nil )
   end
 
   describe '#call' do

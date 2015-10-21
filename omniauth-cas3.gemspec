@@ -1,21 +1,21 @@
 # -*- encoding: utf-8 -*-
-require File.expand_path('../lib/omniauth/cas/version', __FILE__)
+require File.expand_path('../lib/omniauth/cas3/version', __FILE__)
 
 Gem::Specification.new do |gem|
-  gem.authors       = ["Derek Lindahl"]
-  gem.email         = ["dlindahl@customink.com"]
-  gem.summary       = %q{CAS Strategy for OmniAuth}
+  gem.authors       = ["Derek Lindahl, tduehr"]
+  gem.email         = ["td@matasano.com"]
+  gem.summary       = %q{CAS 3.0 Strategy for OmniAuth}
   gem.description   = gem.summary
-  gem.homepage      = "https://github.com/dlindahl/omniauth-cas"
+  gem.homepage      = "https://github.com/tduehr/omniauth-cas3"
 
   gem.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   gem.files         = `git ls-files`.split("\n")
   gem.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
-  gem.name          = "omniauth-cas"
+  gem.name          = "omniauth-cas3"
   gem.require_paths = ["lib"]
-  gem.version       = Omniauth::Cas::VERSION
+  gem.version       = Omniauth::Cas3::VERSION
 
-  gem.add_dependency 'omniauth',                '~> 1.2.0'
+  gem.add_dependency 'omniauth',                '~> 1.2'
   gem.add_dependency 'nokogiri',                '~> 1.5'
   gem.add_dependency 'addressable',             '~> 2.3'
 
