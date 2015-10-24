@@ -59,11 +59,9 @@ module OmniAuth
         end
 
         def inject_params(new_params)
-          rack_input = @request.env['rack.input'].read
-          params = Rack::Utils.parse_query(rack_input).merge new_params
-          @request.env['rack.input'] = StringIO.new(Rack::Utils.build_query(params))
-        ensure
-          @request.env['rack.input'].rewind
+          new_params.each do |key, val|
+            @request.update_param(key, val)
+          end
         end
 
         def single_sign_out_callback
