@@ -1,6 +1,7 @@
 require 'net/http'
 require 'net/https'
-require 'nokogiri'
+require 'rexml/document'
+require 'rexml/xpath'
 
 module OmniAuth
   module Strategies
@@ -31,11 +32,11 @@ module OmniAuth
         #
         # Swallows all XML parsing errors (and returns +nil+ in those cases).
         #
-        # @return [Hash, nil] a user information hash if the response is valid; +nil+ otherwise.
+        # @return [Hash] a user information hash if the response is valid; Empty hash otherwise.
         #
         # @raise any connection errors encountered.
         def user_info
-          parse_user_info(@success_body)
+          parse_user_info(@success_body) || {}
         end
 
       private
@@ -45,13 +46,13 @@ module OmniAuth
         def parse_user_info(node)
           return nil if node.nil?
           {}.tap do |hash|
-            node.children.each do |e|
+            node.elements.each do |e|
               node_name = e.name.sub(/^cas:/, '')
-              unless e.kind_of?(Nokogiri::XML::Text) || node_name == 'proxies'
+              unless e.kind_of?(REXML::Text) || node_name == 'proxies'
                 # There are no child elements
-                if e.element_children.count == 0
-                  hash[node_name] = e.content
-                elsif e.element_children.count
+                if e.elements.size == 0
+                  hash[node_name] = e.text
+                elsif e.elements.size
                   # JASIG style extra attributes
                   if node_name == 'attributes'
                     hash.merge!(parse_user_info(e))
@@ -70,16 +71,8 @@ module OmniAuth
         # if the passed body is nil or if there is no such node.
         def find_authentication_success(body)
           return nil if body.nil? || body == ''
-          begin
-            doc = Nokogiri::XML(body)
-            begin
-              doc.xpath('/cas:serviceResponse/cas:authenticationSuccess')
-            rescue Nokogiri::XML::XPath::SyntaxError
-              doc.xpath('/serviceResponse/authenticationSuccess')
-            end
-          rescue Nokogiri::XML::XPath::SyntaxError
-            nil
-          end
+          doc = REXML::Document.new(body)
+          REXML::XPath.first(doc, '/cas:serviceResponse/cas:authenticationSuccess')
         end
 
         # retrieves the `<cas:serviceResponse>` XML from the CAS server

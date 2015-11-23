@@ -1,3 +1,6 @@
+require 'rexml/document'
+require 'rexml/xpath'
+
 module OmniAuth
   module Strategies
     class CAS
@@ -30,9 +33,9 @@ module OmniAuth
 
         def logout_request
           @logout_request ||= begin
-            saml = Nokogiri.parse(@request.params['logoutRequest'])
-            name_id = saml.xpath('//saml:NameID').text
-            sess_idx = saml.xpath('//samlp:SessionIndex').text
+            saml = REXML::Document.new(@request.params['logoutRequest'])
+            name_id = REXML::XPath.first(saml, '//saml:NameID').text
+            sess_idx = REXML::XPath.first(saml, '//samlp:SessionIndex').text
             inject_params(name_id:name_id, session_index:sess_idx)
             @request
           end
