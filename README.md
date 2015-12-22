@@ -1,5 +1,8 @@
 # OmniAuth CAS Strategy [![Gem Version][version_badge]][version] [![Build Status][travis_status]][travis]
 
+> `omniauth-cas` is no longer maintained!
+> If you'd like to take over please open an issue!
+
 [version_badge]: https://badge.fury.io/rb/omniauth-cas.png
 [version]: http://badge.fury.io/rb/omniauth-cas
 [travis]: http://travis-ci.org/dlindahl/omniauth-cas
