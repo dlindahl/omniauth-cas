@@ -7,7 +7,7 @@
 [releases]: https://github.com/tduehr/omniauth-cas3/releases
 
 This is a OmniAuth 1.0 compatible port of the previously available
-[OmniAuth CAS strategy][old_omniauth_cas] that was bundled with OmniAuth 0.3. This strategy haas also been updated for CAS protocol version 3.0 and patched to deal with namespace issues.
+[OmniAuth CAS strategy][old_omniauth_cas] that was bundled with OmniAuth 0.3. This strategy has also been updated for CAS protocol version 3.0 and patched to deal with namespace issues.
 
 * [View the documentation][document_up]
 * [Changelog][releases]
