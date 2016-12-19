@@ -11,6 +11,7 @@ module OmniAuth
       class InvalidCASTicket < StandardError; end
 
       autoload :ServiceTicketValidator, 'omniauth/strategies/cas/service_ticket_validator'
+      autoload :SamlTicketValidator, 'omniauth/strategies/cas/saml_ticket_validator'
       autoload :LogoutRequest, 'omniauth/strategies/cas/logout_request'
 
       attr_accessor :raw_info
@@ -18,11 +19,15 @@ module OmniAuth
 
       option :name, :cas # Required property by OmniAuth::Strategy
 
-      option :host, nil
-      option :port, nil
-      option :path, nil
-      option :ssl,  true
+      option :host,                 nil
+      option :port,                 nil
+      option :path,                 nil
+      option :ssl,                  true
+      option :ssl_version,          nil
       option :service_validate_url, '/serviceValidate'
+      option :saml,                 false
+      option :saml_validate_url,    '/samlValidate'
+      option :saml_time_url,        '/'
       option :login_url,            '/login'
       option :logout_url,           '/logout'
       option :on_single_sign_out,   Proc.new {}
@@ -158,6 +163,26 @@ module OmniAuth
         })
       end
 
+      # Build a saml-validation URL from +service+ and +ticket+.
+      # If +service+ has a ticket param, first remove it. URL-encode
+      # +service+ and add it and the +ticket+ as paraemters to the
+      # CAS serviceValidate URL.
+      #
+      # @param [String] service the service (a.k.a. return-to) URL
+      #
+      # @return [String] a URL like `http://cas.mycompany.com/serviceValidate?service=...&ticket=...`
+      def saml_validate_url(service_url)
+        service_url = Addressable::URI.parse(service_url)
+        service_url.query_values = service_url.query_values.tap { |qs| qs.delete('ticket') }
+        cas_url + append_params(options.saml_validate_url, {
+          :TARGET => service_url.to_s
+        })
+      end
+
+      def saml_time_url
+        cas_url + options.saml_time_url
+      end
+
       # Build a CAS login URL from +service+.
       #
       # @param [String] service the service (a.k.a. return-to) URL
@@ -183,7 +208,11 @@ module OmniAuth
       # Validate the Service Ticket
       # @return [Object] the validated Service Ticket
       def validate_service_ticket(ticket)
-        ServiceTicketValidator.new(self, options, callback_url, ticket).call
+        if options.saml
+          SamlTicketValidator.new(self, options, callback_url, ticket).call
+        else
+          ServiceTicketValidator.new(self, options, callback_url, ticket).call
+        end
       end
 
     private

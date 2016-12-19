@@ -12,6 +12,12 @@ This is a OmniAuth 1.0 compatible port of the previously available
 * [View the documentation][document_up]
 * [Changelog][releases]
 
+## Fork details
+
+This fork adds:
+- SAML ticket validation support (from https://github.com/loocla/omniauth-cas/tree/saml)
+- ssl_version option (defaults to SSLv3)
+
 ## Installation
 
 Add this line to your application's Gemfile:
