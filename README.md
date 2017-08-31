@@ -99,7 +99,7 @@ provider :cas3,
   	     service_validate_url: '/cas/p3/serviceValidate'
 ```
 
-If you encounter problems wih SSL certificates you may want to set the `ca_path` parameter or activate `disable_ssl_verification` (not recommended).
+If you encounter problems with SSL certificates you may want to set the `ca_path` parameter or activate `disable_ssl_verification` (not recommended).
 
 ## Contributing
 
