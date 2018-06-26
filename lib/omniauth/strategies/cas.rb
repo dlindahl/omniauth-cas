@@ -118,8 +118,7 @@ module OmniAuth
       def cas_url
         extract_url if options['url']
 
-        # temporarily bypass this for testing.
-        # validate_cas_setup
+        validate_cas_setup
 
         # Make the callback if we have one.
         if options.get_cas_path != nil

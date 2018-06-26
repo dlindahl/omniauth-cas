@@ -7,6 +7,7 @@ module OmniAuth
     class CAS
       class ServiceTicketValidator
         VALIDATION_REQUEST_HEADERS = { 'Accept' => '*/*' }
+        CUSTOM_SSL_CERTS_GLOB = 'etc/ssl/certs/*'.freeze
 
         # Build a validator from a +configuration+, a
         # +return_to+ URL, and a +ticket+.
@@ -88,8 +89,11 @@ module OmniAuth
           http = Net::HTTP.new(@uri.host, @uri.port)
           http.use_ssl = @uri.port == 443 || @uri.instance_of?(URI::HTTPS)
           if http.use_ssl?
-            http.verify_mode = OpenSSL::SSL::VERIFY_NONE if @options.disable_ssl_verification?
-            http.ca_path = @options.ca_path
+            http.cert_store = OpenSSL::X509::Store.new
+            http.cert_store.set_default_paths
+            Dir[CUSTOM_SSL_CERTS_GLOB].each do |path|
+              http.cert_store.add_file path
+            end
           end
           http.start do |c|
             response = c.get "#{@uri.path}?#{@uri.query}", VALIDATION_REQUEST_HEADERS.dup
