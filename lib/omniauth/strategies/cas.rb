@@ -117,9 +117,7 @@ module OmniAuth
       #
       def cas_url
         extract_url if options['url']
-
         validate_cas_setup
-
         # Make the callback if we have one.
         if options.get_cas_path != nil
           @cas_url = options.get_cas_path.call
@@ -146,6 +144,7 @@ module OmniAuth
       end
 
       def validate_cas_setup
+        return if options.get_cas_path.respond_to?(:call)
         if options.host.nil? || options.login_url.nil?
           raise ArgumentError.new(":host and :login_url MUST be provided")
         end
