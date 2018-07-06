@@ -40,19 +40,28 @@ describe OmniAuth::Strategies::CAS, type: :strategy do
       expect{subject}.to raise_error ArgumentError, %r{:host and :login_url MUST be provided}
     end
 
+    context 'with an explicit :get_cas_path lambda option' do
+      let(:url) { 'https://example.org:8080/my_cas' }
+      let(:params) { super().merge get_cas_path: -> { url } }
+
+      before { subject }
+
+      it { should eq url }
+    end
+
     context 'with an explicit :url option' do
       let(:url) { 'https://example.org:8080/my_cas' }
-      let(:params) { super().merge url:url }
+      let(:params) { super().merge url: url }
 
       before { subject }
 
       it { should eq url }
 
       it 'parses the URL into it the appropriate strategy options' do
-        expect(provider.options).to include ssl:true
-        expect(provider.options).to include host:'example.org'
-        expect(provider.options).to include port:8080
-        expect(provider.options).to include path:'/my_cas'
+        expect(provider.options).to include ssl: true
+        expect(provider.options).to include host: 'example.org'
+        expect(provider.options).to include port: 8080
+        expect(provider.options).to include path: '/my_cas'
       end
     end
 

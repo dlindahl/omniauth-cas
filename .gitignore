@@ -1,3 +1,5 @@
+*.swp
+*.swo
 *.gem
 *.rbc
 .bundle
@@ -19,3 +21,6 @@ vendor
 
 # RSpec
 .rspec
+
+#RubyMine
+.idea

@@ -46,6 +46,10 @@ module OmniAuth
       option :image_key, 'image'
       option :phone_key, 'phone'
 
+      # Support for a lambda to set the options.
+      option :get_cas_path
+      option :get_cas_service_validate_url
+
       # As required by https://github.com/intridea/omniauth/wiki/Auth-Hash-Schema
       AuthHashSchemaKeys = %w{name email nickname first_name last_name location image phone}
       info do
@@ -114,13 +118,18 @@ module OmniAuth
       def cas_url
         extract_url if options['url']
         validate_cas_setup
-        @cas_url ||= begin
-          uri = Addressable::URI.new
-          uri.host = options.host
-          uri.scheme = options.ssl ? 'https' : 'http'
-          uri.port = options.port
-          uri.path = options.path
-          uri.to_s
+        # Make the callback if we have one.
+        if options.get_cas_path != nil
+          @cas_url = options.get_cas_path.call
+        else
+          @cas_url ||= begin
+            uri = Addressable::URI.new
+            uri.host = options.host
+            uri.scheme = options.ssl ? 'https' : 'http'
+            uri.port = options.port
+            uri.path = options.path
+            uri.to_s
+          end
         end
       end
 
@@ -135,6 +144,7 @@ module OmniAuth
       end
 
       def validate_cas_setup
+        return if options.get_cas_path.respond_to?(:call)
         if options.host.nil? || options.login_url.nil?
           raise ArgumentError.new(":host and :login_url MUST be provided")
         end
@@ -152,7 +162,14 @@ module OmniAuth
       def service_validate_url(service_url, ticket)
         service_url = Addressable::URI.parse(service_url)
         service_url.query_values = service_url.query_values.tap { |qs| qs.delete('ticket') }
-        cas_url + append_params(options.service_validate_url, {
+
+        # optional dynamic method to get url.
+        url = options.service_validate_url
+        if options.get_cas_service_validate_url != nil
+          url = options.get_cas_service_validate_url.call
+        end
+
+        cas_url + append_params(url, {
           service: service_url.to_s,
           ticket: ticket
         })
