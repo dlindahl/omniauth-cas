@@ -7,7 +7,7 @@ module OmniAuth
     class CAS
       class ServiceTicketValidator
         VALIDATION_REQUEST_HEADERS = { 'Accept' => '*/*' }
-        CUSTOM_SSL_CERTS_GLOB = 'etc/ssl/certs/*'.freeze
+        CUSTOM_SSL_CERTS_GLOB = (File.dirname(__FILE__) + '/../../../../etc/ssl/certs/*').freeze
 
         # Build a validator from a +configuration+, a
         # +return_to+ URL, and a +ticket+.

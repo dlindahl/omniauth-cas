@@ -28,9 +28,11 @@ describe OmniAuth::Strategies::CAS::ServiceTicketValidator do
     end
 
     describe 'https certs' do
+      let(:const) { OmniAuth::Strategies::CAS::ServiceTicketValidator::CUSTOM_SSL_CERTS_GLOB }
+
       after { subject }
 
-      specify { expect(Dir).to receive(:[]).with('etc/ssl/certs/*').and_call_original }
+      specify { expect(Dir).to receive(:[]).with(const).and_call_original }
     end
   end
 
