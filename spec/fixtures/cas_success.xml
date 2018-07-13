@@ -10,5 +10,8 @@
     <cas:image>/images/user.jpg</cas:image>
     <cas:phone>555-555-5555</cas:phone>
     <cas:hire_date>2004-07-13</cas:hire_date>
+    <cas:roles>senator</cas:roles>
+    <cas:roles>lobbyist</cas:roles>
+    <cas:roles>financier</cas:roles>
   </cas:authenticationSuccess>
 </cas:serviceResponse>
