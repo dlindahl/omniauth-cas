@@ -10,7 +10,17 @@ describe OmniAuth::Strategies::CAS, type: :strategy do
   let(:app) do
     Rack::Builder.new {
       use OmniAuth::Test::PhonySession
-      use MyCasProvider, name: :cas, host: 'cas.example.org', ssl: false, port: 8080, uid_field: :employeeid
+      use MyCasProvider,
+        name: :cas,
+        host: 'cas.example.org',
+        ssl: false,
+        port: 8080,
+        uid_field: :employeeid,
+        fetch_raw_info: Proc.new { |v, opts, ticket, info, node|
+          info.empty? ? {} : {
+            "roles" => node.xpath('//cas:roles').map(&:text),
+          }
+        }
       run lambda { |env| [404, {'Content-Type' => 'text/plain'}, [env.key?('omniauth.auth').to_s]] }
     }.to_app
   end
@@ -184,6 +194,7 @@ describe OmniAuth::Strategies::CAS, type: :strategy do
               expect(subject.user).to eq 'psegel'
               expect(subject.employeeid).to eq '54'
               expect(subject.hire_date).to eq '2004-07-13'
+              expect(subject.roles).to eq %w(senator lobbyist financier)
             end
           end
 

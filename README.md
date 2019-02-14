@@ -65,9 +65,13 @@ Other configuration options:
 
     ```ruby
     provider :cas,
-             fetch_raw_info: lambda { |strategy, options, ticket, user_info|
-               ExternalService.get(user_info[:user]).attributes
-            }
+      fetch_raw_info: Proc.new { |strategy, opts, ticket, user_info, rawxml|
+        return {} if user_info.empty? || rawxml.nil? # Auth failed
+
+        extra_info = ExternalService.get(user_info[:user]).attributes
+        extra_info.merge!({'roles' => rawxml.xpath('//cas:roles').map(&:text)})
+        extra_info
+      }
     ```
 
 Configurable options for values returned by CAS:

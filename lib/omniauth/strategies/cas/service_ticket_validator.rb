@@ -8,6 +8,8 @@ module OmniAuth
       class ServiceTicketValidator
         VALIDATION_REQUEST_HEADERS = { 'Accept' => '*/*' }
 
+        attr_reader :success_body
+
         # Build a validator from a +configuration+, a
         # +return_to+ URL, and a +ticket+.
         #
