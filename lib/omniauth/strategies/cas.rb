@@ -25,6 +25,8 @@ module OmniAuth
       option :service_validate_url, '/serviceValidate'
       option :login_url,            '/login'
       option :logout_url,           '/logout'
+      # cassvc is IU specific. Possible values are IU, MFA, GUEST, ANY
+      option :cassvc, 'IU'
       option :on_single_sign_out,   Proc.new {}
       # A Proc or lambda that returns a Hash of additional user info to be
       # merged with the info returned by the CAS server.
@@ -72,17 +74,17 @@ module OmniAuth
       end
 
       credentials do
-        prune!({ ticket: @ticket })
+        prune!({ casticket: @ticket })
       end
 
       def callback_phase
         if on_sso_path?
           single_sign_out_phase
         else
-          @ticket = request.params['ticket']
+          @ticket = request.params['casticket']
           return fail!(:no_ticket, MissingCASTicket.new('No CAS Ticket')) unless @ticket
           fetch_raw_info(@ticket)
-          return fail!(:invalid_ticket, InvalidCASTicket.new('Invalid CAS Ticket')) if raw_info.empty?
+          return fail!(:invalid_ticket, InvalidCASTicket.new('Invalid CAS Ticket')) if raw_info.nil? or raw_info.empty?
           super
         end
       end
@@ -148,13 +150,17 @@ module OmniAuth
       # @param [String] service the service (a.k.a. return-to) URL
       # @param [String] ticket the ticket to validate
       #
-      # @return [String] a URL like `http://cas.mycompany.com/serviceValidate?service=...&ticket=...`
+      # @return [String] a URL like `http://cas.mycompany.com/serviceValidate?casurl=...&casticket=...`
       def service_validate_url(service_url, ticket)
         service_url = Addressable::URI.parse(service_url)
-        service_url.query_values = service_url.query_values.tap { |qs| qs.delete('ticket') }
+        service_url.query_values = service_url.query_values.tap { |qs|
+          qs.delete('casticket')
+          qs.delete('cassvc')
+        }
         cas_url + append_params(options.service_validate_url, {
-          service: service_url.to_s,
-          ticket: ticket
+          casurl: service_url.to_s,
+          casticket: ticket,
+          cassvc: options.cassvc
         })
       end
 
@@ -164,7 +170,7 @@ module OmniAuth
       #
       # @return [String] a URL like `http://cas.mycompany.com/login?service=...`
       def login_url(service)
-        cas_url + append_params(options.login_url, { service: service })
+        cas_url + append_params(options.login_url, { casurl: service, cassvc: options.cassvc })
       end
 
       # Adds URL-escaped +parameters+ to +base+.
@@ -192,6 +198,7 @@ module OmniAuth
         validator = validate_service_ticket(ticket)
         ticket_user_info = validator.user_info
         ticket_success_body = validator.success_body
+        return unless ticket_success_body
         custom_user_info = options.fetch_raw_info.call(self,
           options, ticket, ticket_user_info, ticket_success_body)
         self.raw_info = ticket_user_info.merge(custom_user_info)

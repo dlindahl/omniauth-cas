@@ -46,6 +46,7 @@ module OmniAuth
         # returns nil if given nil
         def parse_user_info(node)
           return nil if node.nil?
+          return node if node.is_a? Hash
           {}.tap do |hash|
             node.children.each do |e|
               node_name = e.name.sub(/^cas:/, '')
@@ -72,6 +73,12 @@ module OmniAuth
         # if the passed body is nil or if there is no such node.
         def find_authentication_success(body)
           return nil if body.nil? || body == ''
+
+          if body =~ /^(yes|no)[[:space:]]+(.*?)[[:space:]]*$/m
+            return nil unless $~[1] == 'yes'
+            return { @options[:uid_field].to_s => $~[2] }
+          end
+
           begin
             doc = Nokogiri::XML(body)
             begin

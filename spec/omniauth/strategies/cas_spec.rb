@@ -16,8 +16,9 @@ describe OmniAuth::Strategies::CAS, type: :strategy do
         ssl: false,
         port: 8080,
         uid_field: :employeeid,
+        cassvc: 'ANY',
         fetch_raw_info: Proc.new { |v, opts, ticket, info, node|
-          info.empty? ? {} : {
+          info.nil? or info.empty? ? {} : {
             "roles" => node.xpath('//cas:roles').map(&:text),
           }
         }
@@ -27,7 +28,7 @@ describe OmniAuth::Strategies::CAS, type: :strategy do
 
   # TODO: Verify that these are even useful tests
   shared_examples_for 'a CAS redirect response' do
-    let(:redirect_params) { 'service=' + Rack::Utils.escape("http://example.org/auth/cas/callback?url=#{Rack::Utils.escape(return_url)}") }
+    let(:redirect_params) { 'cassvc=ANY&casurl=' + Rack::Utils.escape("http://example.org/auth/cas/callback?url=#{Rack::Utils.escape(return_url)}") }
 
     before { get url, nil, request_env }
 
@@ -123,9 +124,9 @@ describe OmniAuth::Strategies::CAS, type: :strategy do
 
     context 'with an invalid ticket' do
       before do
-        stub_request(:get, /^http:\/\/cas.example.org:8080?\/serviceValidate\?([^&]+&)?ticket=9391d/).
+        stub_request(:get, /^http:\/\/cas.example.org:8080?\/serviceValidate\?([^&]+&)?cassvc=ANY&casticket=9391d/).
            to_return( body: File.read('spec/fixtures/cas_failure.xml') )
-        get '/auth/cas/callback?ticket=9391d'
+        get '/auth/cas/callback?cassvc=ANY&casticket=9391d'
       end
 
       subject { last_response }
@@ -137,25 +138,45 @@ describe OmniAuth::Strategies::CAS, type: :strategy do
       end
     end
 
+    describe 'GET /auth/cas/callback with an invalid ticket at IU' do
+      before do
+        stub_request(:get, /^http:\/\/cas.example.org(:8080)?\/serviceValidate\?([^&]+&)?cassvc=ANY&casticket=9391d/).
+          to_return( :body => File.read('spec/fixtures/iu_cas_failure') )
+        get '/auth/cas/callback?cassvc=ANY&casticket=9391d'
+      end
+
+      subject { last_response }
+
+      it { should be_redirect }
+      it 'should have a failure message' do
+        subject.headers['Location'].should == "/auth/failure?message=invalid_ticket&strategy=cas"
+      end
+    end
+
     describe 'with a valid ticket' do
       shared_examples :successful_validation do
         before do
-          stub_request(:get, /^http:\/\/cas.example.org:8080?\/serviceValidate\?([^&]+&)?ticket=593af/)
+          stub_request(:get, /^http:\/\/cas.example.org:8080?\/serviceValidate\?([^&]+&)?cassvc=ANY&casticket=593af/)
             .with { |request| @request_uri = request.uri.to_s }
             .to_return( body: File.read("spec/fixtures/#{xml_file_name}") )
 
-          get "/auth/cas/callback?ticket=593af&url=#{return_url}"
+          get "/auth/cas/callback?cassvc=ANY&casticket=593af&url=#{return_url}"
         end
 
-        it 'strips the ticket parameter from the callback URL' do
-          expect(@request_uri.scan('ticket=').size).to eq 1
+        it 'strips the casticket parameter from the callback URL' do
+          expect(@request_uri.scan('casticket=').size).to eq 1
+        end
+
+        it 'strips the cassvc parameter from the callback URL' do
+          expect(@request_uri.scan('cassvc=').size).to eq 1
         end
 
         it 'properly encodes the service URL' do
           expect(WebMock).to have_requested(:get, 'http://cas.example.org:8080/serviceValidate')
             .with(query: {
-              ticket:  '593af',
-              service: 'http://example.org/auth/cas/callback?url=' + Rack::Utils.escape('http://127.0.0.10/?some=parameter')
+              cassvc: 'ANY',
+              casticket:  '593af',
+              casurl: 'http://example.org/auth/cas/callback?url=' + Rack::Utils.escape('http://127.0.0.10/?some=parameter')
             })
         end
 
@@ -202,7 +223,7 @@ describe OmniAuth::Strategies::CAS, type: :strategy do
             subject { last_request.env['omniauth.auth']['credentials'] }
 
             it 'has a ticket value' do
-              expect(subject.ticket).to eq '593af'
+              expect(subject.casticket).to eq '593af'
             end
           end
         end
@@ -224,6 +245,63 @@ describe OmniAuth::Strategies::CAS, type: :strategy do
         let(:xml_file_name) { 'cas_success.xml' }
 
         it_behaves_like :successful_validation
+      end
+    end
+
+    describe 'GET /auth/cas/callback with a valid IU CAS 1.0 ticket' do
+      class MyCasProvider < OmniAuth::Strategies::CAS; end # TODO: Not really needed. just an alias but it requires the :name option which might confuse users...
+      def app
+        Rack::Builder.new {
+          use OmniAuth::Test::PhonySession
+          use MyCasProvider,
+              name: :cas,
+              host: 'cas.example.org',
+              ssl: false,
+              port: 8080,
+              cassvc: 'ANY'
+          run lambda { |env| [404, {'Content-Type' => 'text/plain'}, [env.key?('omniauth.auth').to_s]] }
+        }.to_app
+      end
+
+      let(:return_url) { "http://127.0.0.10/?some=parameter" }
+      before do
+        stub_request(:get, /^http:\/\/cas.example.org(:8080)?\/serviceValidate\?([^&]+&)?cassvc=ANY&casticket=593af/).
+          with { |request| @request_uri = request.uri.to_s }.
+          to_return( :body => File.read('spec/fixtures/iu_cas_success') )
+
+        get "/auth/cas/callback?cassvc=ANY&casticket=593af&url=#{return_url}"
+      end
+
+      context "request.env['omniauth.auth']" do
+        subject { last_request.env['omniauth.auth'] }
+        it { should be_kind_of Hash }
+        it 'identifies the provider' do
+          expect(subject.provider).to eq :cas
+        end
+        it 'returns the UID of the user' do
+          expect(subject.uid).to eq 'psegel'
+        end
+        context "the info hash" do
+          subject { last_request.env['omniauth.auth']['info'] }
+          it "contains only the user" do
+            expect(subject.size).to eq 1
+            expect(subject.nickname).to eq 'psegel'
+          end
+        end
+        context "the extra hash" do
+          subject { last_request.env['omniauth.auth']['extra'] }
+          it "contains only the user" do
+            expect(subject.size).to eq 1
+            expect(subject.user).to eq 'psegel'
+          end
+        end
+        context "the credentials hash" do
+          subject { last_request.env['omniauth.auth']['credentials'] }
+          it 'contains only the casticket' do
+            expect(subject.size).to eq 1
+            expect(subject.casticket).to eq '593af'
+          end
+        end
       end
     end
   end
