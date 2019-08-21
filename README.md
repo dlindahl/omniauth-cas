@@ -1,13 +1,18 @@
-# OmniAuth CAS Strategy [![Gem Version][version_badge]][version] [![Build Status][travis_status]][travis]
+# OmniAuth IU CAS Strategy [![Gem Version][version_badge]][version] [![Build Status][travis_status]][travis]
 
-[version_badge]: https://badge.fury.io/rb/omniauth-cas.png
-[version]: http://badge.fury.io/rb/omniauth-cas
-[travis]: http://travis-ci.org/dlindahl/omniauth-cas
-[travis_status]: https://secure.travis-ci.org/dlindahl/omniauth-cas.png
-[releases]: https://github.com/dlindahl/omniauth-cas/releases
+[version_badge]: https://badge.fury.io/rb/omniauth-iu-cas.png
+[version]: http://badge.fury.io/rb/omniauth-iu-cas
+[travis]: https://travis-ci.org/IUBLibTech/omniauth-cas
+[travis_status]: https://secure.travis-ci.org/IUBLibTech/omniauth-cas.png
+[releases]: https://github.com/IUBLibTech/omniauth-cas/releases
+[upstream]: https://github.com/dlindahl/omniauth-cas
+[iu_login]: https://cas.iu.edu
+[kb_app_code]: https://kb.iu.edu/d/alqm
 
 This is a OmniAuth 1.0 compatible port of the previously available
 [OmniAuth CAS strategy][old_omniauth_cas] that was bundled with OmniAuth 0.3.
+
+It is forked from the original [omniauth-cas][upstream] and has been customized for use with [IU Login][iu_login].
 
 * [View the documentation][document_up]
 * [Changelog][releases]
@@ -60,6 +65,7 @@ Other configuration options:
   * `disable_ssl_verification` - Optional when `ssl` is true. Disables verification.
   * `on_single_sign_out` - Optional. Callback used when a [CAS 3.1 Single Sign Out][sso]
     request is received.
+  * `cassvc` - Optional custom IU option. Set to pass an [application code][kb_app_code] to CAS.
   * `fetch_raw_info` - Optional. Callback used to return additional "raw" user
     info from other sources.
 
