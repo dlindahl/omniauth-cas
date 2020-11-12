@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this
 project adheres to [Semantic Versioning](http://semver.org/)
 
+## master - unreleased
+
+* Add support for multivalued attributes ([#59](https://github.com/dlindahl/omniauth-cas/pull/59))
+
 ## 1.1.1 - 2016-09-19
 
 ### Changed
