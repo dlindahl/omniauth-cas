@@ -58,12 +58,14 @@ describe OmniAuth::Strategies::CAS::LogoutRequest do
       { on_single_sign_out: callback }
     end
 
+    let(:response_body) { subject[2].respond_to?(:body) ? subject[2].body : subject[2] }
+
     context 'that returns TRUE' do
       let(:callback) { Proc.new{true} }
 
       it 'responds with OK' do
         expect(subject[0]).to eq 200
-        expect(subject[2].body).to eq ['OK']
+        expect(response_body).to eq ['OK']
       end
     end
 
@@ -72,7 +74,7 @@ describe OmniAuth::Strategies::CAS::LogoutRequest do
 
       it 'responds with OK' do
         expect(subject[0]).to eq 200
-        expect(subject[2].body).to eq ['OK']
+        expect(response_body).to eq ['OK']
       end
     end
 
@@ -81,7 +83,7 @@ describe OmniAuth::Strategies::CAS::LogoutRequest do
 
       it 'responds with OK' do
         expect(subject[0]).to eq 400
-        expect(subject[2].body).to eq ['Bad Request']
+        expect(response_body).to eq ['Bad Request']
       end
     end
 
