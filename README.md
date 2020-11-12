@@ -1,9 +1,9 @@
 # OmniAuth CAS Strategy [![Gem Version][version_badge]][version] [![Build Status][travis_status]][travis]
 
-[version_badge]: https://badge.fury.io/rb/omniauth-cas.png
-[version]: http://badge.fury.io/rb/omniauth-cas
-[travis]: http://travis-ci.org/dlindahl/omniauth-cas
-[travis_status]: https://secure.travis-ci.org/dlindahl/omniauth-cas.png
+[version_badge]: https://badge.fury.io/rb/omniauth-cas.svg
+[version]: https://badge.fury.io/rb/omniauth-cas
+[travis]: https://travis-ci.org/dlindahl/omniauth-cas
+[travis_status]: https://secure.travis-ci.org/dlindahl/omniauth-cas.svg
 [releases]: https://github.com/dlindahl/omniauth-cas/releases
 
 This is a OmniAuth 1.0 compatible port of the previously available
@@ -123,6 +123,6 @@ Special thanks go out to the following people
   * @rbq for README updates and OmniAuth 0.3 migration guide
 
 [old_omniauth_cas]: https://github.com/intridea/omniauth/blob/0-3-stable/oa-enterprise/lib/omniauth/strategies/cas.rb
-[document_up]: http://dlindahl.github.com/omniauth-cas/
-[net_http]: http://ruby-doc.org/stdlib-1.9.3/libdoc/net/http/rdoc/Net/HTTP.html
+[document_up]: https://dlindahl.github.io/omniauth-cas/
+[net_http]: https://ruby-doc.org/stdlib-1.9.3/libdoc/net/http/rdoc/Net/HTTP.html
 [sso]: https://wiki.jasig.org/display/CASUM/Single+Sign+Out
