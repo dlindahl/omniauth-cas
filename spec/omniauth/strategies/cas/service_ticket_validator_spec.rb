@@ -9,6 +9,7 @@ describe OmniAuth::Strategies::CAS::ServiceTicketValidator do
   let(:provider_options) do
     double('provider_options',
       disable_ssl_verification?: false,
+      merge_multivalued_attributes: false,
       ca_path: '/etc/ssl/certsZOMG'
     )
   end
@@ -48,8 +49,26 @@ describe OmniAuth::Strategies::CAS::ServiceTicketValidator do
 
     subject { validator.user_info }
 
-    it 'parses user info from the response' do
-      expect(subject).to include 'user' => 'psegel'
+    context 'with default settings' do
+      it 'parses user info from the response' do
+        expect(subject).to include 'user' => 'psegel'
+        expect(subject).to include 'roles' => 'financier'
+      end
+    end
+
+    context 'when merging multivalued attributes' do
+      let(:provider_options) do
+        double('provider_options',
+          disable_ssl_verification?: false,
+          merge_multivalued_attributes: true,
+          ca_path: '/etc/ssl/certsZOMG'
+        )
+      end
+
+      it 'parses multivalued user info from the response' do
+        expect(subject).to include 'user' => 'psegel'
+        expect(subject).to include 'roles' => %w[senator lobbyist financier]
+      end
     end
   end
 end

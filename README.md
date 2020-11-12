@@ -58,6 +58,7 @@ Other configuration options:
   * `uid_field` - The user data attribute to use as your user's unique identifier. Defaults to `'user'` (which usually contains the user's login name).
   * `ca_path` - Optional when `ssl` is `true`. Sets path of a CA certification directory. See [Net::HTTP][net_http] for more details.
   * `disable_ssl_verification` - Optional when `ssl` is true. Disables verification.
+  * `merge_multivalued_attributes` - When set to `true` returns attributes with multiple values as arrays. Defaults to `false` and returns the last value as a string.
   * `on_single_sign_out` - Optional. Callback used when a [CAS 3.1 Single Sign Out][sso]
     request is received.
   * `fetch_raw_info` - Optional. Callback used to return additional "raw" user

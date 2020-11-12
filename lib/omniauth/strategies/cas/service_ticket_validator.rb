@@ -42,6 +42,16 @@ module OmniAuth
 
       private
 
+        # Merges attributes with multiple values into an array if support is
+        # enabled (disabled by default)
+        def attribute_value(user_info, attribute, value)
+          if @options.merge_multivalued_attributes && user_info.key?(attribute)
+            Array(user_info[attribute]).push(value)
+          else
+            value
+          end
+        end
+
         # turns an `<cas:authenticationSuccess>` node into a Hash;
         # returns nil if given nil
         def parse_user_info(node)
@@ -52,7 +62,7 @@ module OmniAuth
               unless e.kind_of?(Nokogiri::XML::Text) || node_name == 'proxies'
                 # There are no child elements
                 if e.element_children.count == 0
-                  hash[node_name] = e.content
+                  hash[node_name] = attribute_value(hash, node_name, e.content)
                 elsif e.element_children.count
                   # JASIG style extra attributes
                   if node_name == 'attributes'
