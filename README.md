@@ -1,9 +1,9 @@
-# OmniAuth CAS Strategy [![Gem Version][version_badge]][version] [![Build Status][travis_status]][travis]
+# OmniAuth CAS Strategy [![Gem Version][version_badge]][version] [![Build Status][github_actions_status]][github_actions]
 
 [version_badge]: https://badge.fury.io/rb/omniauth-cas.svg
 [version]: https://badge.fury.io/rb/omniauth-cas
-[travis]: https://travis-ci.org/dlindahl/omniauth-cas
-[travis_status]: https://secure.travis-ci.org/dlindahl/omniauth-cas.svg
+[github_actions]: https://github.com/dlindahl/omniauth-cas/actions
+[github_actions_status]: https://github.com/dlindahl/omniauth-cas/actions/workflows/ci.yml/badge.svg
 [releases]: https://github.com/dlindahl/omniauth-cas/releases
 
 This is a OmniAuth 1.0 compatible port of the previously available
