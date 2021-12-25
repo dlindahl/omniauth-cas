@@ -2,6 +2,10 @@ module OmniAuth
   module Strategies
     class CAS
       class LogoutRequest
+
+        NS_SAML   = "urn:oasis:names:tc:SAML:2.0:assertion"
+        NS_SAMLP  = "urn:oasis:names:tc:SAML:2.0:protocol"
+
         def initialize(strategy, request)
           @strategy, @request = strategy, request
         end
@@ -31,8 +35,8 @@ module OmniAuth
         def logout_request
           @logout_request ||= begin
             saml = Nokogiri.parse(@request.params['logoutRequest'])
-            name_id = saml.xpath('//saml:NameID').text
-            sess_idx = saml.xpath('//samlp:SessionIndex').text
+            name_id = saml.xpath('//saml:NameID', :saml => NS_SAML).text
+            sess_idx = saml.xpath('//samlp:SessionIndex', :samlp => NS_SAMLP).text
             inject_params(name_id:name_id, session_index:sess_idx)
             @request
           end
