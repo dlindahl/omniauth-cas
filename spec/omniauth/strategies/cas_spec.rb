@@ -25,18 +25,6 @@ describe OmniAuth::Strategies::CAS, type: :strategy do
     }.to_app
   end
 
-  shared_examples_for 'a CAS redirect response' do
-    let(:redirect_params) { 'service=' + Rack::Utils.escape("http://example.org/auth/cas/callback?url=#{Rack::Utils.escape(return_url)}") }
-
-    subject { last_response }
-
-    it { should be_redirect }
-
-    it 'redirects to the CAS server' do
-      expect(subject.headers).to include 'Location' => "http://cas.example.org:8080/login?#{redirect_params}"
-    end
-  end
-
   describe '#cas_url' do
     let(:params) { Hash.new }
     let(:provider) { MyCasProvider.new(nil, params) }
@@ -85,58 +73,71 @@ describe OmniAuth::Strategies::CAS, type: :strategy do
     it { should include('ssl' => true) }
   end
 
-  describe 'GET /auth/cas' do
-    let(:return_url) { 'http://myapp.com/admin/foo' }
-
-    before { get url, nil, request_env }
-
-    context 'with a referer' do
-      let(:url) { '/auth/cas' }
-
-      let(:request_env) { { 'HTTP_REFERER' => return_url } }
-
-      it_behaves_like 'a CAS redirect response'
-    end
-
-    context 'with an explicit return URL' do
-      let(:url) { "/auth/cas?url=#{return_url}" }
-
-      let(:request_env) { {} }
-
-      it_behaves_like 'a CAS redirect response'
-    end
-  end
-
-  describe 'POST /auth/cas' do
-    let(:return_url) { 'http://myapp.com/admin/foo' }
-
+  describe '/auth/cas' do
     let(:url) { '/auth/cas' }
+    let(:return_url) { 'http://myapp.com/admin/foo' }
     let(:request_env) { {} }
     let(:form_params) { {} }
 
-    before { post url, form_params, request_env }
+    let(:redirect_params) { 'service=' + Rack::Utils.escape("http://example.org/auth/cas/callback?url=#{Rack::Utils.escape(return_url)}") }
 
-    context 'with a referer' do
-      let(:request_env) { { 'HTTP_REFERER' => return_url } }
+    shared_examples_for 'a CAS redirect response' do
+      subject { last_response }
 
-      it_behaves_like 'a CAS redirect response'
+      it { should be_redirect }
+
+      it 'redirects to the CAS server' do
+        expect(subject.headers).to include 'Location' => "http://cas.example.org:8080/login?#{redirect_params}"
+      end
     end
 
-    context 'with an explicit return URL in the post body' do
-      let(:form_params) { { url: return_url } }
+    describe 'GET' do
+      before { get url, nil, request_env }
 
-      it_behaves_like 'a CAS redirect response'
+      context 'with a referer' do
+        let(:request_env) { { 'HTTP_REFERER' => return_url } }
+
+        it_behaves_like 'a CAS redirect response'
+      end
+
+      context 'with an explicit return URL' do
+        let(:url) { "/auth/cas?url=#{return_url}" }
+
+        it_behaves_like 'a CAS redirect response'
+      end
+
+      context 'without a return URL' do
+        let(:redirect_params) { 'service=' + Rack::Utils.escape('http://example.org/auth/cas/callback') }
+
+        it_behaves_like 'a CAS redirect response'
+      end
     end
 
-    # Usually a POST request URL won't have a query string, but if it does,
-    # OmniAuth will have appended it to the callback URL.
-    context 'with an explicit return URL in both the URL and the post body' do
-      let(:not_the_return_url) { return_url.sub('myapp.com', 'not-myapp.com') }
-      let(:url) { "/auth/cas?url=#{return_url}" }
-      let(:request_env) { { 'HTTP_REFERER' => return_url } }
-      let(:form_params) { { url: not_the_return_url } }
+    describe 'POST' do
+      before { post url, form_params, request_env }
 
-      it_behaves_like 'a CAS redirect response'
+      context 'with a referer' do
+        let(:request_env) { { 'HTTP_REFERER' => return_url } }
+
+        it_behaves_like 'a CAS redirect response'
+      end
+
+      context 'with an explicit return URL in the post body' do
+        let(:form_params) { { url: return_url } }
+
+        it_behaves_like 'a CAS redirect response'
+      end
+
+      # Usually a POST request URL won't have a query string, but if it does,
+      # OmniAuth will have appended it to the callback URL.
+      context 'with an explicit return URL in both the URL and the post body' do
+        let(:not_the_return_url) { return_url.sub('myapp.com', 'not-myapp.com') }
+        let(:url) { "/auth/cas?url=#{return_url}" }
+        let(:request_env) { { 'HTTP_REFERER' => return_url } }
+        let(:form_params) { { url: not_the_return_url } }
+
+        it_behaves_like 'a CAS redirect response'
+      end
     end
   end
 
