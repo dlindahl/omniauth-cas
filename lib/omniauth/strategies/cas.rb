@@ -177,7 +177,8 @@ module OmniAuth
       def append_params(base, params)
         params = params.each { |k,v| v = Rack::Utils.escape(v) }
         Addressable::URI.parse(base).tap do |base_uri|
-          base_uri.query_values = (base_uri.query_values || {}).merge(params)
+          query_values = (base_uri.query_values || {}).merge(params)
+          base_uri.query_values = query_values.empty? ? nil : query_values
         end.to_s
       end
 
@@ -208,11 +209,15 @@ module OmniAuth
       end
 
       def return_url
-        # If the request already has a `url` parameter, then it will already be appended to the callback URL.
-        if request.params && request.params['url']
-          {}
-        else
-          { url: request.referer }
+        # If the request URL query string already has a `url` parameter, then it will already be appended to the callback URL.
+        # Otherwise, if /auth/calnet was called via POST (as in https://github.com/omniauth/omniauth/wiki/Resolving-CVE-2015-9284),
+        # we need to convert the posted `url` value to a query parameter if we want to preserve it. If neither is present, but
+        # we have an HTTP 'Referer' header, we can use that.
+        {}.tap do |params|
+          next if request.GET['url']
+          next unless (url = request.POST['url'] || request.referer)
+
+          params[:url] = url
         end
       end
 
