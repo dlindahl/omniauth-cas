@@ -25,11 +25,8 @@ describe OmniAuth::Strategies::CAS, type: :strategy do
     }.to_app
   end
 
-  # TODO: Verify that these are even useful tests
   shared_examples_for 'a CAS redirect response' do
     let(:redirect_params) { 'service=' + Rack::Utils.escape("http://example.org/auth/cas/callback?url=#{Rack::Utils.escape(return_url)}") }
-
-    before { get url, nil, request_env }
 
     subject { last_response }
 
@@ -91,6 +88,8 @@ describe OmniAuth::Strategies::CAS, type: :strategy do
   describe 'GET /auth/cas' do
     let(:return_url) { 'http://myapp.com/admin/foo' }
 
+    before { get url, nil, request_env }
+
     context 'with a referer' do
       let(:url) { '/auth/cas' }
 
@@ -103,6 +102,39 @@ describe OmniAuth::Strategies::CAS, type: :strategy do
       let(:url) { "/auth/cas?url=#{return_url}" }
 
       let(:request_env) { {} }
+
+      it_behaves_like 'a CAS redirect response'
+    end
+  end
+
+  describe 'POST /auth/cas' do
+    let(:return_url) { 'http://myapp.com/admin/foo' }
+
+    let(:url) { '/auth/cas' }
+    let(:request_env) { {} }
+    let(:form_params) { {} }
+
+    before { post url, form_params, request_env }
+
+    context 'with a referer' do
+      let(:request_env) { { 'HTTP_REFERER' => return_url } }
+
+      it_behaves_like 'a CAS redirect response'
+    end
+
+    context 'with an explicit return URL in the post body' do
+      let(:form_params) { { url: return_url } }
+
+      it_behaves_like 'a CAS redirect response'
+    end
+
+    # Usually a POST request URL won't have a query string, but if it does,
+    # OmniAuth will have appended it to the callback URL.
+    context 'with an explicit return URL in both the URL and the post body' do
+      let(:not_the_return_url) { return_url.sub('myapp.com', 'not-myapp.com') }
+      let(:url) { "/auth/cas?url=#{return_url}" }
+      let(:request_env) { { 'HTTP_REFERER' => return_url } }
+      let(:form_params) { { url: not_the_return_url } }
 
       it_behaves_like 'a CAS redirect response'
     end

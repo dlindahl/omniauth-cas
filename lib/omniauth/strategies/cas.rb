@@ -208,9 +208,13 @@ module OmniAuth
       end
 
       def return_url
-        # If the request already has a `url` parameter, then it will already be appended to the callback URL.
-        if request.params && request.params['url']
+        if request.GET['url']
+          # If the request URL query string already has a `url` parameter, then it will already be appended to the callback URL.
           {}
+        elsif (url = request.POST['url'])
+          # If /auth/calnet was called via POST (as recommended in https://github.com/omniauth/omniauth/wiki/Resolving-CVE-2015-9284),
+          # we need to convert the posted `url` value to a query parameter if we want to preserve it.
+          { url: url }
         else
           { url: request.referer }
         end
