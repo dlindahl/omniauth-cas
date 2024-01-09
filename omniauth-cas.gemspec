@@ -12,7 +12,7 @@ Gem::Specification.new do |gem|
   gem.files         = Dir.glob('{CHANGELOG.md,LICENSE,README.md,lib/**/*.rb}', File::FNM_DOTMATCH)
   gem.name          = 'omniauth-cas'
   gem.require_paths = ['lib']
-  gem.version       = Omniauth::Cas::VERSION
+  gem.version       = OmniAuth::Cas::VERSION
 
   gem.metadata = {
     'bug_tracker_uri' => 'https://github.com/dlindahl/omniauth-cas/issues',
