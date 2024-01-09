@@ -7,7 +7,7 @@ describe OmniAuth::Strategies::CAS::LogoutRequest do
   end
   let(:request) { double('request', params:params, env:env) }
   let(:params) { { 'url' => url, 'logoutRequest' => logoutRequest } }
-  let(:url) { 'http://notes.dev/signed_in' }
+  let(:url) { 'http://example.org/signed_in' }
   let(:logoutRequest) do
     %Q[
       <samlp:LogoutRequest xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion\" ID="123abc-1234-ab12-cd34-1234abcd" Version="2.0" IssueInstant="#{Time.now.to_s}">
