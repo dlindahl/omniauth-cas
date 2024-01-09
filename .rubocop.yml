@@ -1,0 +1,24 @@
+inherit_from: .rubocop_todo.yml
+
+require:
+  - rubocop-packaging
+  - rubocop-performance
+  - rubocop-rake
+  - rubocop-rspec
+
+AllCops:
+  TargetRubyVersion: 3.0
+  NewCops: enable
+  DisplayStyleGuide: true
+  ExtraDetails: true
+  Exclude:
+    - 'gemfiles/**/*'
+    - 'vendor/bundle/**/*'
+
+RSpec/FilePath:
+  CustomTransform:
+    OmniAuth: omniauth
+
+RSpec/SpecFilePathFormat:
+  CustomTransform:
+    OmniAuth: omniauth

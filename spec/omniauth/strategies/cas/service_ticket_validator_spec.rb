@@ -1,29 +1,29 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe OmniAuth::Strategies::CAS::ServiceTicketValidator do
   let(:strategy) do
     double('strategy',
-      service_validate_url: 'https://example.org/serviceValidate'
-    )
+           service_validate_url: 'https://example.org/serviceValidate')
   end
   let(:provider_options) do
     double('provider_options',
-      disable_ssl_verification?: false,
-      merge_multivalued_attributes: false,
-      ca_path: '/etc/ssl/certsZOMG'
-    )
+           disable_ssl_verification?: false,
+           merge_multivalued_attributes: false,
+           ca_path: '/etc/ssl/certsZOMG')
   end
   let(:validator) do
-    OmniAuth::Strategies::CAS::ServiceTicketValidator.new( strategy, provider_options, '/foo', nil )
+    described_class.new(strategy, provider_options, '/foo', nil)
   end
 
   describe '#call' do
+    subject { validator.call }
+
     before do
       stub_request(:get, 'https://example.org/serviceValidate?')
         .to_return(status: 200, body: '')
     end
-
-    subject { validator.call }
 
     it 'returns itself' do
       expect(subject).to eq validator
@@ -36,6 +36,8 @@ describe OmniAuth::Strategies::CAS::ServiceTicketValidator do
   end
 
   describe '#user_info' do
+    subject { validator.user_info }
+
     let(:ok_fixture) do
       File.expand_path(File.join(File.dirname(__FILE__), '../../../fixtures/cas_success.xml'))
     end
@@ -43,11 +45,9 @@ describe OmniAuth::Strategies::CAS::ServiceTicketValidator do
 
     before do
       stub_request(:get, 'https://example.org/serviceValidate?')
-        .to_return(status: 200, body:service_response)
+        .to_return(status: 200, body: service_response)
       validator.call
     end
-
-    subject { validator.user_info }
 
     context 'with default settings' do
       it 'parses user info from the response' do
@@ -59,10 +59,9 @@ describe OmniAuth::Strategies::CAS::ServiceTicketValidator do
     context 'when merging multivalued attributes' do
       let(:provider_options) do
         double('provider_options',
-          disable_ssl_verification?: false,
-          merge_multivalued_attributes: true,
-          ca_path: '/etc/ssl/certsZOMG'
-        )
+               disable_ssl_verification?: false,
+               merge_multivalued_attributes: true,
+               ca_path: '/etc/ssl/certsZOMG')
       end
 
       it 'parses multivalued user info from the response' do
