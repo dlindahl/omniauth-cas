@@ -1,39 +1,46 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe OmniAuth::Strategies::CAS, type: :strategy do
   include Rack::Test::Methods
 
-  let(:my_cas_provider) { Class.new(OmniAuth::Strategies::CAS) }
-  before do
-    stub_const 'MyCasProvider', my_cas_provider
-  end
+  let(:my_cas_provider) { Class.new(described_class) }
   let(:app) do
-    Rack::Builder.new {
+    Rack::Builder.new do
       use OmniAuth::Test::PhonySession
       use MyCasProvider,
-        name: :cas,
-        host: 'cas.example.org',
-        ssl: false,
-        port: 8080,
-        uid_field: :employeeid,
-        fetch_raw_info: Proc.new { |v, opts, ticket, info, node|
-          info.empty? ? {} : {
-            "roles" => node.xpath('//cas:roles').map(&:text),
+          name: :cas,
+          host: 'cas.example.org',
+          ssl: false,
+          port: 8080,
+          uid_field: :employeeid,
+          fetch_raw_info: proc { |_v, _opts, _ticket, info, node|
+            if info.empty?
+              {}
+            else
+              {
+                'roles' => node.xpath('//cas:roles').map(&:text)
+              }
+            end
           }
-        }
-      run lambda { |env| [404, {'Content-Type' => 'text/plain'}, [env.key?('omniauth.auth').to_s]] }
-    }.to_app
+      run ->(env) { [404, { 'Content-Type' => 'text/plain' }, [env.key?('omniauth.auth').to_s]] }
+    end.to_app
+  end
+
+  before do
+    stub_const 'MyCasProvider', my_cas_provider
   end
 
   # TODO: Verify that these are even useful tests
   shared_examples_for 'a CAS redirect response' do
-    let(:redirect_params) { 'service=' + Rack::Utils.escape("http://example.org/auth/cas/callback?url=#{Rack::Utils.escape(return_url)}") }
+    subject { last_response }
+
+    let(:redirect_params) { "service=#{Rack::Utils.escape("http://example.org/auth/cas/callback?url=#{Rack::Utils.escape(return_url)}")}" }
 
     before { get url, nil, request_env }
 
-    subject { last_response }
-
-    it { should be_redirect }
+    it { is_expected.to be_redirect }
 
     it 'redirects to the CAS server' do
       expect(subject.headers).to include 'Location' => "http://cas.example.org:8080/login?#{redirect_params}"
@@ -41,43 +48,43 @@ describe OmniAuth::Strategies::CAS, type: :strategy do
   end
 
   describe '#cas_url' do
-    let(:params) { Hash.new }
-    let(:provider) { MyCasProvider.new(nil, params) }
-
     subject { provider.cas_url }
 
+    let(:params) { {} }
+    let(:provider) { MyCasProvider.new(nil, params) }
+
     it 'raises an ArgumentError' do
-      expect{subject}.to raise_error ArgumentError, %r{:host and :login_url MUST be provided}
+      expect { subject }.to raise_error ArgumentError, /:host and :login_url MUST be provided/
     end
 
     context 'with an explicit :url option' do
       let(:url) { 'https://example.org:8080/my_cas' }
-      let(:params) { super().merge url:url }
+      let(:params) { super().merge url: url }
 
       before { subject }
 
-      it { should eq url }
+      it { is_expected.to eq url }
 
       it 'parses the URL into it the appropriate strategy options' do
-        expect(provider.options).to include ssl:true
-        expect(provider.options).to include host:'example.org'
-        expect(provider.options).to include port:8080
-        expect(provider.options).to include path:'/my_cas'
+        expect(provider.options).to include ssl: true
+        expect(provider.options).to include host: 'example.org'
+        expect(provider.options).to include port: 8080
+        expect(provider.options).to include path: '/my_cas'
       end
     end
 
     context 'with explicit URL component' do
-      let(:params) { super().merge host:'example.org', port:1234, ssl:true, path:'/a/path' }
+      let(:params) { super().merge host: 'example.org', port: 1234, ssl: true, path: '/a/path' }
 
       before { subject }
 
-      it { should eq 'https://example.org:1234/a/path' }
+      it { is_expected.to eq 'https://example.org:1234/a/path' }
 
       it 'parses the URL into it the appropriate strategy options' do
-        expect(provider.options).to include ssl:true
-        expect(provider.options).to include host:'example.org'
-        expect(provider.options).to include port:1234
-        expect(provider.options).to include path:'/a/path'
+        expect(provider.options).to include ssl: true
+        expect(provider.options).to include host: 'example.org'
+        expect(provider.options).to include port: 1234
+        expect(provider.options).to include path: '/a/path'
       end
     end
   end
@@ -85,7 +92,7 @@ describe OmniAuth::Strategies::CAS, type: :strategy do
   describe 'defaults' do
     subject { MyCasProvider.default_options.to_hash }
 
-    it { should include('ssl' => true) }
+    it { is_expected.to include('ssl' => true) }
   end
 
   describe 'GET /auth/cas' do
@@ -110,11 +117,11 @@ describe OmniAuth::Strategies::CAS, type: :strategy do
 
   describe 'GET /auth/cas/callback' do
     context 'without a ticket' do
-      before { get '/auth/cas/callback' }
-
       subject { last_response }
 
-      it { should be_redirect }
+      before { get '/auth/cas/callback' }
+
+      it { is_expected.to be_redirect }
 
       it 'redirects with a failure message' do
         expect(subject.headers).to include 'Location' => '/auth/failure?message=no_ticket&strategy=cas'
@@ -122,15 +129,15 @@ describe OmniAuth::Strategies::CAS, type: :strategy do
     end
 
     context 'with an invalid ticket' do
+      subject { last_response }
+
       before do
-        stub_request(:get, /^http:\/\/cas.example.org:8080?\/serviceValidate\?([^&]+&)?ticket=9391d/).
-           to_return( body: File.read('spec/fixtures/cas_failure.xml') )
+        stub_request(:get, %r{^http://cas.example.org:8080?/serviceValidate\?([^&]+&)?ticket=9391d})
+          .to_return(body: File.read('spec/fixtures/cas_failure.xml'))
         get '/auth/cas/callback?ticket=9391d'
       end
 
-      subject { last_response }
-
-      it { should be_redirect }
+      it { is_expected.to be_redirect }
 
       it 'redirects with a failure message' do
         expect(subject.headers).to include 'Location' => '/auth/failure?message=invalid_ticket&strategy=cas'
@@ -138,11 +145,11 @@ describe OmniAuth::Strategies::CAS, type: :strategy do
     end
 
     describe 'with a valid ticket' do
-      shared_examples :successful_validation do
+      shared_examples 'successful validation' do
         before do
-          stub_request(:get, /^http:\/\/cas.example.org:8080?\/serviceValidate\?([^&]+&)?ticket=593af/)
+          stub_request(:get, %r{^http://cas.example.org:8080?/serviceValidate\?([^&]+&)?ticket=593af})
             .with { |request| @request_uri = request.uri.to_s }
-            .to_return( body: File.read("spec/fixtures/#{xml_file_name}") )
+            .to_return(body: File.read("spec/fixtures/#{xml_file_name}"))
 
           get "/auth/cas/callback?ticket=593af&url=#{return_url}"
         end
@@ -154,15 +161,15 @@ describe OmniAuth::Strategies::CAS, type: :strategy do
         it 'properly encodes the service URL' do
           expect(WebMock).to have_requested(:get, 'http://cas.example.org:8080/serviceValidate')
             .with(query: {
-              ticket:  '593af',
-              service: 'http://example.org/auth/cas/callback?url=' + Rack::Utils.escape('http://127.0.0.10/?some=parameter')
-            })
+                    ticket: '593af',
+                    service: "http://example.org/auth/cas/callback?url=#{Rack::Utils.escape('http://127.0.0.10/?some=parameter')}"
+                  })
         end
 
         context "request.env['omniauth.auth']" do
           subject { last_request.env['omniauth.auth'] }
 
-          it { should be_kind_of Hash }
+          it { is_expected.to be_a Hash }
 
           it 'identifes the provider' do
             expect(subject.provider).to eq :cas
@@ -194,7 +201,7 @@ describe OmniAuth::Strategies::CAS, type: :strategy do
               expect(subject.user).to eq 'psegel'
               expect(subject.employeeid).to eq '54'
               expect(subject.hire_date).to eq '2004-07-13'
-              expect(subject.roles).to eq %w(senator lobbyist financier)
+              expect(subject.roles).to eq %w[senator lobbyist financier]
             end
           end
 
@@ -217,38 +224,38 @@ describe OmniAuth::Strategies::CAS, type: :strategy do
       context 'with JASIG flavored XML' do
         let(:xml_file_name) { 'cas_success_jasig.xml' }
 
-        it_behaves_like :successful_validation
+        it_behaves_like 'successful validation'
       end
 
       context 'with classic XML' do
         let(:xml_file_name) { 'cas_success.xml' }
 
-        it_behaves_like :successful_validation
+        it_behaves_like 'successful validation'
       end
     end
   end
 
   describe 'POST /auth/cas/callback' do
     describe 'with a Single Sign-Out logoutRequest' do
+      subject do
+        post 'auth/cas/callback', logoutRequest: logoutRequest
+      end
+
       let(:logoutRequest) do
-        %Q[
-          <samlp:LogoutRequest xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion\" ID="123abc-1234-ab12-cd34-1234abcd" Version="2.0" IssueInstant="#{Time.now.to_s}">
+        %(
+          <samlp:LogoutRequest xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" ID="123abc-1234-ab12-cd34-1234abcd" Version="2.0" IssueInstant="#{Time.now}">
             <saml:NameID>@NOT_USED@</saml:NameID>
             <samlp:SessionIndex>ST-123456-123abc456def</samlp:SessionIndex>
           </samlp:LogoutRequest>
-        ]
+        )
       end
 
-      let(:logout_request) { double('logout_request', call:[200,{},'OK']) }
-
-      subject do
-        post 'auth/cas/callback', logoutRequest:logoutRequest
-      end
+      let(:logout_request) { double('logout_request', call: [200, {}, 'OK']) }
 
       before do
         allow_any_instance_of(MyCasProvider)
           .to receive(:logout_request_service)
-          .and_return double('LogoutRequest', new:logout_request)
+          .and_return double('LogoutRequest', new: logout_request)
 
         subject
       end

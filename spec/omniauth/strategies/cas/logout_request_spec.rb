@@ -1,26 +1,28 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe OmniAuth::Strategies::CAS::LogoutRequest do
+  subject { described_class.new(strategy, request).call(options) }
+
   let(:strategy) { double('strategy') }
   let(:env) do
-    { 'rack.input' => StringIO.new('','r') }
+    { 'rack.input' => StringIO.new('', 'r') }
   end
-  let(:request) { double('request', params:params, env:env) }
+  let(:request) { double('request', params: params, env: env) }
   let(:params) { { 'url' => url, 'logoutRequest' => logoutRequest } }
   let(:url) { 'http://example.org/signed_in' }
   let(:logoutRequest) do
-    %Q[
-      <samlp:LogoutRequest xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion\" ID="123abc-1234-ab12-cd34-1234abcd" Version="2.0" IssueInstant="#{Time.now.to_s}">
+    %(
+      <samlp:LogoutRequest xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" ID="123abc-1234-ab12-cd34-1234abcd" Version="2.0" IssueInstant="#{Time.now}">
         <saml:NameID>@NOT_USED@</saml:NameID>
         <samlp:SessionIndex>ST-123456-123abc456def</samlp:SessionIndex>
       </samlp:LogoutRequest>
-    ]
+    )
   end
 
-  subject { described_class.new(strategy, request).call(options) }
-
   describe 'SAML attributes' do
-    let(:callback) { Proc.new{} }
+    let(:callback) { proc {} }
     let(:options) do
       { on_single_sign_out: callback }
     end
@@ -61,7 +63,7 @@ describe OmniAuth::Strategies::CAS::LogoutRequest do
     let(:response_body) { subject[2].respond_to?(:body) ? subject[2].body : subject[2] }
 
     context 'that returns TRUE' do
-      let(:callback) { Proc.new{true} }
+      let(:callback) { proc { true } }
 
       it 'responds with OK' do
         expect(subject[0]).to eq 200
@@ -70,7 +72,7 @@ describe OmniAuth::Strategies::CAS::LogoutRequest do
     end
 
     context 'that returns Nil' do
-      let(:callback) { Proc.new{} }
+      let(:callback) { proc {} }
 
       it 'responds with OK' do
         expect(subject[0]).to eq 200
@@ -79,7 +81,7 @@ describe OmniAuth::Strategies::CAS::LogoutRequest do
     end
 
     context 'that returns a tuple' do
-      let(:callback) { Proc.new{ [400,{},'Bad Request'] } }
+      let(:callback) { proc { [400, {}, 'Bad Request'] } }
 
       it 'responds with OK' do
         expect(subject[0]).to eq 400
@@ -88,8 +90,8 @@ describe OmniAuth::Strategies::CAS::LogoutRequest do
     end
 
     context 'that raises an error' do
-      let(:exception) { RuntimeError.new('error' )}
-      let(:callback) { Proc.new{raise exception} }
+      let(:exception) { RuntimeError.new('error') }
+      let(:callback) { proc { raise exception } }
 
       before do
         allow(strategy).to receive(:fail!)

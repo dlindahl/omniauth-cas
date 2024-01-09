@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 if ENV['CI'] || ENV['COVERAGE']
   require 'simplecov'
 
@@ -6,7 +8,6 @@ if ENV['CI'] || ENV['COVERAGE']
   end
 end
 
-require 'bundler/setup'
 require 'awesome_print'
 
 RSpec.configure do |c|
@@ -18,4 +19,4 @@ require 'rack/test'
 require 'webmock/rspec'
 require 'omniauth-cas'
 
-OmniAuth.config.logger = Logger.new( '/dev/null' )
+OmniAuth.config.logger = Logger.new('/dev/null')
