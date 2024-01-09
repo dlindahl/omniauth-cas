@@ -6,7 +6,7 @@
 [github_actions_status]: https://github.com/dlindahl/omniauth-cas/actions/workflows/ci.yml/badge.svg
 [releases]: https://github.com/dlindahl/omniauth-cas/releases
 
-This is a OmniAuth 1.0 compatible port of the previously available
+This is a [OmniAuth][omniauth] 1.9 compatible port of the previously available
 [OmniAuth CAS strategy][old_omniauth_cas] that was bundled with OmniAuth 0.3.
 
 * [View the documentation][document_up]
@@ -42,7 +42,7 @@ end
 
 OmniAuth CAS requires at least one of the following two configuration options:
 
-  * `url` - Defines the URL of your CAS server (i.e. `http://example.org:8080`)
+  * `url` - Defines the URL of your CAS server (i.e. `https://example.org:8080`)
   * `host` - Defines the host of your CAS server (i.e. `example.org`).
 
 #### Optional
@@ -101,7 +101,7 @@ Your new settings should look similar to this:
 provider :cas,
          host:      'cas.example.com',
          login_url: '/cas/login',
-  	     service_validate_url: '/cas/serviceValidate'
+         service_validate_url: '/cas/serviceValidate'
 ```
 
 If you encounter problems wih SSL certificates you may want to set the `ca_path` parameter or activate `disable_ssl_verification` (not recommended).
@@ -122,6 +122,7 @@ Special thanks go out to the following people
   * Elber Ribeiro (@dynaum) for Ubuntu SSL configuration support
   * @rbq for README updates and OmniAuth 0.3 migration guide
 
+[omniauth]: https://github.com/omniauth/omniauth
 [old_omniauth_cas]: https://github.com/intridea/omniauth/blob/0-3-stable/oa-enterprise/lib/omniauth/strategies/cas.rb
 [document_up]: https://dlindahl.github.io/omniauth-cas/
 [net_http]: https://ruby-doc.org/stdlib-1.9.3/libdoc/net/http/rdoc/Net/HTTP.html
