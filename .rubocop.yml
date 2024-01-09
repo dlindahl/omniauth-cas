@@ -1,0 +1,14 @@
+require:
+  - rubocop-packaging
+  - rubocop-performance
+  - rubocop-rake
+  - rubocop-rspec
+
+AllCops:
+  TargetRubyVersion: 3.0
+  NewCops: enable
+  DisplayStyleGuide: true
+  ExtraDetails: true
+  Exclude:
+    - 'gemfiles/**/*'
+    - 'vendor/bundle/**/*'
