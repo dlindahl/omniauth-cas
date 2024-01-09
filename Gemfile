@@ -6,6 +6,7 @@ gem 'awesome_print'
 gem 'rack-test'
 gem 'rake'
 gem 'rspec'
+gem 'simplecov'
 gem 'webmock'
 
 # Specify your gem's dependencies in omniauth-cas.gemspec
