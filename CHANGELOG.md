@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/) and this
 project adheres to [Semantic Versioning](https://semver.org/)
 
+## 3.0.0 - unreleased
+
+### Changed
+
+* Potential breaking change: case of `Omniauth::Cas::VERSION` module (#76).
+
+### Removed
+
+* Compatibility with EOL Ruby versions (#73).
+
 ## 2.0.0 - 2010-11-14
 
 ### Added
