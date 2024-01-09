@@ -22,3 +22,6 @@ RSpec/FilePath:
 RSpec/SpecFilePathFormat:
   CustomTransform:
     OmniAuth: omniauth
+
+Style/NumericPredicate:
+  Enabled: false

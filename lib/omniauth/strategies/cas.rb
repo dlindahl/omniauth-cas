@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'omniauth'
 require 'addressable/uri'
 
@@ -48,7 +50,7 @@ module OmniAuth
       option :phone_key, 'phone'
 
       # As required by https://github.com/intridea/omniauth/wiki/Auth-Hash-Schema
-      AuthHashSchemaKeys = %w[name email nickname first_name last_name location image phone]
+      AuthHashSchemaKeys = %w[name email nickname first_name last_name location image phone].freeze
       info do
         prune!({
                  name: raw_info[options[:name_key].to_s],
@@ -104,7 +106,7 @@ module OmniAuth
       end
 
       def on_sso_path?
-        request.post? && request.params.has_key?('logoutRequest')
+        request.post? && request.params.key?('logoutRequest')
       end
 
       def single_sign_out_phase
@@ -177,7 +179,7 @@ module OmniAuth
       #
       # @return [String] the new joined URL.
       def append_params(base, params)
-        params = params.each { |_k, v| v = Rack::Utils.escape(v) }
+        params = params.each_value { |v| Rack::Utils.escape(v) }
         Addressable::URI.parse(base).tap do |base_uri|
           base_uri.query_values = (base_uri.query_values || {}).merge(params)
         end.to_s

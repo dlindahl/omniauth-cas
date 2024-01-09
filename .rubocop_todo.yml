@@ -11,11 +11,6 @@ Lint/EnsureReturn:
   Exclude:
     - 'lib/omniauth/strategies/cas/logout_request.rb'
 
-# This cop supports unsafe autocorrection (--autocorrect-all).
-Lint/UselessAssignment:
-  Exclude:
-    - 'lib/omniauth/strategies/cas.rb'
-
 Lint/UselessRescue:
   Exclude:
     - 'lib/omniauth/strategies/cas/logout_request.rb'
@@ -121,49 +116,6 @@ Style/Documentation:
     - 'lib/omniauth/strategies/cas.rb'
     - 'lib/omniauth/strategies/cas/logout_request.rb'
     - 'lib/omniauth/strategies/cas/service_ticket_validator.rb'
-
-# This cop supports unsafe autocorrection (--autocorrect-all).
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: always, always_true, never
-Style/FrozenStringLiteralComment:
-  Exclude:
-    - 'lib/omniauth-cas.rb'
-    - 'lib/omniauth/cas.rb'
-    - 'lib/omniauth/cas/version.rb'
-    - 'lib/omniauth/strategies/cas.rb'
-    - 'lib/omniauth/strategies/cas/logout_request.rb'
-    - 'lib/omniauth/strategies/cas/service_ticket_validator.rb'
-
-# This cop supports unsafe autocorrection (--autocorrect-all).
-# Configuration parameters: AllowedReceivers.
-# AllowedReceivers: Thread.current
-Style/HashEachMethods:
-  Exclude:
-    - 'lib/omniauth/strategies/cas.rb'
-
-# This cop supports unsafe autocorrection (--autocorrect-all).
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: literals, strict
-Style/MutableConstant:
-  Exclude:
-    - 'lib/omniauth/cas/version.rb'
-    - 'lib/omniauth/strategies/cas.rb'
-    - 'lib/omniauth/strategies/cas/service_ticket_validator.rb'
-
-# This cop supports unsafe autocorrection (--autocorrect-all).
-# Configuration parameters: EnforcedStyle, AllowedMethods, AllowedPatterns.
-# SupportedStyles: predicate, comparison
-Style/NumericPredicate:
-  Exclude:
-    - 'spec/**/*'
-    - 'lib/omniauth/strategies/cas/service_ticket_validator.rb'
-
-# This cop supports unsafe autocorrection (--autocorrect-all).
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: short, verbose
-Style/PreferredHashMethods:
-  Exclude:
-    - 'lib/omniauth/strategies/cas.rb'
 
 # This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, AllowedPatterns.

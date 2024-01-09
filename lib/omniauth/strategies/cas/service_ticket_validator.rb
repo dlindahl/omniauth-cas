@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'net/http'
 require 'net/https'
 require 'nokogiri'
@@ -6,7 +8,7 @@ module OmniAuth
   module Strategies
     class CAS
       class ServiceTicketValidator
-        VALIDATION_REQUEST_HEADERS = { 'Accept' => '*/*' }
+        VALIDATION_REQUEST_HEADERS = { 'Accept' => '*/*' }.freeze
 
         attr_reader :success_body
 
