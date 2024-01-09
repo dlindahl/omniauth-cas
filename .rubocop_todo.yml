@@ -7,67 +7,9 @@
 # versions of RuboCop, may require this file to be generated again.
 
 # This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: IndentationWidth.
-# SupportedStyles: outdent, indent
-Layout/AccessModifierIndentation:
-  EnforcedStyle: outdent
-
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: EnforcedStyle, IndentationWidth.
-# SupportedStyles: with_first_argument, with_fixed_indentation
-Layout/ArgumentAlignment:
-  Exclude:
-    - 'lib/omniauth/strategies/cas.rb'
-
-# This cop supports safe autocorrection (--autocorrect).
-Layout/EmptyLineAfterGuardClause:
-  Exclude:
-    - 'lib/omniauth/strategies/cas.rb'
-    - 'lib/omniauth/strategies/cas/service_ticket_validator.rb'
-
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: EnforcedStyle, IndentationWidth.
-# SupportedStyles: special_inside_parentheses, consistent, align_braces
-Layout/FirstHashElementIndentation:
-  Exclude:
-    - 'lib/omniauth/strategies/cas.rb'
-
-# This cop supports safe autocorrection (--autocorrect).
-Layout/SpaceAfterColon:
-  Exclude:
-    - 'lib/omniauth/strategies/cas/logout_request.rb'
-
-# This cop supports safe autocorrection (--autocorrect).
-Layout/SpaceAfterComma:
-  Exclude:
-    - 'lib/omniauth/strategies/cas.rb'
-    - 'lib/omniauth/strategies/cas/logout_request.rb'
-
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: EnforcedStyle, EnforcedStyleForEmptyBraces.
-# SupportedStyles: space, no_space
-# SupportedStylesForEmptyBraces: space, no_space
-Layout/SpaceBeforeBlockBraces:
-  Exclude:
-    - 'lib/omniauth/strategies/cas.rb'
-
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: final_newline, final_blank_line
-Layout/TrailingEmptyLines:
-  Exclude:
-    - 'lib/omniauth/cas.rb'
-
-# This cop supports safe autocorrection (--autocorrect).
 Lint/EnsureReturn:
   Exclude:
     - 'lib/omniauth/strategies/cas/logout_request.rb'
-
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: IgnoreEmptyBlocks, AllowUnusedKeywordArguments.
-Lint/UnusedBlockArgument:
-  Exclude:
-    - 'lib/omniauth/strategies/cas.rb'
 
 # This cop supports unsafe autocorrection (--autocorrect-all).
 Lint/UselessAssignment:
@@ -88,7 +30,7 @@ Metrics/BlockNesting:
 
 # Configuration parameters: CountComments, CountAsOne.
 Metrics/ClassLength:
-  Max: 149
+  Max: 148
 
 # Configuration parameters: AllowedMethods, AllowedPatterns.
 Metrics/CyclomaticComplexity:
@@ -116,12 +58,6 @@ Naming/ConstantName:
 Naming/FileName:
   Exclude:
     - 'lib/omniauth-cas.rb'
-
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: PreferredName.
-Naming/RescuedExceptionsVariableName:
-  Exclude:
-    - 'lib/omniauth/strategies/cas/logout_request.rb'
 
 RSpec/AnyInstance:
   Exclude:
@@ -177,20 +113,6 @@ RSpec/VerifiedDoubles:
     - 'spec/omniauth/strategies/cas/service_ticket_validator_spec.rb'
     - 'spec/omniauth/strategies/cas_spec.rb'
 
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: prefer_alias, prefer_alias_method
-Style/Alias:
-  Exclude:
-    - 'lib/omniauth/strategies/cas.rb'
-
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: is_a?, kind_of?
-Style/ClassCheck:
-  Exclude:
-    - 'lib/omniauth/strategies/cas/service_ticket_validator.rb'
-
 # Configuration parameters: AllowedConstants.
 Style/Documentation:
   Exclude:
@@ -199,11 +121,6 @@ Style/Documentation:
     - 'lib/omniauth/strategies/cas.rb'
     - 'lib/omniauth/strategies/cas/logout_request.rb'
     - 'lib/omniauth/strategies/cas/service_ticket_validator.rb'
-
-# This cop supports safe autocorrection (--autocorrect).
-Style/EmptyLiteral:
-  Exclude:
-    - 'lib/omniauth/strategies/cas.rb'
 
 # This cop supports unsafe autocorrection (--autocorrect-all).
 # Configuration parameters: EnforcedStyle.
@@ -217,21 +134,10 @@ Style/FrozenStringLiteralComment:
     - 'lib/omniauth/strategies/cas/logout_request.rb'
     - 'lib/omniauth/strategies/cas/service_ticket_validator.rb'
 
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: MinBodyLength, AllowConsecutiveConditionals.
-Style/GuardClause:
-  Exclude:
-    - 'lib/omniauth/strategies/cas.rb'
-
 # This cop supports unsafe autocorrection (--autocorrect-all).
 # Configuration parameters: AllowedReceivers.
 # AllowedReceivers: Thread.current
 Style/HashEachMethods:
-  Exclude:
-    - 'lib/omniauth/strategies/cas.rb'
-
-# This cop supports safe autocorrection (--autocorrect).
-Style/IfUnlessModifier:
   Exclude:
     - 'lib/omniauth/strategies/cas.rb'
 
@@ -252,53 +158,10 @@ Style/NumericPredicate:
     - 'spec/**/*'
     - 'lib/omniauth/strategies/cas/service_ticket_validator.rb'
 
-# This cop supports safe autocorrection (--autocorrect).
-Style/ParallelAssignment:
-  Exclude:
-    - 'lib/omniauth/strategies/cas/logout_request.rb'
-
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: PreferredDelimiters.
-Style/PercentLiteralDelimiters:
-  Exclude:
-    - 'lib/omniauth/strategies/cas.rb'
-
 # This cop supports unsafe autocorrection (--autocorrect-all).
 # Configuration parameters: EnforcedStyle.
 # SupportedStyles: short, verbose
 Style/PreferredHashMethods:
-  Exclude:
-    - 'lib/omniauth/strategies/cas.rb'
-
-# This cop supports safe autocorrection (--autocorrect).
-Style/Proc:
-  Exclude:
-    - 'lib/omniauth/strategies/cas.rb'
-
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: EnforcedStyle, AllowedCompactTypes.
-# SupportedStyles: compact, exploded
-Style/RaiseArgs:
-  Exclude:
-    - 'lib/omniauth/strategies/cas.rb'
-
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: AllowMultipleReturnValues.
-Style/RedundantReturn:
-  Exclude:
-    - 'lib/omniauth/strategies/cas/logout_request.rb'
-
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: implicit, explicit
-Style/RescueStandardError:
-  Exclude:
-    - 'lib/omniauth/strategies/cas/logout_request.rb'
-
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: EnforcedStyle, ConsistentQuotesInMultiline.
-# SupportedStyles: single_quotes, double_quotes
-Style/StringLiterals:
   Exclude:
     - 'lib/omniauth/strategies/cas.rb'
 

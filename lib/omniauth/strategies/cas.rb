@@ -14,7 +14,7 @@ module OmniAuth
       autoload :LogoutRequest, 'omniauth/strategies/cas/logout_request'
 
       attr_accessor :raw_info
-      alias_method :user_info, :raw_info
+      alias user_info raw_info
 
       option :name, :cas # Required property by OmniAuth::Strategy
 
@@ -26,7 +26,7 @@ module OmniAuth
       option :service_validate_url, '/serviceValidate'
       option :login_url,            '/login'
       option :logout_url,           '/logout'
-      option :on_single_sign_out,   Proc.new {}
+      option :on_single_sign_out,   proc {}
       # A Proc or lambda that returns a Hash of additional user info to be
       # merged with the info returned by the CAS server.
       #
@@ -35,7 +35,7 @@ module OmniAuth
       # @param [Hash] The user info for the Service Ticket returned by the CAS server
       #
       # @return [Hash] Extra user info
-      option :fetch_raw_info,       Proc.new { Hash.new }
+      option :fetch_raw_info,       proc { {} }
       # Make all the keys configurable with some defaults set here
       option :uid_field, 'user'
       option :name_key, 'name'
@@ -48,23 +48,23 @@ module OmniAuth
       option :phone_key, 'phone'
 
       # As required by https://github.com/intridea/omniauth/wiki/Auth-Hash-Schema
-      AuthHashSchemaKeys = %w{name email nickname first_name last_name location image phone}
+      AuthHashSchemaKeys = %w[name email nickname first_name last_name location image phone]
       info do
         prune!({
-          name: raw_info[options[:name_key].to_s],
-          email: raw_info[options[:email_key].to_s],
-          nickname: raw_info[options[:nickname_key].to_s],
-          first_name: raw_info[options[:first_name_key].to_s],
-          last_name: raw_info[options[:last_name_key].to_s],
-          location: raw_info[options[:location_key].to_s],
-          image: raw_info[options[:image_key].to_s],
-          phone: raw_info[options[:phone_key].to_s]
-        })
+                 name: raw_info[options[:name_key].to_s],
+                 email: raw_info[options[:email_key].to_s],
+                 nickname: raw_info[options[:nickname_key].to_s],
+                 first_name: raw_info[options[:first_name_key].to_s],
+                 last_name: raw_info[options[:last_name_key].to_s],
+                 location: raw_info[options[:location_key].to_s],
+                 image: raw_info[options[:image_key].to_s],
+                 phone: raw_info[options[:phone_key].to_s]
+               })
       end
 
       extra do
         prune!(
-          raw_info.delete_if{ |k,v| AuthHashSchemaKeys.include?(k) }
+          raw_info.delete_if { |k, _v| AuthHashSchemaKeys.include?(k) }
         )
       end
 
@@ -82,8 +82,10 @@ module OmniAuth
         else
           @ticket = request.params['ticket']
           return fail!(:no_ticket, MissingCASTicket.new('No CAS Ticket')) unless @ticket
+
           fetch_raw_info(@ticket)
           return fail!(:invalid_ticket, InvalidCASTicket.new('Invalid CAS Ticket')) if raw_info.empty?
+
           super
         end
       end
@@ -97,7 +99,7 @@ module OmniAuth
             'Location' => login_url(service_url),
             'Content-Type' => 'text/plain'
           },
-          ["You are being redirected to CAS for sign-in."]
+          ['You are being redirected to CAS for sign-in.']
         ]
       end
 
@@ -136,9 +138,9 @@ module OmniAuth
       end
 
       def validate_cas_setup
-        if options.host.nil? || options.login_url.nil?
-          raise ArgumentError.new(":host and :login_url MUST be provided")
-        end
+        return unless options.host.nil? || options.login_url.nil?
+
+        raise ArgumentError, ':host and :login_url MUST be provided'
       end
 
       # Build a service-validation URL from +service+ and +ticket+.
@@ -154,9 +156,9 @@ module OmniAuth
         service_url = Addressable::URI.parse(service_url)
         service_url.query_values = service_url.query_values.tap { |qs| qs.delete('ticket') }
         cas_url + append_params(options.service_validate_url, {
-          service: service_url.to_s,
-          ticket: ticket
-        })
+                                  service: service_url.to_s,
+                                  ticket: ticket
+                                })
       end
 
       # Build a CAS login URL from +service+.
@@ -175,7 +177,7 @@ module OmniAuth
       #
       # @return [String] the new joined URL.
       def append_params(base, params)
-        params = params.each { |k,v| v = Rack::Utils.escape(v) }
+        params = params.each { |_k, v| v = Rack::Utils.escape(v) }
         Addressable::URI.parse(base).tap do |base_uri|
           base_uri.query_values = (base_uri.query_values || {}).merge(params)
         end.to_s
@@ -187,14 +189,14 @@ module OmniAuth
         ServiceTicketValidator.new(self, options, callback_url, ticket).call
       end
 
-    private
+      private
 
       def fetch_raw_info(ticket)
         validator = validate_service_ticket(ticket)
         ticket_user_info = validator.user_info
         ticket_success_body = validator.success_body
         custom_user_info = options.fetch_raw_info.call(self,
-          options, ticket, ticket_user_info, ticket_success_body)
+                                                       options, ticket, ticket_user_info, ticket_success_body)
         self.raw_info = ticket_user_info.merge(custom_user_info)
       end
 
