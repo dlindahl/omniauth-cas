@@ -46,7 +46,6 @@ describe OmniAuth::Strategies::CAS::LogoutRequest do
       before do
         allow(strategy).to receive(:fail!)
         subject
-        expect(strategy).to have_received(:fail!)
       end
 
       it 'responds with an error' do

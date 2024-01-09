@@ -14,3 +14,11 @@ AllCops:
   Exclude:
     - 'gemfiles/**/*'
     - 'vendor/bundle/**/*'
+
+RSpec/FilePath:
+  CustomTransform:
+    OmniAuth: omniauth
+
+RSpec/SpecFilePathFormat:
+  CustomTransform:
+    OmniAuth: omniauth
