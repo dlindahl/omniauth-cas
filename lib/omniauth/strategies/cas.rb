@@ -50,7 +50,7 @@ module OmniAuth
       option :phone_key, 'phone'
 
       # As required by https://github.com/intridea/omniauth/wiki/Auth-Hash-Schema
-      AuthHashSchemaKeys = %w[name email nickname first_name last_name location image phone].freeze
+      AUTH_HASH_SCHEMA_KEYS = %w[name email nickname first_name last_name location image phone].freeze
       info do
         prune!({
                  name: raw_info[options[:name_key].to_s],
@@ -66,7 +66,7 @@ module OmniAuth
 
       extra do
         prune!(
-          raw_info.delete_if { |k, _v| AuthHashSchemaKeys.include?(k) }
+          raw_info.delete_if { |k, _v| AUTH_HASH_SCHEMA_KEYS.include?(k) }
         )
       end
 
