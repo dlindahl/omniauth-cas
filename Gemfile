@@ -1,9 +1,12 @@
+# frozen_string_literal: true
+
 source 'https://rubygems.org'
+
+gem 'awesome_print'
+gem 'rack-test'
+gem 'rake'
+gem 'rspec'
+gem 'webmock'
 
 # Specify your gem's dependencies in omniauth-cas.gemspec
 gemspec
-
-if RUBY_VERSION < "2.2.2"
-  # Rack 2 needs Ruby 2.2.2+
-  gem 'rack', '< 2'
-end
