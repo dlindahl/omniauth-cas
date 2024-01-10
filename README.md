@@ -6,7 +6,7 @@
 [github_actions_status]: https://github.com/dlindahl/omniauth-cas/actions/workflows/ci.yml/badge.svg
 [releases]: https://github.com/dlindahl/omniauth-cas/releases
 
-This is a [OmniAuth][omniauth] 1.9 compatible port of the previously available
+This is a [OmniAuth][omniauth] 2.1+ compatible port of the previously available
 [OmniAuth CAS strategy][old_omniauth_cas] that was bundled with OmniAuth 0.3.
 
 * [View the documentation][document_up]
