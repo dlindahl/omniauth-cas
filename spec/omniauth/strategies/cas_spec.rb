@@ -203,6 +203,26 @@ RSpec.describe OmniAuth::Strategies::CAS, type: :strategy do
               expect(subject.hire_date).to eq '2004-07-13'
               expect(subject.roles).to eq %w[senator lobbyist financier]
             end
+
+            context 'when skip_info? is specified' do
+              let(:app) do
+                Rack::Builder.new do
+                  use OmniAuth::Test::PhonySession
+                  use MyCasProvider,
+                      name: :cas,
+                      host: 'cas.example.org',
+                      ssl: false,
+                      port: 8080,
+                      uid_field: :employeeid,
+                      skip_info: true
+                  run ->(env) { [404, { 'Content-Type' => 'text/plain' }, [env.key?('omniauth.auth').to_s]] }
+                end.to_app
+              end
+
+              it 'does not include additional user attributes' do
+                expect(subject).to be_empty
+              end
+            end
           end
 
           context 'the credentials hash' do

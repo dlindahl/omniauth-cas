@@ -25,7 +25,7 @@ Metrics/BlockNesting:
 
 # Configuration parameters: CountComments, CountAsOne.
 Metrics/ClassLength:
-  Max: 148
+  Max: 150
 
 # Configuration parameters: AllowedMethods, AllowedPatterns.
 Metrics/CyclomaticComplexity:
@@ -88,7 +88,7 @@ RSpec/NamedSubject:
 
 # Configuration parameters: AllowedGroups.
 RSpec/NestedGroups:
-  Max: 5
+  Max: 6
 
 # Configuration parameters: EnforcedStyle, AllowedPatterns.
 # SupportedStyles: snake_case, camelCase
