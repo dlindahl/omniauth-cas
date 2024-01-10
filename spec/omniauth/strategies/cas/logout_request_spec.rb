@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe OmniAuth::Strategies::CAS::LogoutRequest do
+RSpec.describe OmniAuth::Strategies::CAS::LogoutRequest do
   subject { described_class.new(strategy, request).call(options) }
 
   let(:strategy) { double('strategy') }
