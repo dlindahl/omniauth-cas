@@ -38,7 +38,7 @@ RSpec.describe OmniAuth::Strategies::CAS, type: :strategy do
 
     let(:redirect_params) { "service=#{Rack::Utils.escape("http://example.org/auth/cas/callback?url=#{Rack::Utils.escape(return_url)}")}" }
 
-    before { get url, nil, request_env }
+    before { post url, nil, request_env }
 
     it { is_expected.to be_redirect }
 
@@ -95,7 +95,7 @@ RSpec.describe OmniAuth::Strategies::CAS, type: :strategy do
     it { is_expected.to include('ssl' => true) }
   end
 
-  describe 'GET /auth/cas' do
+  describe 'POST /auth/cas' do
     let(:return_url) { 'http://example.org/admin/foo' }
 
     context 'with a referer' do
@@ -115,7 +115,7 @@ RSpec.describe OmniAuth::Strategies::CAS, type: :strategy do
     end
   end
 
-  describe 'GET /auth/cas/callback' do
+  describe 'POST /auth/cas/callback' do
     context 'without a ticket' do
       subject { last_response }
 
@@ -253,9 +253,7 @@ RSpec.describe OmniAuth::Strategies::CAS, type: :strategy do
         it_behaves_like 'successful validation'
       end
     end
-  end
 
-  describe 'POST /auth/cas/callback' do
     describe 'with a Single Sign-Out logoutRequest' do
       subject do
         post 'auth/cas/callback', logoutRequest: logoutRequest

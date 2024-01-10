@@ -9,6 +9,7 @@ project adheres to [Semantic Versioning](https://semver.org/)
 
 ### Changed
 
+* Breaking change: Support OmniAuth 2 (#82).
 * Potential breaking change: case of `Omniauth::Cas::VERSION` module (#76).
 
 ### Removed
