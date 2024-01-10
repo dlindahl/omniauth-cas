@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe OmniAuth::Strategies::CAS::ServiceTicketValidator do
+RSpec.describe OmniAuth::Strategies::CAS::ServiceTicketValidator do
   let(:strategy) do
     double('strategy',
            service_validate_url: 'https://example.org/serviceValidate')

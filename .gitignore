@@ -19,3 +19,4 @@ vendor
 
 # RSpec
 .rspec
+spec/examples.txt

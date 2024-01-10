@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe OmniAuth::Strategies::CAS, type: :strategy do
+RSpec.describe OmniAuth::Strategies::CAS, type: :strategy do
   include Rack::Test::Methods
 
   let(:my_cas_provider) { Class.new(described_class) }
