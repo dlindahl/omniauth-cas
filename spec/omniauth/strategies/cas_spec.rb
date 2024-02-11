@@ -48,20 +48,20 @@ RSpec.describe OmniAuth::Strategies::CAS, type: :strategy do
   end
 
   describe '#cas_url' do
-    subject { provider.cas_url }
+    subject(:cas_url) { provider.cas_url }
 
     let(:params) { {} }
     let(:provider) { MyCasProvider.new(nil, params) }
 
     it 'raises an ArgumentError' do
-      expect { subject }.to raise_error ArgumentError, /:host and :login_url MUST be provided/
+      expect { cas_url }.to raise_error ArgumentError, /:host and :login_url MUST be provided/
     end
 
     context 'with an explicit :url option' do
       let(:url) { 'https://example.org:8080/my_cas' }
       let(:params) { super().merge url: url }
 
-      before { subject }
+      before { cas_url }
 
       it { is_expected.to eq url }
 
@@ -76,7 +76,7 @@ RSpec.describe OmniAuth::Strategies::CAS, type: :strategy do
     context 'with explicit URL component' do
       let(:params) { super().merge host: 'example.org', port: 1234, ssl: true, path: '/a/path' }
 
-      before { subject }
+      before { cas_url }
 
       it { is_expected.to eq 'https://example.org:1234/a/path' }
 
@@ -124,7 +124,7 @@ RSpec.describe OmniAuth::Strategies::CAS, type: :strategy do
       it { is_expected.to be_redirect }
 
       it 'redirects with a failure message' do
-        expect(subject.headers).to include 'Location' => '/auth/failure?message=no_ticket&strategy=cas'
+        expect(last_response.headers).to include 'Location' => '/auth/failure?message=no_ticket&strategy=cas'
       end
     end
 
@@ -140,11 +140,11 @@ RSpec.describe OmniAuth::Strategies::CAS, type: :strategy do
       it { is_expected.to be_redirect }
 
       it 'redirects with a failure message' do
-        expect(subject.headers).to include 'Location' => '/auth/failure?message=invalid_ticket&strategy=cas'
+        expect(last_response.headers).to include 'Location' => '/auth/failure?message=invalid_ticket&strategy=cas'
       end
     end
 
-    describe 'with a valid ticket' do
+    context 'with a valid ticket' do
       shared_examples 'successful validation' do
         before do
           stub_request(:get, %r{^http://cas.example.org:8080?/serviceValidate\?([^&]+&)?ticket=593af})
@@ -166,7 +166,7 @@ RSpec.describe OmniAuth::Strategies::CAS, type: :strategy do
                   })
         end
 
-        context "request.env['omniauth.auth']" do
+        describe "request.env['omniauth.auth']" do
           subject { last_request.env['omniauth.auth'] }
 
           it { is_expected.to be_a Hash }
@@ -179,7 +179,7 @@ RSpec.describe OmniAuth::Strategies::CAS, type: :strategy do
             expect(subject.uid).to eq '54'
           end
 
-          context 'the info hash' do
+          describe "['info']" do
             subject { last_request.env['omniauth.auth']['info'] }
 
             it 'includes user info attributes' do
@@ -194,7 +194,7 @@ RSpec.describe OmniAuth::Strategies::CAS, type: :strategy do
             end
           end
 
-          context 'the extra hash' do
+          describe "['extra']" do
             subject { last_request.env['omniauth.auth']['extra'] }
 
             it 'includes additional user attributes' do
@@ -225,7 +225,7 @@ RSpec.describe OmniAuth::Strategies::CAS, type: :strategy do
             end
           end
 
-          context 'the credentials hash' do
+          describe "['credentials']" do
             subject { last_request.env['omniauth.auth']['credentials'] }
 
             it 'has a ticket value' do
@@ -255,17 +255,17 @@ RSpec.describe OmniAuth::Strategies::CAS, type: :strategy do
     end
 
     describe 'with a Single Sign-Out logoutRequest' do
-      subject do
-        post 'auth/cas/callback', logoutRequest: logoutRequest
+      subject(:sso_logout_request) do
+        post 'auth/cas/callback', logoutRequest: logout_request_xml
       end
 
-      let(:logoutRequest) do
-        %(
+      let(:logout_request_xml) do
+        <<~XML
           <samlp:LogoutRequest xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" ID="123abc-1234-ab12-cd34-1234abcd" Version="2.0" IssueInstant="#{Time.now}">
             <saml:NameID>@NOT_USED@</saml:NameID>
             <samlp:SessionIndex>ST-123456-123abc456def</samlp:SessionIndex>
           </samlp:LogoutRequest>
-        )
+        XML
       end
 
       let(:logout_request) { double('logout_request', call: [200, {}, 'OK']) }
@@ -275,7 +275,7 @@ RSpec.describe OmniAuth::Strategies::CAS, type: :strategy do
           .to receive(:logout_request_service)
           .and_return double('LogoutRequest', new: logout_request)
 
-        subject
+        sso_logout_request
       end
 
       it 'initializes a LogoutRequest' do
