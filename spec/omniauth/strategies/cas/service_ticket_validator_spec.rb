@@ -18,7 +18,7 @@ RSpec.describe OmniAuth::Strategies::CAS::ServiceTicketValidator do
   end
 
   describe '#call' do
-    subject { validator.call }
+    subject(:call) { validator.call }
 
     before do
       stub_request(:get, 'https://example.org/serviceValidate?')
@@ -26,17 +26,17 @@ RSpec.describe OmniAuth::Strategies::CAS::ServiceTicketValidator do
     end
 
     it 'returns itself' do
-      expect(subject).to eq validator
+      expect(call).to eq validator
     end
 
     it 'uses the configured CA path' do
-      subject
+      call
       expect(provider_options).to have_received :ca_path
     end
   end
 
   describe '#user_info' do
-    subject { validator.user_info }
+    subject(:user_info) { validator.user_info }
 
     let(:ok_fixture) do
       File.expand_path(File.join(File.dirname(__FILE__), '../../../fixtures/cas_success.xml'))
@@ -51,8 +51,8 @@ RSpec.describe OmniAuth::Strategies::CAS::ServiceTicketValidator do
 
     context 'with default settings' do
       it 'parses user info from the response' do
-        expect(subject).to include 'user' => 'psegel'
-        expect(subject).to include 'roles' => 'financier'
+        expect(user_info).to include 'user' => 'psegel'
+        expect(user_info).to include 'roles' => 'financier'
       end
     end
 
@@ -65,8 +65,8 @@ RSpec.describe OmniAuth::Strategies::CAS::ServiceTicketValidator do
       end
 
       it 'parses multivalued user info from the response' do
-        expect(subject).to include 'user' => 'psegel'
-        expect(subject).to include 'roles' => %w[senator lobbyist financier]
+        expect(user_info).to include 'user' => 'psegel'
+        expect(user_info).to include 'roles' => %w[senator lobbyist financier]
       end
     end
   end
