@@ -1,10 +1,4 @@
-# OmniAuth CAS Strategy [![Gem Version][version_badge]][version] [![Build Status][github_actions_status]][github_actions]
-
-[version_badge]: https://badge.fury.io/rb/omniauth-cas.svg
-[version]: https://badge.fury.io/rb/omniauth-cas
-[github_actions]: https://github.com/dlindahl/omniauth-cas/actions
-[github_actions_status]: https://github.com/dlindahl/omniauth-cas/actions/workflows/ci.yml/badge.svg
-[releases]: https://github.com/dlindahl/omniauth-cas/releases
+# OmniAuth CAS Strategy [![Gem Version][version_badge]][version] [![Build Status][github_actions_ci_status]][github_actions_ci] [![RuboCop][github_actions_rubocop_status]][github_actions_rubocop]
 
 This is a [OmniAuth][omniauth] 2.1+ compatible port of the previously available
 [OmniAuth CAS strategy][old_omniauth_cas] that was bundled with OmniAuth 0.3.
@@ -122,8 +116,15 @@ Special thanks go out to the following people
   * Elber Ribeiro (@dynaum) for Ubuntu SSL configuration support
   * @rbq for README updates and OmniAuth 0.3 migration guide
 
-[omniauth]: https://github.com/omniauth/omniauth
-[old_omniauth_cas]: https://github.com/intridea/omniauth/blob/0-3-stable/oa-enterprise/lib/omniauth/strategies/cas.rb
 [document_up]: https://dlindahl.github.io/omniauth-cas/
+[github_actions_ci]: https://github.com/dlindahl/omniauth-cas/actions/workflows/ci.yml
+[github_actions_ci_status]: https://github.com/dlindahl/omniauth-cas/actions/workflows/ci.yml/badge.svg
+[github_actions_rubocop]: https://github.com/dlindahl/omniauth-cas/actions/workflows/rubocop.yml
+[github_actions_rubocop_status]: https://github.com/dlindahl/omniauth-cas/actions/workflows/rubocop.yml/badge.svg
 [net_http]: https://ruby-doc.org/stdlib-1.9.3/libdoc/net/http/rdoc/Net/HTTP.html
+[old_omniauth_cas]: https://github.com/intridea/omniauth/blob/0-3-stable/oa-enterprise/lib/omniauth/strategies/cas.rb
+[omniauth]: https://github.com/omniauth/omniauth
+[releases]: https://github.com/dlindahl/omniauth-cas/releases
 [sso]: https://wiki.jasig.org/display/CASUM/Single+Sign+Out
+[version]: https://badge.fury.io/rb/omniauth-cas
+[version_badge]: https://badge.fury.io/rb/omniauth-cas.svg
