@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/) and this
 project adheres to [Semantic Versioning](https://semver.org/)
 
+## 3.0.0 - 2024-02-24
+
+### Changed
+
+* There are no changes between 3.0.0 and 3.0.0.beta.1
+
 ## 3.0.0.beta.1 - 2024-01-12
 
 ### Changed
