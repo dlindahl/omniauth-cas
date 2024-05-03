@@ -152,7 +152,7 @@ module OmniAuth
       # +service+ and add it and the +ticket+ as paraemters to the
       # CAS serviceValidate URL.
       #
-      # @param [String] service the service (a.k.a. return-to) URL
+      # @param [String] service_url the service (a.k.a. return-to) URL
       # @param [String] ticket the ticket to validate
       #
       # @return [String] a URL like `http://cas.mycompany.com/serviceValidate?service=...&ticket=...`
