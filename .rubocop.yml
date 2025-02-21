@@ -2,6 +2,8 @@ inherit_from: .rubocop_todo.yml
 
 require:
   - rubocop-packaging
+
+plugins:
   - rubocop-performance
   - rubocop-rake
   - rubocop-rspec
@@ -14,10 +16,6 @@ AllCops:
   Exclude:
     - 'gemfiles/**/*'
     - 'vendor/bundle/**/*'
-
-RSpec/FilePath:
-  CustomTransform:
-    OmniAuth: omniauth
 
 RSpec/SpecFilePathFormat:
   CustomTransform:
