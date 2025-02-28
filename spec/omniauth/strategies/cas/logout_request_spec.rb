@@ -5,11 +5,11 @@ require 'spec_helper'
 RSpec.describe OmniAuth::Strategies::CAS::LogoutRequest do
   subject(:call) { described_class.new(strategy, request).call(options) }
 
-  let(:strategy) { double('strategy') }
+  let(:strategy) { instance_double(OmniAuth::Strategies::CAS) }
   let(:env) do
     { 'rack.input' => StringIO.new('', 'r') }
   end
-  let(:request) { double('request', params: params, env: env) }
+  let(:request) { instance_double(Rack::Request, params: params, env: env) }
   let(:params) { { 'url' => url, 'logoutRequest' => logout_request_xml } }
   let(:url) { 'http://example.org/signed_in' }
   let(:logout_request_xml) do

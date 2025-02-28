@@ -4,14 +4,14 @@ require 'spec_helper'
 
 RSpec.describe OmniAuth::Strategies::CAS::ServiceTicketValidator do
   let(:strategy) do
-    double('strategy',
-           service_validate_url: 'https://example.org/serviceValidate')
+    instance_double(OmniAuth::Strategies::CAS, service_validate_url: 'https://example.org/serviceValidate')
   end
   let(:provider_options) do
-    double('provider_options',
-           disable_ssl_verification?: false,
-           merge_multivalued_attributes: false,
-           ca_path: '/etc/ssl/certsZOMG')
+    OmniAuth::Strategy::Options.new(
+      disable_ssl_verification: false,
+      merge_multivalued_attributes: false,
+      ca_path: '/etc/ssl/certsZOMG'
+    )
   end
   let(:validator) do
     described_class.new(strategy, provider_options, '/foo', nil)
@@ -30,7 +30,10 @@ RSpec.describe OmniAuth::Strategies::CAS::ServiceTicketValidator do
     end
 
     it 'uses the configured CA path' do
+      allow(provider_options).to receive(:ca_path)
+
       call
+
       expect(provider_options).to have_received :ca_path
     end
   end
@@ -58,10 +61,7 @@ RSpec.describe OmniAuth::Strategies::CAS::ServiceTicketValidator do
 
     context 'when merging multivalued attributes' do
       let(:provider_options) do
-        double('provider_options',
-               disable_ssl_verification?: false,
-               merge_multivalued_attributes: true,
-               ca_path: '/etc/ssl/certsZOMG')
+        OmniAuth::Strategy::Options.new(merge_multivalued_attributes: true)
       end
 
       it 'parses multivalued user info from the response' do
