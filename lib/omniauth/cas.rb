@@ -1,4 +1,4 @@
 # frozen_string_literal: true
 
-require 'omniauth/cas/version'
-require 'omniauth/strategies/cas'
+require_relative 'cas/version'
+require_relative 'strategies/cas'

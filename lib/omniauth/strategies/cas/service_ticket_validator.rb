@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'net/http'
-require 'net/https'
 require 'nokogiri'
 
 module OmniAuth
