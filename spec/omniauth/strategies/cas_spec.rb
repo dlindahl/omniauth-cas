@@ -268,12 +268,12 @@ RSpec.describe OmniAuth::Strategies::CAS, type: :strategy do
         XML
       end
 
-      let(:logout_request) { double('logout_request', call: [200, {}, 'OK']) }
+      let(:logout_request) { instance_double(MyCasProvider::LogoutRequest, call: [200, {}, 'OK']) }
 
       before do
-        allow_any_instance_of(MyCasProvider)
-          .to receive(:logout_request_service)
-          .and_return double('LogoutRequest', new: logout_request)
+        allow(MyCasProvider::LogoutRequest)
+          .to receive(:new)
+          .and_return logout_request
 
         sso_logout_request
       end

@@ -46,10 +46,6 @@ Naming/FileName:
     - 'Rakefile.rb'
     - 'lib/omniauth-cas.rb'
 
-RSpec/AnyInstance:
-  Exclude:
-    - 'spec/omniauth/strategies/cas_spec.rb'
-
 # Configuration parameters: CountAsOne.
 RSpec/ExampleLength:
   Max: 8
@@ -70,13 +66,6 @@ RSpec/MultipleMemoizedHelpers:
 # Configuration parameters: AllowedGroups.
 RSpec/NestedGroups:
   Max: 6
-
-# Configuration parameters: IgnoreNameless, IgnoreSymbolicNames.
-RSpec/VerifiedDoubles:
-  Exclude:
-    - 'spec/omniauth/strategies/cas/logout_request_spec.rb'
-    - 'spec/omniauth/strategies/cas/service_ticket_validator_spec.rb'
-    - 'spec/omniauth/strategies/cas_spec.rb'
 
 # Configuration parameters: AllowedConstants.
 Style/Documentation:
