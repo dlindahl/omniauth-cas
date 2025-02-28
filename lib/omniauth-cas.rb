@@ -1,3 +1,3 @@
 # frozen_string_literal: true
 
-require 'omniauth/cas'
+require_relative 'omniauth/cas'
