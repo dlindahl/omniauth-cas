@@ -12,8 +12,13 @@ AllCops:
   DisplayStyleGuide: true
   ExtraDetails: true
   Exclude:
-    - 'gemfiles/**/*'
-    - 'vendor/bundle/**/*'
+    - .git/**/*
+    - .github/**/*
+    - coverage/**/*
+    - doc/**/*
+    - gemfiles/*
+    - tmp/**/*
+    - vendor/**/*
 
 RSpec/SpecFilePathFormat:
   CustomTransform:
