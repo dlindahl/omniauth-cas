@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/) and this
 project adheres to [Semantic Versioning](https://semver.org/)
 
+## 3.0.2 - 2025-07-26
+
+* Minor refactor to service ticket validator (#96).
+
 ## 3.0.1 - 2025-02-28
 
 * Prefer `require_relative` over `require`
