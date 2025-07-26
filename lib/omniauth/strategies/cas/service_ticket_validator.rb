@@ -58,23 +58,22 @@ module OmniAuth
         def parse_user_info(node)
           return nil if node.nil?
 
-          {}.tap do |hash|
-            node.children.each do |e|
-              node_name = e.name.sub(/^cas:/, '')
-              unless e.is_a?(Nokogiri::XML::Text) || node_name == 'proxies'
-                # There are no child elements
-                if e.element_children.count == 0
-                  hash[node_name] = attribute_value(hash, node_name, e.content)
-                elsif e.element_children.count
-                  # JASIG style extra attributes
-                  if node_name == 'attributes'
-                    hash.merge!(parse_user_info(e))
-                  else
-                    hash[node_name] = [] if hash[node_name].nil?
-                    hash[node_name].push(parse_user_info(e))
-                  end
+          node.children.each_with_object({}) do |e, hash|
+            node_name = e.name.sub(/^cas:/, '')
+            unless e.is_a?(Nokogiri::XML::Text) || node_name == 'proxies'
+              # rubocop:disable Style/IfInsideElse -- preserve `else` branch for clarity
+              if e.element_children.empty?
+                hash[node_name] = attribute_value(hash, node_name, e.content)
+              else
+                # JASIG style extra attributes
+                if node_name == 'attributes'
+                  hash.merge!(parse_user_info(e))
+                else
+                  hash[node_name] = [] if hash[node_name].nil?
+                  hash[node_name].push(parse_user_info(e))
                 end
               end
+              # rubocop:enable Style/IfInsideElse
             end
           end
         end
